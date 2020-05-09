@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "152353786740",
+    "firebase_url": "https://dmt-hackathon.firebaseio.com",
+    "project_id": "dmt-hackathon",
+    "storage_bucket": "dmt-hackathon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152353786740:android:028c4e62b2499c87ddfa21",
+        "android_client_info": {
+          "package_name": "codes.malukimuthusi.hackathon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152353786740-dp01nldlh0lqop88p0mh7ic8uuchqkka.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhmypbi5Eaw6MO2r4RF54qlOkSt67nwb0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152353786740-dp01nldlh0lqop88p0mh7ic8uuchqkka.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
