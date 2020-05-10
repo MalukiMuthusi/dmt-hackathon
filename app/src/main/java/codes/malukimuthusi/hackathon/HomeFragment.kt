@@ -1,11 +1,16 @@
 package codes.malukimuthusi.hackathon
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import codes.malukimuthusi.hackathon.data.FareChartAdapter
+import codes.malukimuthusi.hackathon.data.FareChartListener
 import codes.malukimuthusi.hackathon.data.chartFares
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
 
@@ -43,10 +48,29 @@ class HomeFragment : Fragment() {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
         }
 
-        val adapter = FareChartAdapter()
+        val viewModel by activityViewModels<HomeViewModel>()
 
+        val adapter = FareChartAdapter(
+            FareChartListener {
+                Log.d("DEBUG", "Clicked.")
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
+//                viewModel.onFareChartClicked()
+            }
+        )
+
+        binding.lifecycleOwner = this
         binding.recyclerView.adapter = adapter
         adapter.submitList(chartFares)
+
+
+        viewModel.avarageFaree.observe(viewLifecycleOwner, Observer {
+
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
+            viewModel.doneNavigate()
+
+
+        })
+
 
         return binding.root
     }

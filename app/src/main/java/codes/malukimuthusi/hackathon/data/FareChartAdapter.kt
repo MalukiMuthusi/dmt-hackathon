@@ -1,30 +1,37 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.data
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import codes.malukimuthusi.hackathon.data.AvarageFare
 import codes.malukimuthusi.hackathon.databinding.SingleChartBinding
 
-class FareChartAdapter : ListAdapter<AvarageFare, ChartViewHolder>(DIFFCALLBACK) {
+class FareChartAdapter(val clicklistener: FareChartListener) :
+    ListAdapter<AvarageFare, ChartViewHolder>(
+        DIFFCALLBACK
+    ) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChartViewHolder {
-        return ChartViewHolder.from(parent)
+        return ChartViewHolder.from(
+            parent
+        )
     }
 
     override fun onBindViewHolder(holder: ChartViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), clicklistener)
     }
 }
 
-class ChartViewHolder private constructor(private val binding: SingleChartBinding) :
+class ChartViewHolder private constructor(
+    private val binding: SingleChartBinding
+) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(avarageFare: AvarageFare) {
+    fun bind(avarageFare: AvarageFare, clicklistener: FareChartListener) {
         binding.chartFare = avarageFare
+        binding.clicklistener = clicklistener
         binding.executePendingBindings()
     }
 
@@ -40,7 +47,6 @@ class ChartViewHolder private constructor(private val binding: SingleChartBindin
 
 object DIFFCALLBACK : DiffUtil.ItemCallback<AvarageFare>() {
 
-
     override fun areItemsTheSame(oldItem: AvarageFare, newItem: AvarageFare): Boolean {
         return oldItem === newItem
     }
@@ -49,6 +55,9 @@ object DIFFCALLBACK : DiffUtil.ItemCallback<AvarageFare>() {
         return oldItem == newItem
     }
 
+}
 
+class FareChartListener(val clicklistener: () -> Unit) {
+    fun onClick() = clicklistener()
 }
 

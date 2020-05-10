@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="clicklistener"
+            type="codes.malukimuthusi.hackathon.data.FareChartListener" />
+
+        <variable
             name="chartFare"
             type="codes.malukimuthusi.hackathon.data.AvarageFare" />
 
@@ -14,7 +18,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/singleItem"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()->clicklistener.onClick()}">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card"
