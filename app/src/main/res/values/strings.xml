@@ -4,4 +4,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fare_chart">Fare Chart</string>
+    <string name="choose_route">Choose Route</string>
+    <string name="cbd">CBD</string>
+    <string name="kitengela">Kitengela</string>
+    <string name="_40">40</string>
+    <string name="autocomplet">AutoComplet</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="saccos">Saccos</string>
+    <string name="rembo">REMBO</string>
+    <string name="_50">50</string>
 </resources>

@@ -11,7 +11,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
-    val TAG = this.applicationContext.packageName
+//    val TAG = this.applicationContext.packageName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                Log.w(TAG, p0.toException())
+//                Log.w(TAG, p0.toException())
             }
 
             override fun onDataChange(p0: DataSnapshot) {
