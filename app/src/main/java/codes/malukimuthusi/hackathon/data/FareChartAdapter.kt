@@ -57,7 +57,7 @@ object DIFFCALLBACK : DiffUtil.ItemCallback<AvarageFare>() {
 
 }
 
-class FareChartListener(val clicklistener: () -> Unit) {
-    fun onClick() = clicklistener()
+class FareChartListener(val clicklistener: (avarage: AvarageFare) -> Unit) {
+    fun onClick(avarage: AvarageFare) = clicklistener(avarage)
 }
 

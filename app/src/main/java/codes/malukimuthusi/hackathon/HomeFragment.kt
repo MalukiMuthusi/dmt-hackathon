@@ -1,13 +1,11 @@
 package codes.malukimuthusi.hackathon
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import codes.malukimuthusi.hackathon.data.FareChartAdapter
 import codes.malukimuthusi.hackathon.data.FareChartListener
@@ -43,34 +41,27 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentHomeBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+
+
+        val viewModel by activityViewModels<SharedHomeViewModel>()
+
 
         binding.button.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
+            viewModel.sharedAvarageFare = null
         }
-
-        val viewModel by activityViewModels<HomeViewModel>()
 
         val adapter = FareChartAdapter(
             FareChartListener {
-                Log.d("DEBUG", "Clicked.")
+                viewModel.sharedAvarageFare = it
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
-//                viewModel.onFareChartClicked()
+
             }
         )
 
-        binding.lifecycleOwner = this
         binding.recyclerView.adapter = adapter
         adapter.submitList(chartFares)
-
-
-        viewModel.avarageFaree.observe(viewLifecycleOwner, Observer {
-
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
-            viewModel.doneNavigate()
-
-
-        })
-
 
         return binding.root
     }

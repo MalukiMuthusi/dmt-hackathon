@@ -5,6 +5,14 @@
 
     <data>
 
+        <variable
+            name="fromString"
+            type="String" />
+
+        <variable
+            name="destinationString"
+            type="String" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,10 +50,12 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <AutoCompleteTextView
-                        android:id="@+id/fromText"
+                        android:id="@+id/fromTexttt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/from" />
+                        android:elegantTextHeight="false"
+                        tools:text="@string/from"
+                        android:text="@{fromString}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -61,8 +71,9 @@
                     <AutoCompleteTextView
                         android:id="@+id/toText"
                         android:layout_width="match_parent"
+                        tools:text="@string/to"
                         android:layout_height="wrap_content"
-                        android:text="@string/to" />
+                        android:text="@{destinationString}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

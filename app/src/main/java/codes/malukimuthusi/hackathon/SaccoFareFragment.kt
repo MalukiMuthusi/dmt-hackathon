@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import codes.malukimuthusi.hackathon.data.SaccoDetailAdapter
 import codes.malukimuthusi.hackathon.data.saccosList
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
@@ -40,15 +41,23 @@ class SaccoFareFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding = FragmentSaccoFareBinding.inflate(inflater)
 
+        val viewModel by activityViewModels<SharedHomeViewModel>()
+
         val items = listOf("CBD", "Kitengela", "Lang'ata", "Kasarani", "Roysambu")
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
-        binding.fromText.setAdapter(arrayAdapter)
+        binding.fromTexttt.setAdapter(arrayAdapter)
         binding.toText.setAdapter(arrayAdapter)
 
         val recyclerViewAdapter = SaccoDetailAdapter()
         binding.recyclerView.adapter = recyclerViewAdapter
+        binding.lifecycleOwner = this
 
         recyclerViewAdapter.submitList(saccosList)
+
+        viewModel.sharedAvarageFare.let {
+            binding.fromString = it?.from ?: "To"
+            binding.destinationString = it?.to ?: "From"
+        }
 
         return binding.root
     }
