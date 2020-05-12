@@ -9,8 +9,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import codes.malukimuthusi.hackathon.data.FareChartAdapter
 import codes.malukimuthusi.hackathon.data.FareChartListener
+import codes.malukimuthusi.hackathon.data.Route
 import codes.malukimuthusi.hackathon.data.chartFares
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,6 +65,15 @@ class HomeFragment : Fragment() {
 
         binding.recyclerView.adapter = adapter
         adapter.submitList(chartFares)
+
+
+        // firebase
+        val mydatabase = Firebase.database.reference
+        val myroute = Route().toMap()
+
+        val childUpdates = HashMap<String, Any>()
+        childUpdates["Routes/CBD-Rongai"] = myroute
+        mydatabase.updateChildren(childUpdates)
 
         return binding.root
     }
