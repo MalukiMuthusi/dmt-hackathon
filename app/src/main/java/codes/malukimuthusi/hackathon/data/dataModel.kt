@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.data
 
+import codes.malukimuthusi.hackathon.data.Mock.matatusList
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 
@@ -8,7 +9,7 @@ data class Route(
     val name: String = "CBD-Rongai",
     val start: String = "CBD",
     val End: String = "Rongai",
-    val saccos: List<Sacco> = saccoList
+    val saccos: List<Sacco> = Mock.saccoLists
 ) {
     @Exclude
     fun toMap(): Map<String, Any?> {
@@ -27,6 +28,7 @@ data class Sacco(
     val fare: Fare = Fare(),
     val matatus: List<Matatu> = matatusList
 ) {
+    @Exclude
     fun toMap(): Map<String, Any> {
         return mapOf(
             "sacco_name" to name,
@@ -38,6 +40,7 @@ data class Sacco(
 
 }
 
+@Exclude
 fun List<Sacco>.toMap(): List<Map<String, Any>> {
     return map {
         it.toMap()
@@ -90,14 +93,18 @@ class Fare(
 
 }
 
-val saccoList = listOf<Sacco>(
-    Sacco(),
-    Sacco("Sacco B")
-)
+object Mock {
 
-val matatusList = listOf<Matatu>(
-    Matatu(),
-    Matatu("A")
-)
+    val saccoLists = listOf(
+        Sacco()
+    )
+
+    val matatusList = listOf<Matatu>(
+        Matatu(),
+        Matatu("A")
+    )
+}
+
+
 
 

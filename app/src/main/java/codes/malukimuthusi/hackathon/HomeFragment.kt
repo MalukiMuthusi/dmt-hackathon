@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import codes.malukimuthusi.hackathon.data.FareChartAdapter
-import codes.malukimuthusi.hackathon.data.FareChartListener
-import codes.malukimuthusi.hackathon.data.Route
-import codes.malukimuthusi.hackathon.data.chartFares
+import codes.malukimuthusi.hackathon.data.*
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -69,11 +66,11 @@ class HomeFragment : Fragment() {
 
         // firebase
         val mydatabase = Firebase.database.reference
-        val myroute = Route().toMap()
+//        val myroute = Route(saccos = Mock.saccoLists).toMap()
 
         val childUpdates = HashMap<String, Any>()
-        childUpdates["Routes/CBD-Rongai"] = myroute
-        mydatabase.updateChildren(childUpdates)
+//        childUpdates["Routes/CBD-Rongai"] = myroute
+//        mydatabase.updateChildren(childUpdates)
 
         return binding.root
     }
