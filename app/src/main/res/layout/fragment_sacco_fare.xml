@@ -22,63 +22,40 @@
         tools:context=".SaccoFareFragment">
 
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/route_card"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/from"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/to"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/route"
+            <AutoCompleteTextView
+                android:id="@+id/fromTexttt"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:elegantTextHeight="false"
+                android:text="@{fromString}"
+                tools:text="@string/from" />
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/to"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/from"
+            app:layout_constraintTop_toTopOf="@id/from">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/from"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintEnd_toStartOf="@id/to"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/fromTexttt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:elegantTextHeight="false"
-                        tools:text="@string/from"
-                        android:text="@{fromString}" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/to"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/from"
-                    app:layout_constraintTop_toTopOf="@id/from">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/toText"
-                        android:layout_width="match_parent"
-                        tools:text="@string/to"
-                        android:layout_height="wrap_content"
-                        android:text="@{destinationString}" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            <AutoCompleteTextView
+                android:id="@+id/toText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{destinationString}"
+                tools:text="@string/to" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.card.MaterialCardView
@@ -87,8 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/route_card"
-            app:layout_constraintTop_toBottomOf="@id/route_card">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/from">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/saccosList"
