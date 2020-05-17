@@ -54,9 +54,9 @@ class SaccoFareFragment : Fragment() {
 
         recyclerViewAdapter.submitList(saccosList)
 
-        viewModel.sharedAvarageFare.let {
-            binding.fromString = it?.from ?: "To"
-            binding.destinationString = it?.to ?: "From"
+        viewModel.sharedChartData.let {
+            binding.fromString = it?.start ?: "To"
+            binding.destinationString = it?.end ?: "From"
         }
 
         return binding.root

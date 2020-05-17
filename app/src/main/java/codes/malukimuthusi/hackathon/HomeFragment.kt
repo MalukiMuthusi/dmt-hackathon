@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import codes.malukimuthusi.hackathon.data.FareChartAdapter
 import codes.malukimuthusi.hackathon.data.FareChartListener
-import codes.malukimuthusi.hackathon.data.chartFares
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
-import com.firebase.ui.auth.AuthUI
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -49,36 +48,31 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-        val viewModel by activityViewModels<SharedHomeViewModel>()
+        val sharedModel by activityViewModels<SharedHomeViewModel>()
+
+        val viewModel by viewModels<HomeFragmentViewModel>()
 
 
         binding.button.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
-            viewModel.sharedAvarageFare = null
+            sharedModel.sharedChartData = null
         }
 
         val adapter = FareChartAdapter(
             FareChartListener {
-                viewModel.sharedAvarageFare = it
+                sharedModel.sharedChartData = it
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
 
             }
         )
-
         binding.recyclerView.adapter = adapter
-        adapter.submitList(chartFares)
-
-
-
 
 
         // firebase
-        val mydatabase = Firebase.database.reference
-//        val myroute = Route(saccos = Mock.saccoLists).toMap()
+        val myDbRef = Firebase.database.getReference("Routes")
+        myDbRef.addChildEventListener(viewModel.routesListener)
 
-        val childUpdates = HashMap<String, Any>()
-//        childUpdates["Routes/CBD-Rongai"] = myroute
-//        mydatabase.updateChildren(childUpdates)
+        adapter.submitList(viewModel.normalList)
 
         return binding.root
     }

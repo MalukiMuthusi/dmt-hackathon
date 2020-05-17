@@ -10,8 +10,8 @@
             type="codes.malukimuthusi.hackathon.data.FareChartListener" />
 
         <variable
-            name="chartFare"
-            type="codes.malukimuthusi.hackathon.data.AvarageFare" />
+            name="routee"
+            type="codes.malukimuthusi.hackathon.data.Route" />
 
     </data>
 
@@ -19,7 +19,7 @@
         android:id="@+id/singleItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->clicklistener.onClick(chartFare)}">
+        android:onClick="@{()->clicklistener.onClick(routee)}">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card"
@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:text="@{chartFare.from}"
+                    android:text="@{routee.start}"
                     app:layout_constraintEnd_toStartOf="@+id/to"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@{chartFare.to}"
+                    android:text="@{routee.end}"
                     app:layout_constraintEnd_toStartOf="@+id/amout"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/from"
@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:fare="@{chartFare.fare}"
+                    app:fare_value="@{routee.fare}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/to"

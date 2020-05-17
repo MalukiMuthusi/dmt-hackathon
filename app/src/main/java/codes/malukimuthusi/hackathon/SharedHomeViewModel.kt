@@ -1,9 +1,9 @@
 package codes.malukimuthusi.hackathon
 
 import androidx.lifecycle.ViewModel
-import codes.malukimuthusi.hackathon.data.AvarageFare
+import codes.malukimuthusi.hackathon.data.Route
 
 class SharedHomeViewModel : ViewModel() {
-    var sharedAvarageFare: AvarageFare? = null
+    var sharedChartData: Route? = null
 
 }

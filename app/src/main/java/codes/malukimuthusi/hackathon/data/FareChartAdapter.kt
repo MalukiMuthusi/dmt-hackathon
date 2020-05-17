@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.databinding.SingleChartBinding
 
 class FareChartAdapter(val clicklistener: FareChartListener) :
-    ListAdapter<AvarageFare, ChartViewHolder>(
+    ListAdapter<Route, ChartViewHolder>(
         DIFFCALLBACK
     ) {
 
@@ -29,8 +29,8 @@ class ChartViewHolder private constructor(
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(avarageFare: AvarageFare, clicklistener: FareChartListener) {
-        binding.chartFare = avarageFare
+    fun bind(routte: Route, clicklistener: FareChartListener) {
+        binding.routee = routte
         binding.clicklistener = clicklistener
         binding.executePendingBindings()
     }
@@ -45,19 +45,19 @@ class ChartViewHolder private constructor(
 
 }
 
-object DIFFCALLBACK : DiffUtil.ItemCallback<AvarageFare>() {
+object DIFFCALLBACK : DiffUtil.ItemCallback<Route>() {
 
-    override fun areItemsTheSame(oldItem: AvarageFare, newItem: AvarageFare): Boolean {
+    override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
         return oldItem === newItem
     }
 
-    override fun areContentsTheSame(oldItem: AvarageFare, newItem: AvarageFare): Boolean {
+    override fun areContentsTheSame(oldItem: Route, newItem: Route): Boolean {
         return oldItem == newItem
     }
 
 }
 
-class FareChartListener(val clicklistener: (avarage: AvarageFare) -> Unit) {
-    fun onClick(avarage: AvarageFare) = clicklistener(avarage)
+class FareChartListener(val clicklistener: (avarage: Route) -> Unit) {
+    fun onClick(avarage: Route) = clicklistener(avarage)
 }
 

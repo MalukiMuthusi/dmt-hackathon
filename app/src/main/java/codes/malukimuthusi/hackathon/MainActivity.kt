@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 private const val SIGNED_IN = "signedin"
 private const val RC_SIGN_IN = 100
