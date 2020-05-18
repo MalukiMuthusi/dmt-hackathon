@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.databinding.SaccoDetailsBinding
 
 
-class SaccoDetailAdapter : ListAdapter<SaccoDetails, SaccoDetailViewHolder>(Diif) {
+class SaccoDetailAdapter : ListAdapter<Sacco, SaccoDetailViewHolder>(Diif) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaccoDetailViewHolder {
         return SaccoDetailViewHolder.from(parent)
     }
@@ -21,8 +21,8 @@ class SaccoDetailAdapter : ListAdapter<SaccoDetails, SaccoDetailViewHolder>(Diif
 class SaccoDetailViewHolder private constructor(val binding: SaccoDetailsBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(saccoDetails: SaccoDetails) {
-        binding.saccodetailsC = saccoDetails
+    fun bind(saccoDetails: Sacco) {
+        binding.sacco = saccoDetails
     }
 
     companion object {
@@ -35,12 +35,12 @@ class SaccoDetailViewHolder private constructor(val binding: SaccoDetailsBinding
 
 }
 
-object Diif : DiffUtil.ItemCallback<SaccoDetails>() {
-    override fun areItemsTheSame(oldItem: SaccoDetails, newItem: SaccoDetails): Boolean {
+object Diif : DiffUtil.ItemCallback<Sacco>() {
+    override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
         return oldItem === newItem
     }
 
-    override fun areContentsTheSame(oldItem: SaccoDetails, newItem: SaccoDetails): Boolean {
+    override fun areContentsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
         return oldItem == newItem
     }
 

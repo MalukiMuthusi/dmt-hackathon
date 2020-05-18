@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import codes.malukimuthusi.hackathon.data.FareChartAdapter
 import codes.malukimuthusi.hackathon.data.FareChartListener
+import codes.malukimuthusi.hackathon.data.Repository
+import codes.malukimuthusi.hackathon.data.Route
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,28 +52,36 @@ class HomeFragment : Fragment() {
         val sharedModel by activityViewModels<SharedHomeViewModel>()
 
         val viewModel by viewModels<HomeFragmentViewModel>()
+        Repository.getRoutes(viewModel.listenerObject)
 
 
         binding.button.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(null)
+            )
             sharedModel.sharedChartData = null
         }
 
         val adapter = FareChartAdapter(
             FareChartListener {
-                sharedModel.sharedChartData = it
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment())
+//                sharedModel.sharedChartData = it
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(
+                        it
+                    )
+                )
 
             }
         )
         binding.recyclerView.adapter = adapter
 
 
-        // firebase
-        val myDbRef = Firebase.database.getReference("Routes")
-        myDbRef.addChildEventListener(viewModel.routesListener)
+//        adapter.submitList(viewModel.updatedRoutes)
 
-        adapter.submitList(viewModel.normalList)
+
+        viewModel.updateUI.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it as List<Route>)
+        })
 
         return binding.root
     }

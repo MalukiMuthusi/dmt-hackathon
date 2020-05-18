@@ -18,5 +18,10 @@
         android:id="@+id/saccoFareFragment"
         android:name="codes.malukimuthusi.hackathon.SaccoFareFragment"
         android:label="fragment_sacco_fare"
-        tools:layout="@layout/fragment_sacco_fare" />
+        tools:layout="@layout/fragment_sacco_fare">
+        <argument
+            android:name="routeID"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

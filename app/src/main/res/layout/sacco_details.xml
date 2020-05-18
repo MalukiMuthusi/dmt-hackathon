@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="saccodetailsC"
-            type="codes.malukimuthusi.hackathon.data.SaccoDetails" />
+            name="sacco"
+            type="codes.malukimuthusi.hackathon.data.Sacco" />
 
     </data>
 
@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center|center_horizontal"
-                    android:text="@{saccodetailsC.name}"
+                    android:text="@{sacco.name}"
                     app:layout_constraintEnd_toStartOf="@+id/sacco_fare"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    app:fare_value="@{saccodetailsC.fare}"
+                    transit_fare="@{sacco.fare}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/sacco_name"

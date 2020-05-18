@@ -11,7 +11,8 @@ data class Route(
     val end: String? = "",
     val short_name: String? = "",
     val fare: Int? = 50,
-    val saccos: MutableMap<String, Boolean>? = HashMap()
+    val saccos: MutableMap<String, Boolean>? = HashMap(),
+    @Exclude var key: String = ""
 
 
 ) {
@@ -86,7 +87,7 @@ data class Fare(
     @PropertyName("eleven_twelve") var elevenToTwelve: Int? = 0,
     @PropertyName("twelve_thirteen") var twelveToThirteen: Int? = 0,
     @PropertyName("thirteen_fourteen") var thirteenToFourteen: Int? = 0,
-    @PropertyName("fourteen_fiveteen") var fourteen_fiveteen: Int? = 0,
+    @PropertyName("fourteen_fiveteen") var fourteenToFiveteen: Int? = 0,
     @PropertyName("fiveteen_sixteen") var fiveteenToSixteen: Int? = 0,
     @PropertyName("sixteen_seventeen") var sixteenToSeventeen: Int? = 0,
     @PropertyName("seventeen_eighteen") var seventeenToEighteen: Int? = 0,
@@ -108,7 +109,7 @@ data class Fare(
             "eleven_twelve" to elevenToTwelve,
             "twelve_thirteen" to twelveToThirteen,
             "thirteen_fourteen" to thirteenToFourteen,
-            "fourteen_fiveteen" to fourteen_fiveteen,
+            "fourteen_fiveteen" to fourteenToFiveteen,
             "fiveteen_sixteen" to fiveteenToSixteen,
             "sixteen_seventeen" to sixteenToSeventeen,
             "seventeen_eighteen" to seventeenToEighteen,
@@ -141,10 +142,7 @@ abstract class ChartData(
     val from: String?,
     val to: String?,
     val fare: Int?
-) : Any() {
-
-
-}
+) : Any()
 
 
 
