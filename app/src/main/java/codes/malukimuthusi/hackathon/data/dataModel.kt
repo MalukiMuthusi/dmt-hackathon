@@ -10,7 +10,7 @@ data class Route(
     val start: String? = "",
     val end: String? = "",
     val short_name: String? = "",
-    val fare: Int? = 50,
+    val fare: Int? = 0,
     val saccos: MutableMap<String, Boolean>? = HashMap(),
     @Exclude var key: String = ""
 

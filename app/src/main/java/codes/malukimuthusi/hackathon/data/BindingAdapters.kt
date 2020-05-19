@@ -2,6 +2,7 @@ package codes.malukimuthusi.hackathon.data
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import codes.malukimuthusi.hackathon.R
 import java.util.*
 import java.util.Calendar.HOUR_OF_DAY
 
@@ -42,6 +43,19 @@ fun currentFare(text: TextView, fare: Fare?) {
             else -> 0
         }).toString()
     }
+}
 
+@BindingAdapter("routeStart")
+fun routeStartFormatedUI(text: TextView, start: String) {
+    text.text = text.context.getString(R.string.start_station, start)
+}
 
+@BindingAdapter("routeName")
+fun routeNameRouteOverview(text: TextView, name: String) {
+    text.text = text.context.getString(R.string.route_name, name)
+}
+
+@BindingAdapter("routeEnd")
+fun endOfRoute(text: TextView, end: String) {
+    text.text = text.context.getString(R.string.end_station, end)
 }

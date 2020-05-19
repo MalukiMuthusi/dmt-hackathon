@@ -55,7 +55,7 @@ class HomeFragment : Fragment() {
         Repository.getRoutes(viewModel.listenerObject)
 
 
-        binding.button.setOnClickListener {
+        binding.chooseRoute.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(null)
             )

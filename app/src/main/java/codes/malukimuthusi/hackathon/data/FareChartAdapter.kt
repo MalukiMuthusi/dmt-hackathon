@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import codes.malukimuthusi.hackathon.databinding.SingleChartBinding
+import codes.malukimuthusi.hackathon.databinding.RouteOverviewTemplateBinding
 
 class FareChartAdapter(val clicklistener: FareChartListener) :
     ListAdapter<Route, ChartViewHolder>(
@@ -25,12 +25,12 @@ class FareChartAdapter(val clicklistener: FareChartListener) :
 }
 
 class ChartViewHolder private constructor(
-    private val binding: SingleChartBinding
+    private val binding: RouteOverviewTemplateBinding
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(routte: Route, clicklistener: FareChartListener) {
-        binding.routee = routte
+        binding.route = routte
         binding.clicklistener = clicklistener
         binding.executePendingBindings()
     }
@@ -38,7 +38,7 @@ class ChartViewHolder private constructor(
     companion object {
         fun from(parent: ViewGroup): ChartViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = SingleChartBinding.inflate(layoutInflater, parent, false)
+            val binding = RouteOverviewTemplateBinding.inflate(layoutInflater, parent, false)
             return ChartViewHolder(binding)
         }
     }

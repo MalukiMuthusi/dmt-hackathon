@@ -1,6 +1,7 @@
 package codes.malukimuthusi.hackathon
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,7 @@ class SaccoFareFragment : Fragment() {
         // observe list of saccos and update UI as new elements are added to the list.
         viewModel.saccoList.observe(viewLifecycleOwner, Observer {
             recyclerViewAdapter.submitList(it)
+            Log.d("saccoList", it.toString())
         })
 
 
