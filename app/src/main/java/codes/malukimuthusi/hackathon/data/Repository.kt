@@ -1,9 +1,6 @@
 package codes.malukimuthusi.hackathon.data
 
-import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import codes.malukimuthusi.hackathon.data.Repository.getSingleSacco
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -33,6 +30,13 @@ object Repository {
 
         val routesPath = dbRef.child("Routes")
         routesPath.addChildEventListener(childEventListener)
+    }
+
+    // get sacco's in the database
+    fun getSaccos(saccoList: MutableLiveData<MutableMap<String, Sacco>>) {
+        val saccosPath = dbRef.child("saccos")
+        val valueEventListener = FetchSaccosEventListener(saccoList)
+        saccosPath.addValueEventListener(valueEventListener)
     }
 
     /*
@@ -69,33 +73,44 @@ object Repository {
     }
 
     /*
-* Fetch current average fare of a given route
-* */
-    fun getAverageFareOfRoute(lifecycleOwner: LifecycleOwner, routeId: String, textView: TextView) {
+    * Fetch current average fare of a given route
+    * */
+    fun getAverageFareOfRoute(route: Route) {
         // get the sacco's operating on this route
-        val saccos = MutableLiveData<MutableList<Sacco>>()
-        val eventListenerForSaccosInRoute = SaccosInRouteEventListener(saccos)
-        getListOfSacco(routeId, eventListenerForSaccosInRoute)
+        if (route.saccos.isNullOrEmpty()) {
+            Timber.d("%s: has no Saccos", route.name)
+            return
+        }
+        val allSaccos = MutableLiveData<MutableMap<String, Sacco>>()
+        getSaccos(allSaccos)
+
+        var filteredMap = mutableListOf<Sacco>()
+
+        allSaccos.value?.let {
+            filteredMap = (it.filter { it.key in route.saccos.keys }).values.toMutableList()
+        }
+
 
         // get current fare from each sacco
 
         // observe the sacco's mutable live data list as sacco's are fetched from database
         val faresOfSacco = mutableListOf<Int>()
-        saccos.observe(lifecycleOwner, androidx.lifecycle.Observer { saccosList ->
-            saccosList.forEach {
-                try {
-                    val fare = getCurrentFareFromSacco(it)
-                    faresOfSacco.add(fare)
-                } catch (e: Exception) {
-                    Timber.e(e, "Current fare not set for: %s", it.name)
-                    saccosList.remove(it)
-                }
+
+        filteredMap.forEach {
+            try {
+                val fare = getCurrentFareFromSacco(it)
+                Timber.d("Fare for sacco: %s is %d", it.name, fare)
+                faresOfSacco.add(fare)
+            } catch (e: Exception) {
+                Timber.e(e, "Current fare not set for: %s", it.name)
+                filteredMap.remove(it)
             }
-            // get average of those fares.
-            val average = faresOfSacco.average()
-            textView.text = average.toInt().toString()
-        })
+        }
+        // get average of those fares.
+        val average = faresOfSacco.average()
+        Timber.d("Everage fare for route: %s is %f", route.name, average)
     }
+
 
     // fetch current fare from a sacco.
     fun getCurrentFareFromSacco(sacco: Sacco): Int {
@@ -103,8 +118,9 @@ object Repository {
         val calendarInstance = Calendar.getInstance(tz)
         val hourOfDay = calendarInstance.get(Calendar.HOUR_OF_DAY)
         val minutes = calendarInstance.get(Calendar.MINUTE)
+        val hourAndMinutes = hourOfDay * 60 + minutes
 
-        return when (hourOfDay * minutes) {
+        val returnedFare = when (hourAndMinutes) {
             in 300..360 -> sacco.fare?.fiveToSix
                 ?: throw Exception("Fare Not set for this period!!")
             in 360..420 -> sacco.fare?.sixToSeven
@@ -143,11 +159,14 @@ object Repository {
                 ?: throw Exception("Fare Not set for this period!!")
             else -> 0
         }
+        Timber.d(" Fare For: %s : is %d", sacco.name, returnedFare)
+        return returnedFare
 
     }
 
 }
 
+// fetch a single sacco item from the database
 class SingleSaccoValueEventListener(
     val listOfSacco: MutableList<Sacco>,
     val saccoList: MutableLiveData<MutableList<Sacco>>
@@ -166,11 +185,13 @@ class SingleSaccoValueEventListener(
     }
 }
 
+// fetch all the saccos in the given route
 class SaccosInRouteEventListener(
     val saccoList: MutableLiveData<MutableList<Sacco>>
 ) : ValueEventListener {
 
     val listOfSacco = mutableListOf<Sacco>()
+
 
     override fun onCancelled(p0: DatabaseError) {
         Timber.e(p0.toException())
@@ -179,15 +200,30 @@ class SaccosInRouteEventListener(
 
     override fun onDataChange(p0: DataSnapshot) {
 
-        for (saccoId in p0.children) {
 
-            //check if sacco exits, then fetch the sacco
-            saccoId.key?.let {
-                val singleSaccoValueListener = SingleSaccoValueEventListener(listOfSacco, saccoList)
-                getSingleSacco(it, singleSaccoValueListener)
+    }
+}
+
+// event listener to fetch all the sacco's in database
+class FetchSaccosEventListener(val saccoList: MutableLiveData<MutableMap<String, Sacco>>) :
+    ValueEventListener {
+    private val allSacco = mutableMapOf<String, Sacco>()
+    override fun onCancelled(p0: DatabaseError) {
+        Timber.e(p0.toException())
+    }
+
+    override fun onDataChange(p0: DataSnapshot) {
+        for (i in p0.children) {
+            val sacco = i.getValue<Sacco>()
+            val key = i.key
+            sacco?.let { addSacco ->
+                key?.let {
+                    addSacco.key = it
+                    allSacco[it] = addSacco
+                    saccoList.value = allSacco
+                }
             }
         }
-
     }
 }
 

@@ -11,7 +11,7 @@ data class Route(
     val end: String? = "",
     val short_name: String? = "",
     val fare: Int? = 0,
-    val saccos: MutableMap<String, Boolean>? = HashMap(),
+    val saccos: MutableMap<String, Boolean>? = mutableMapOf(),
     @Exclude var key: String = ""
 
 
@@ -31,7 +31,8 @@ data class Route(
 data class Sacco(
     val name: String? = "",
     val fare: Fare? = Fare(),
-    @PropertyName("Routes") val routes: MutableMap<String, Boolean>? = HashMap()
+    @PropertyName("Routes") val routes: MutableMap<String, Boolean>? = HashMap(),
+    @Exclude var key: String? = ""
 ) {
     @Exclude
     fun toMap(): Map<String, Any?> {

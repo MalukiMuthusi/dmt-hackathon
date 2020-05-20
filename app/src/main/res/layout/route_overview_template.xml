@@ -56,10 +56,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/pad_8dp"
-                    app:routeStart="@{route.start}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/roadName"
+                    app:routeStart="@{route.start}"
                     tools:text="start point of Transit" />
 
                 <TextView
@@ -81,6 +81,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/pad_8dp"
                     android:text="@string/zero"
+                    app:averageRouteFare="@{route.fare}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/endPoint"

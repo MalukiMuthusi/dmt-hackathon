@@ -33,14 +33,8 @@ class ChartViewHolder private constructor(
     fun bind(routte: Route, clicklistener: FareChartListener) {
         binding.route = routte
         binding.clicklistener = clicklistener
-        binding.lifecycleOwner?.let {
-            Timber.d("Setting average fare for: %s", routte.name)
-            Repository.getAverageFareOfRoute(
-                it,
-                routte.key,
-                binding.averageFare
-            )
-        }
+        Timber.d("Setting average fare for: %s", routte.name)
+
         binding.executePendingBindings()
     }
 

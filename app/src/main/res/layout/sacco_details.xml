@@ -43,10 +43,10 @@
 
                 <TextView
                     android:id="@+id/sacco_fare"
+                    transit_fare="@{sacco}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    transit_fare="@{sacco.fare}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/sacco_name"
