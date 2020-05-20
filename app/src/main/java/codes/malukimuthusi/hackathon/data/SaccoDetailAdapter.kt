@@ -20,7 +20,6 @@ class SaccoDetailAdapter : ListAdapter<Sacco, SaccoDetailViewHolder>(Diif) {
 
 class SaccoDetailViewHolder private constructor(val binding: SaccoDetailsBinding) :
     RecyclerView.ViewHolder(binding.root) {
-
     fun bind(saccoDetails: Sacco) {
         binding.sacco = saccoDetails
     }

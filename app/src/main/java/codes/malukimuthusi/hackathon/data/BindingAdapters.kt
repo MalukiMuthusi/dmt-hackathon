@@ -18,7 +18,7 @@ fun startAdapter(text: TextView, start: String?) {
 
 @BindingAdapter("transit_fare")
 fun currentFare(text: TextView, fare: Fare?) {
-    text.text = "Unknown"
+    text.text = text.context.getString(R.string.fare_unknown)
     fare?.let {
         val tz = TimeZone.getTimeZone("Africa/Nairobi")
         val currentTime = Calendar.getInstance(tz).get(HOUR_OF_DAY)
@@ -59,3 +59,9 @@ fun routeNameRouteOverview(text: TextView, name: String) {
 fun endOfRoute(text: TextView, end: String) {
     text.text = text.context.getString(R.string.end_station, end)
 }
+
+@BindingAdapter("averageRouteFare")
+fun averageFare(text: TextView, routeId: String) {
+}
+
+

@@ -1,7 +1,6 @@
 package codes.malukimuthusi.hackathon
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import codes.malukimuthusi.hackathon.data.Repository
 import codes.malukimuthusi.hackathon.data.SaccoDetailAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
+import timber.log.Timber
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,6 +45,7 @@ class SaccoFareFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding = FragmentSaccoFareBinding.inflate(inflater)
 
+        // lazily instantiate the viewModels
         val sharedViewModel by activityViewModels<SharedHomeViewModel>()
         val viewModel by viewModels<SaccoFragmentViewModel>()
 
@@ -64,14 +65,16 @@ class SaccoFareFragment : Fragment() {
 
         // retrieve the passed routeID. this routeID is used to retrieve Sacco's that operate
         // in that route
+        var routeID: String? = null
         args.routeID?.let {
+            routeID = it
             Repository.getListOfSacco(it, viewModel.eventListenerForSacco)
         }
 
-        // observe list of saccos and update UI as new elements are added to the list.
+        // observe list of sacco's and update UI as new elements are added to the list.
         viewModel.saccoList.observe(viewLifecycleOwner, Observer {
             recyclerViewAdapter.submitList(it)
-            Log.d("saccoList", it.toString())
+            Timber.d("Sacco's in route: %s are %d", routeID, it.size)
         })
 
 

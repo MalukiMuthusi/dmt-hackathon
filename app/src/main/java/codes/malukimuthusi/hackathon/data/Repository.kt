@@ -1,6 +1,7 @@
 package codes.malukimuthusi.hackathon.data
 
-import android.util.Log
+import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import codes.malukimuthusi.hackathon.data.Repository.getSingleSacco
 import com.google.firebase.database.ChildEventListener
@@ -10,6 +11,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import timber.log.Timber
+import java.util.*
 
 interface Repo {
     fun getRoutes(): List<Route>
@@ -65,6 +68,84 @@ object Repository {
 
     }
 
+    /*
+* Fetch current average fare of a given route
+* */
+    fun getAverageFareOfRoute(lifecycleOwner: LifecycleOwner, routeId: String, textView: TextView) {
+        // get the sacco's operating on this route
+        val saccos = MutableLiveData<MutableList<Sacco>>()
+        val eventListenerForSaccosInRoute = SaccosInRouteEventListener(saccos)
+        getListOfSacco(routeId, eventListenerForSaccosInRoute)
+
+        // get current fare from each sacco
+
+        // observe the sacco's mutable live data list as sacco's are fetched from database
+        val faresOfSacco = mutableListOf<Int>()
+        saccos.observe(lifecycleOwner, androidx.lifecycle.Observer { saccosList ->
+            saccosList.forEach {
+                try {
+                    val fare = getCurrentFareFromSacco(it)
+                    faresOfSacco.add(fare)
+                } catch (e: Exception) {
+                    Timber.e(e, "Current fare not set for: %s", it.name)
+                    saccosList.remove(it)
+                }
+            }
+            // get average of those fares.
+            val average = faresOfSacco.average()
+            textView.text = average.toInt().toString()
+        })
+    }
+
+    // fetch current fare from a sacco.
+    fun getCurrentFareFromSacco(sacco: Sacco): Int {
+        val tz = TimeZone.getTimeZone("Africa/Nairobi")
+        val calendarInstance = Calendar.getInstance(tz)
+        val hourOfDay = calendarInstance.get(Calendar.HOUR_OF_DAY)
+        val minutes = calendarInstance.get(Calendar.MINUTE)
+
+        return when (hourOfDay * minutes) {
+            in 300..360 -> sacco.fare?.fiveToSix
+                ?: throw Exception("Fare Not set for this period!!")
+            in 360..420 -> sacco.fare?.sixToSeven
+                ?: throw Exception("Fare Not set for this period!!")
+            in 420..480 -> sacco.fare?.sevenToEight
+                ?: throw Exception("Fare Not set for this period!!")
+            in 480..540 -> sacco.fare?.eightToNine
+                ?: throw Exception("Fare Not set for this period!!")
+            in 540..600 -> sacco.fare?.nineToTen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 600..660 -> sacco.fare?.tenToEleven
+                ?: throw Exception("Fare Not set for this period!!")
+            in 660..720 -> sacco.fare?.elevenToTwelve
+                ?: throw Exception("Fare Not set for this period!!")
+            in 720..780 -> sacco.fare?.twelveToThirteen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 780..840 -> sacco.fare?.thirteenToFourteen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 840..900 -> sacco.fare?.fourteenToFiveteen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 900..960 -> sacco.fare?.fiveteenToSixteen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 960..1020 -> sacco.fare?.sixteenToSeventeen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 1020..1080 -> sacco.fare?.seventeenToEighteen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 1080..1140 -> sacco.fare?.eighteenToNineteen
+                ?: throw Exception("Fare Not set for this period!!")
+            in 1140..1200 -> sacco.fare?.nineteenToTwenty
+                ?: throw Exception("Fare Not set for this period!!")
+            in 1200..1260 -> sacco.fare?.twentyTotwentyone
+                ?: throw Exception("Fare Not set for this period!!")
+            in 1260..1320 -> sacco.fare?.twentyoneToTwentytwo
+                ?: throw Exception("Fare Not set for this period!!")
+            in 1320..1380 -> sacco.fare?.twentytwoToTwentythree
+                ?: throw Exception("Fare Not set for this period!!")
+            else -> 0
+        }
+
+    }
+
 }
 
 class SingleSaccoValueEventListener(
@@ -73,7 +154,7 @@ class SingleSaccoValueEventListener(
 ) : ValueEventListener {
 
     override fun onCancelled(p0: DatabaseError) {
-        Log.e("SingleSaccoValueEL", p0.message)
+        Timber.e(p0.toException())
 
     }
 
@@ -92,7 +173,7 @@ class SaccosInRouteEventListener(
     val listOfSacco = mutableListOf<Sacco>()
 
     override fun onCancelled(p0: DatabaseError) {
-        Log.e("SaccosInRouteEventL", p0.message)
+        Timber.e(p0.toException())
 
     }
 

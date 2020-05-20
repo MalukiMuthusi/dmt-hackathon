@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.databinding.RouteOverviewTemplateBinding
+import timber.log.Timber
 
 class FareChartAdapter(val clicklistener: FareChartListener) :
     ListAdapter<Route, ChartViewHolder>(
@@ -32,6 +33,14 @@ class ChartViewHolder private constructor(
     fun bind(routte: Route, clicklistener: FareChartListener) {
         binding.route = routte
         binding.clicklistener = clicklistener
+        binding.lifecycleOwner?.let {
+            Timber.d("Setting average fare for: %s", routte.name)
+            Repository.getAverageFareOfRoute(
+                it,
+                routte.key,
+                binding.averageFare
+            )
+        }
         binding.executePendingBindings()
     }
 
