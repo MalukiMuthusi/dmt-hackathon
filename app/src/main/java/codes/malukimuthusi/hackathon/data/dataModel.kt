@@ -25,7 +25,13 @@ data class Route(
             "saccos" to saccos
         )
     }
+
+    @Exclude
+    override fun toString(): String {
+        return name ?: super.toString()
+    }
 }
+
 
 @IgnoreExtraProperties
 data class Sacco(

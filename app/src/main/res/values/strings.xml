@@ -1,4 +1,9 @@
 <resources>
+    <string-array name="list_route">
+        <item>
+            Select Road
+        </item>
+    </string-array>
     <string name="app_name">Matt Fare</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -24,4 +29,5 @@
     <string name="fare_for_pick_hours">Fare For Pick Hours</string>
     <string name="add_sacco">Add Sacco</string>
     <string name="fare_low_pick_hours">Fare Low Pick Hours</string>
+    <string name="road_operating_on">Road Operating On:</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import codes.malukimuthusi.hackathon.data.Route
@@ -27,14 +28,14 @@ private const val ARG_PARAM2 = "param2"
  * Use the [NewSaccoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NewSaccoFragment : Fragment() {
+class NewSaccoFragment : Fragment(), AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentNewSaccoBinding
     private lateinit var db: DatabaseReference
-    private lateinit var arrayAdapter: ArrayAdapter<String>
-    private val routeList: MutableList<String> = mutableListOf()
+    private lateinit var arrayAdapter: ArrayAdapter<Route>
+    private val routeList: MutableList<Route> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,9 @@ class NewSaccoFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentNewSaccoBinding.inflate(inflater, container, false)
 
+        binding.spinnerItem.onItemSelectedListener = this
+
+
         // spinner
         db = Firebase.database.reference
         val routes = db.child("Routes")
@@ -63,7 +67,8 @@ class NewSaccoFragment : Fragment() {
                 for (routeSnapshot in p0.children) {
                     val route = routeSnapshot.getValue<Route>()
                     route?.let {
-                        routeList.add(it.name!!)
+                        routeList.add(it)
+                        arrayAdapter.notifyDataSetChanged()
                     }
                 }
             }
@@ -71,7 +76,7 @@ class NewSaccoFragment : Fragment() {
         arrayAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, routeList)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinner.adapter = arrayAdapter
+        binding.spinnerItem.adapter = arrayAdapter
 
 
         return binding.root
@@ -95,5 +100,16 @@ class NewSaccoFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (parent != null) {
+            val item = parent.getItemAtPosition(position) as Route
+
+        }
     }
 }
