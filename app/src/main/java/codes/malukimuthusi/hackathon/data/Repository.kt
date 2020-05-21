@@ -87,7 +87,7 @@ object Repository {
         var filteredMap = mutableListOf<Sacco>()
 
         allSaccos.value?.let {
-            filteredMap = (it.filter { it.key in route.saccos.keys }).values.toMutableList()
+//            filteredMap = (it.filter { it.key in route.saccos.keys }).values.toMutableList()
         }
 
 

@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import codes.malukimuthusi.hackathon.data.Sacco
-import codes.malukimuthusi.hackathon.data.SaccoDetailAdapter
 import codes.malukimuthusi.hackathon.data.SaccoDetailViewHolder
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -41,8 +40,8 @@ class SaccoFareFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            param1 = it?.getString(ARG_PARAM1)
+            param2 = it?.getString(ARG_PARAM2)
         }
     }
 
@@ -51,18 +50,18 @@ class SaccoFareFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentSaccoFareBinding.inflate(inflater)
+        binding = FragmentSaccoFareBinding.inflate(inflater, container, false)
 
         // bundle that contains the passed arguments.
         val args: SaccoFareFragmentArgs by navArgs()
 
         // Autocomplete list adapter.
         val items = listOf("CBD", "Kitengela", "Lang'ata", "Kasarani", "Roysambu")
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
+        val arrayAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        // adapter for the recyclerView
-        val recyclerViewAdapter = SaccoDetailAdapter()
-        binding.recyclerView.adapter = recyclerViewAdapter
+
         binding.lifecycleOwner = this
 
         // retrieve the passed routeID. this routeID is used to retrieve Sacco's that operate

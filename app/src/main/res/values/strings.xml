@@ -20,4 +20,8 @@
     <string name="route_name">%1$s</string>
     <string name="fare_unknown">Unknown</string>
     <string name="average_fare_now">Average Fare Now: %1$d </string>
+    <string name="sacco_name_hint">Sacco Name</string>
+    <string name="fare_for_pick_hours">Fare For Pick Hours</string>
+    <string name="add_sacco">Add Sacco</string>
+    <string name="fare_low_pick_hours">Fare Low Pick Hours</string>
 </resources>
