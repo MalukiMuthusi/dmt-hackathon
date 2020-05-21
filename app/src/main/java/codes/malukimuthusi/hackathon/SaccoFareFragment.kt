@@ -8,12 +8,16 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import codes.malukimuthusi.hackathon.data.Repository
+import codes.malukimuthusi.hackathon.data.Sacco
 import codes.malukimuthusi.hackathon.data.SaccoDetailAdapter
+import codes.malukimuthusi.hackathon.data.SaccoDetailViewHolder
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
-import timber.log.Timber
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +33,8 @@ class SaccoFareFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var db: DatabaseReference
+    private lateinit var binding: FragmentSaccoFareBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +49,7 @@ class SaccoFareFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding = FragmentSaccoFareBinding.inflate(inflater)
+        binding = FragmentSaccoFareBinding.inflate(inflater)
 
         // lazily instantiate the viewModels
         val sharedViewModel by activityViewModels<SharedHomeViewModel>()
@@ -65,17 +71,37 @@ class SaccoFareFragment : Fragment() {
 
         // retrieve the passed routeID. this routeID is used to retrieve Sacco's that operate
         // in that route
-        var routeID: String? = null
         args.routeID?.let {
-            routeID = it
-            Repository.getListOfSacco(it, viewModel.eventListenerForSacco)
+
+
+            db = Firebase.database.reference
+            val keyQuery = db.child("Routes").child(it).child("saccos")
+            val dataRef = db.child("saccos")
+            // firebase
+            val options = FirebaseRecyclerOptions.Builder<Sacco>()
+                .setLifecycleOwner(this)
+                .setIndexedQuery(keyQuery, dataRef, Sacco::class.java)
+                .build()
+
+            val adapter = object : FirebaseRecyclerAdapter<Sacco, SaccoDetailViewHolder>(options) {
+                override fun onCreateViewHolder(
+                    parent: ViewGroup,
+                    viewType: Int
+                ): SaccoDetailViewHolder {
+                    return SaccoDetailViewHolder.from(parent)
+                }
+
+                override fun onBindViewHolder(
+                    holder: SaccoDetailViewHolder,
+                    position: Int,
+                    model: Sacco
+                ) {
+                    return holder.bind(getItem(position))
+                }
+            }
+            binding.recyclerView.adapter = adapter
         }
 
-        // observe list of sacco's and update UI as new elements are added to the list.
-        viewModel.saccoList.observe(viewLifecycleOwner, Observer {
-            recyclerViewAdapter.submitList(it)
-            Timber.d("Sacco's in route: %s are %d", routeID, it.size)
-        })
 
 
         // Update UI with static data.
@@ -83,6 +109,10 @@ class SaccoFareFragment : Fragment() {
             binding.fromString = it?.start ?: "To"
             binding.destinationString = it?.end ?: "From"
         }
+
+
+
+
 
         return binding.root
     }

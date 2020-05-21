@@ -18,4 +18,5 @@ class SaccoFragmentViewModel : ViewModel() {
     // listener for sacco's in a given route.
     val eventListenerForSacco = SaccosInRouteEventListener(_saccoList)
 
+
 }

@@ -6,14 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import codes.malukimuthusi.hackathon.data.FareChartAdapter
+import codes.malukimuthusi.hackathon.data.ChartViewHolder
 import codes.malukimuthusi.hackathon.data.FareChartListener
-import codes.malukimuthusi.hackathon.data.Repository
 import codes.malukimuthusi.hackathon.data.Route
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.SnapshotParser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +38,8 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var signedin: Boolean = false
+    private lateinit var binding: FragmentHomeBinding
+    private lateinit var db: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,14 +54,11 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding = FragmentHomeBinding.inflate(inflater)
+        binding = FragmentHomeBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
 
         val sharedModel by activityViewModels<SharedHomeViewModel>()
-
-        val viewModel by viewModels<HomeFragmentViewModel>()
-        Repository.getRoutes(viewModel.listenerObject)
 
 
         binding.chooseRoute.setOnClickListener {
@@ -62,26 +68,51 @@ class HomeFragment : Fragment() {
             sharedModel.sharedChartData = null
         }
 
-        val adapter = FareChartAdapter(
-            FareChartListener {
-//                sharedModel.sharedChartData = it
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(
-                        it
-                    )
-                )
+        // firebaseUI adapter
+        db = Firebase.database.getReference("Routes")
+        val query = db
 
+        // custom Snapshot parser
+        val snapshotParser = object : SnapshotParser<Route> {
+            override fun parseSnapshot(snapshot: DataSnapshot): Route {
+                val route = snapshot.getValue<Route>()!!
+                route.key = snapshot.key!!
+                return route
             }
-        )
+        }
+
+        // firebase recycler options
+        val options = FirebaseRecyclerOptions.Builder<Route>()
+            .setQuery(query, snapshotParser)
+            .setLifecycleOwner(this)
+            .build()
+
+        // navigate to saccos when a route is clicked
+        val navigateToRoute = FareChartListener {
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(it)
+            )
+        }
+
+
+        // recycler adapter
+        val adapter = object : FirebaseRecyclerAdapter<Route, ChartViewHolder>(options) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChartViewHolder {
+                return ChartViewHolder.from(parent)
+            }
+
+            override fun onError(error: DatabaseError) {
+                super.onError(error)
+                Timber.e(error.toException(), "RecyclerView Error")
+            }
+
+            override fun onBindViewHolder(holder: ChartViewHolder, position: Int, model: Route) {
+                holder.bind(getItem(position), navigateToRoute)
+            }
+
+        }
         binding.recyclerView.adapter = adapter
 
-
-//        adapter.submitList(viewModel.updatedRoutes)
-
-
-        viewModel.updateUI.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it as List<Route>)
-        })
 
         return binding.root
     }

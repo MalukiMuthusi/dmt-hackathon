@@ -21,7 +21,7 @@ class FareChartAdapter(val clicklistener: FareChartListener) :
     }
 
     override fun onBindViewHolder(holder: ChartViewHolder, position: Int) {
-        holder.bind(getItem(position), clicklistener)
+//        holder.bind(getItem(position))
     }
 }
 
@@ -32,9 +32,8 @@ class ChartViewHolder private constructor(
 
     fun bind(routte: Route, clicklistener: FareChartListener) {
         binding.route = routte
-        binding.clicklistener = clicklistener
         Timber.d("Setting average fare for: %s", routte.name)
-
+        binding.clicklistener = clicklistener
         binding.executePendingBindings()
     }
 
