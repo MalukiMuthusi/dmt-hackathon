@@ -5,13 +5,6 @@
 
     <data>
 
-        <variable
-            name="fromString"
-            type="String" />
-
-        <variable
-            name="destinationString"
-            type="String" />
 
     </data>
 
@@ -21,81 +14,28 @@
         android:layout_height="match_parent"
         tools:context=".SaccoFareFragment">
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/from"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toStartOf="@id/to"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <AutoCompleteTextView
-                android:id="@+id/fromTexttt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elegantTextHeight="false"
-                android:text="@{fromString}"
-                tools:text="@string/from" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/to"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+        <TextView
+            android:id="@+id/routeNameText"
+            style="?attr/textAppearanceHeadline5"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/from"
-            app:layout_constraintTop_toTopOf="@id/from">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Route Name" />
 
-            <AutoCompleteTextView
-                android:id="@+id/toText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{destinationString}"
-                tools:text="@string/to" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/saccosCard"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/from">
+            app:layout_constraintTop_toBottomOf="@id/routeNameText"
+            tools:listitem="@layout/sacco_details" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/saccosList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    style="?attr/textAppearanceHeadline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="8dp"
-                    android:text="@string/saccos"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView2"
-                    tools:listitem="@layout/sacco_details" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

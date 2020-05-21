@@ -35,10 +35,12 @@ class SaccoFareFragment : Fragment() {
     private var param2: String? = null
     private lateinit var db: DatabaseReference
     private lateinit var binding: FragmentSaccoFareBinding
+    private val sharedViewModel by activityViewModels<SharedHomeViewModel>()
+    val viewModel by viewModels<SaccoFragmentViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        arguments.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
@@ -51,18 +53,12 @@ class SaccoFareFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentSaccoFareBinding.inflate(inflater)
 
-        // lazily instantiate the viewModels
-        val sharedViewModel by activityViewModels<SharedHomeViewModel>()
-        val viewModel by viewModels<SaccoFragmentViewModel>()
-
         // bundle that contains the passed arguments.
         val args: SaccoFareFragmentArgs by navArgs()
 
         // Autocomplete list adapter.
         val items = listOf("CBD", "Kitengela", "Lang'ata", "Kasarani", "Roysambu")
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
-        binding.fromTexttt.setAdapter(arrayAdapter)
-        binding.toText.setAdapter(arrayAdapter)
 
         // adapter for the recyclerView
         val recyclerViewAdapter = SaccoDetailAdapter()
@@ -72,7 +68,6 @@ class SaccoFareFragment : Fragment() {
         // retrieve the passed routeID. this routeID is used to retrieve Sacco's that operate
         // in that route
         args.routeID?.let {
-
 
             db = Firebase.database.reference
             val keyQuery = db.child("Routes").child(it).child("saccos")
@@ -100,18 +95,8 @@ class SaccoFareFragment : Fragment() {
                 }
             }
             binding.recyclerView.adapter = adapter
+            binding.routeNameText.text = sharedViewModel.sharedChartData.name
         }
-
-
-
-        // Update UI with static data.
-        sharedViewModel.sharedChartData.let {
-            binding.fromString = it?.start ?: "To"
-            binding.destinationString = it?.end ?: "From"
-        }
-
-
-
 
 
         return binding.root

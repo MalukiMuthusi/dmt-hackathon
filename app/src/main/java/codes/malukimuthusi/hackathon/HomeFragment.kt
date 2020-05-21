@@ -40,10 +40,11 @@ class HomeFragment : Fragment() {
     private var signedin: Boolean = false
     private lateinit var binding: FragmentHomeBinding
     private lateinit var db: DatabaseReference
+    private val sharedModel by activityViewModels<SharedHomeViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        arguments.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
@@ -58,14 +59,13 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-        val sharedModel by activityViewModels<SharedHomeViewModel>()
+
 
 
         binding.chooseRoute.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(null)
             )
-            sharedModel.sharedChartData = null
         }
 
         // firebaseUI adapter
@@ -90,10 +90,10 @@ class HomeFragment : Fragment() {
         // navigate to saccos when a route is clicked
         val navigateToRoute = FareChartListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(it)
+                HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(it.key)
             )
+            sharedModel.sharedChartData = it
         }
-
 
         // recycler adapter
         val adapter = object : FirebaseRecyclerAdapter<Route, ChartViewHolder>(options) {

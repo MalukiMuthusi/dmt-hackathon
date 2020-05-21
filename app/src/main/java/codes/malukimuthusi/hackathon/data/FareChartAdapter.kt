@@ -59,7 +59,7 @@ object DIFFCALLBACK : DiffUtil.ItemCallback<Route>() {
 
 }
 
-class FareChartListener(val clicklistener: (routeId: String) -> Unit) {
-    fun onClick(route: Route) = clicklistener(route.key)
+class FareChartListener(val clicklistener: (route: Route) -> Unit) {
+    fun onClick(route: Route) = clicklistener(route)
 }
 
