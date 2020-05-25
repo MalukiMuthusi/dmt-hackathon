@@ -18,7 +18,7 @@ fun startAdapter(text: TextView, start: String?) {
 fun currentFare(text: TextView, sacco: Sacco) {
     try {
         val fare = Repository.getCurrentFareFromSacco(sacco)
-        text.text = fare.toString()
+        text.text = text.context.getString(R.string.current_fare, fare)
     } catch (e: Exception) {
         text.text = text.context.getString(R.string.fare_unknown)
     }

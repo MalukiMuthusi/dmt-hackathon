@@ -121,47 +121,46 @@ object Repository {
         val hourAndMinutes = hourOfDay * 60 + minutes
 
         val returnedFare = when (hourAndMinutes) {
-            in 300..360 -> sacco.fare?.fiveToSix
+            in 300..360 -> sacco.fare?.five_six
                 ?: throw Exception("Fare Not set for this period!!")
-            in 360..420 -> sacco.fare?.sixToSeven
+            in 360..420 -> sacco.fare?.six_seven
                 ?: throw Exception("Fare Not set for this period!!")
-            in 420..480 -> sacco.fare?.sevenToEight
+            in 420..480 -> sacco.fare?.seven_eight
                 ?: throw Exception("Fare Not set for this period!!")
-            in 480..540 -> sacco.fare?.eightToNine
+            in 480..540 -> sacco.fare?.eight_nine
                 ?: throw Exception("Fare Not set for this period!!")
-            in 540..600 -> sacco.fare?.nineToTen
+            in 540..600 -> sacco.fare?.nine_ten
                 ?: throw Exception("Fare Not set for this period!!")
-            in 600..660 -> sacco.fare?.tenToEleven
+            in 600..660 -> sacco.fare?.ten_eleven
                 ?: throw Exception("Fare Not set for this period!!")
-            in 660..720 -> sacco.fare?.elevenToTwelve
+            in 660..720 -> sacco.fare?.eleven_twelve
                 ?: throw Exception("Fare Not set for this period!!")
-            in 720..780 -> sacco.fare?.twelveToThirteen
+            in 720..780 -> sacco.fare?.twelve_thirteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 780..840 -> sacco.fare?.thirteenToFourteen
+            in 780..840 -> sacco.fare?.thirteen_fourteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 840..900 -> sacco.fare?.fourteenToFiveteen
+            in 840..900 -> sacco.fare?.fourteen_fiveteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 900..960 -> sacco.fare?.fiveteenToSixteen
+            in 900..960 -> sacco.fare?.fiveteen_sixteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 960..1020 -> sacco.fare?.sixteenToSeventeen
+            in 960..1020 -> sacco.fare?.sixteen_seventeen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1020..1080 -> sacco.fare?.seventeenToEighteen
+            in 1020..1080 -> sacco.fare?.seventeen_eighteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1080..1140 -> sacco.fare?.eighteenToNineteen
+            in 1080..1140 -> sacco.fare?.eighteen_nineteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1140..1200 -> sacco.fare?.nineteenToTwenty
+            in 1140..1200 -> sacco.fare?.nineteen_twenty
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1200..1260 -> sacco.fare?.twentyTotwentyone
+            in 1200..1260 -> sacco.fare?.twenty_twentyOne
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1260..1320 -> sacco.fare?.twentyoneToTwentytwo
+            in 1260..1320 -> sacco.fare?.twentyone_twentytwo
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1320..1380 -> sacco.fare?.twentytwoToTwentythree
+            in 1320..1380 -> sacco.fare?.twentytwo_twentythree
                 ?: throw Exception("Fare Not set for this period!!")
             else -> 0
         }
         Timber.d(" Fare For: %s : is %d", sacco.name, returnedFare)
         return returnedFare
-
     }
 
 }

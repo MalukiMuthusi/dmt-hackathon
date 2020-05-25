@@ -7,27 +7,43 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout3"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorParentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".NewSaccoFragment">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+
         <ScrollView
+            android:id="@+id/mainScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/scrollContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
+
 
                 <TextView
                     android:id="@+id/RoadNameText"
@@ -36,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginBottom="0dp"
+                    android:layout_marginEnd="16dp"
                     android:padding="@dimen/pad_8dp"
                     android:paddingStart="@dimen/pad_8dp"
                     android:paddingEnd="@dimen/pad_8dp"
@@ -58,7 +74,7 @@
                     app:layout_constraintTop_toBottomOf="@id/RoadNameText" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textView4"
+                    android:id="@+id/saccoName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -92,7 +108,7 @@
                     app:hintEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4">
+                    app:layout_constraintTop_toBottomOf="@+id/saccoName">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -120,9 +136,109 @@
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <TextView
+                    android:id="@+id/textView5"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/select_high_pick_hours"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/fareLowPickHours"
+                    tools:text="@string/select_high_pick_hours" />
+
+                <CheckBox
+                    android:id="@+id/fiveToSeven"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_5_7"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                <CheckBox
+                    android:id="@+id/sevenToNine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_7_9"
+                    app:layout_constraintBottom_toBottomOf="@+id/fiveToSeven"
+                    app:layout_constraintStart_toEndOf="@+id/fiveToSeven"
+                    app:layout_constraintTop_toTopOf="@+id/fiveToSeven" />
+
+                <CheckBox
+                    android:id="@+id/nineTo11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_9_11"
+                    app:layout_constraintBottom_toBottomOf="@+id/sevenToNine"
+                    app:layout_constraintStart_toEndOf="@+id/sevenToNine"
+                    app:layout_constraintTop_toTopOf="@+id/sevenToNine" />
+
+                <CheckBox
+                    android:id="@+id/elevenTo2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_11_2"
+                    app:layout_constraintBottom_toBottomOf="@+id/nineTo11"
+                    app:layout_constraintStart_toEndOf="@+id/nineTo11"
+                    app:layout_constraintTop_toTopOf="@+id/nineTo11" />
+
+                <CheckBox
+                    android:id="@+id/twoTo4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_2_4"
+                    app:layout_constraintStart_toStartOf="@+id/fiveToSeven"
+                    app:layout_constraintTop_toBottomOf="@+id/fiveToSeven" />
+
+                <CheckBox
+                    android:id="@+id/fourToSix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_4_6"
+                    app:layout_constraintBottom_toBottomOf="@+id/twoTo4"
+                    app:layout_constraintStart_toEndOf="@+id/twoTo4"
+                    app:layout_constraintTop_toTopOf="@+id/twoTo4" />
+
+                <CheckBox
+                    android:id="@+id/sixTo9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_6_9_pm"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/fourToSix"
+                    app:layout_constraintTop_toTopOf="@+id/fourToSix" />
+
+                <CheckBox
+                    android:id="@+id/nine12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="onCheckboxClicked"
+                    android:text="@string/_9_11_pm"
+                    app:layout_constraintBottom_toBottomOf="@+id/sixTo9"
+                    app:layout_constraintStart_toEndOf="@+id/sixTo9"
+                    app:layout_constraintTop_toTopOf="@+id/sixTo9" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

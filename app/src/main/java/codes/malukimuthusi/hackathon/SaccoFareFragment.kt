@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,9 +13,11 @@ import codes.malukimuthusi.hackathon.data.SaccoDetailViewHolder
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,10 +57,6 @@ class SaccoFareFragment : Fragment() {
         val args: SaccoFareFragmentArgs by navArgs()
 
         // Autocomplete list adapter.
-        val items = listOf("CBD", "Kitengela", "Lang'ata", "Kasarani", "Roysambu")
-        val arrayAdapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
 
         binding.lifecycleOwner = this
@@ -83,6 +80,11 @@ class SaccoFareFragment : Fragment() {
                     viewType: Int
                 ): SaccoDetailViewHolder {
                     return SaccoDetailViewHolder.from(parent)
+                }
+
+                override fun onError(error: DatabaseError) {
+                    super.onError(error)
+                    Timber.e(error.toException(), "Recycler viewError")
                 }
 
                 override fun onBindViewHolder(

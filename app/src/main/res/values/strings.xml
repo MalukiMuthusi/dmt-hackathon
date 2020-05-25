@@ -23,11 +23,26 @@
     <string name="start_station">Start Station: %1$s</string>
     <string name="end_station">End Station: %1$s</string>
     <string name="route_name">%1$s</string>
-    <string name="fare_unknown">Unknown</string>
+    <string name="fare_unknown">Current Fare is Unknown</string>
     <string name="average_fare_now">Average Fare Now: %1$d </string>
     <string name="sacco_name_hint">Sacco Name</string>
     <string name="fare_for_pick_hours">Fare For Pick Hours</string>
     <string name="add_sacco">Add Sacco</string>
     <string name="fare_low_pick_hours">Fare Low Pick Hours</string>
     <string name="road_operating_on">Road Operating On:</string>
+    <string name="select_high_pick_hours">Select High Pick Hours</string>
+    <string name="checkbox">CheckBox</string>
+    <string name="_5_7">5–7 AM</string>
+    <string name="_7_9">7–9 AM</string>
+    <string name="_9_11">9–11 AM</string>
+    <string name="_11_2">11–2 PM</string>
+    <string name="_2_4">2–4 PM</string>
+    <string name="_4_6">4–6 PM</string>
+    <string name="_6_9_pm">6–9 PM</string>
+    <string name="_9_11_pm">9–11 PM</string>
+    <string name="select_route">Select Route that the Sacco Operates On</string>
+    <string name="current_fare">Current Fare is %1$d KSH</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="open_maps">open maps</string>
+    <string name="rational_location">Allow app to access Location to offer best service.</string>
 </resources>

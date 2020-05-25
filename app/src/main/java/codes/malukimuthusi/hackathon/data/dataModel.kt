@@ -43,7 +43,7 @@ data class Sacco(
     @Exclude
     fun toMap(): Map<String, Any?> {
         return mapOf(
-            "sacco_name" to name,
+            "name" to name,
             "fare" to fare?.toMap(),
             "Routes" to routes
         )
@@ -84,48 +84,56 @@ fun List<Matatu>.ttoMap(): List<Map<String, Any>> {
 
 @IgnoreExtraProperties
 data class Fare(
-    @PropertyName("four_five") var fourToFive: Int? = 0,
-    @PropertyName("five_six") var fiveToSix: Int? = 0,
-    @PropertyName("six_seven") var sixToSeven: Int? = 0,
-    @PropertyName("seven_eight") var sevenToEight: Int? = 0,
-    @PropertyName("eight_nine") var eightToNine: Int? = 0,
-    @PropertyName("nine_ten") var nineToTen: Int? = 0,
-    @PropertyName("ten_eleven") var tenToEleven: Int? = 0,
-    @PropertyName("eleven_twelve") var elevenToTwelve: Int? = 0,
-    @PropertyName("twelve_thirteen") var twelveToThirteen: Int? = 0,
-    @PropertyName("thirteen_fourteen") var thirteenToFourteen: Int? = 0,
-    @PropertyName("fourteen_fiveteen") var fourteenToFiveteen: Int? = 0,
-    @PropertyName("fiveteen_sixteen") var fiveteenToSixteen: Int? = 0,
-    @PropertyName("sixteen_seventeen") var sixteenToSeventeen: Int? = 0,
-    @PropertyName("seventeen_eighteen") var seventeenToEighteen: Int? = 0,
-    @PropertyName("eighteen_nineteen") var eighteenToNineteen: Int? = 0,
-    @PropertyName("nineteen_twenty") var nineteenToTwenty: Int? = 0,
-    @PropertyName("twenty_twentyOne") var twentyTotwentyone: Int? = 0,
-    @PropertyName("twentyone_twentytwo") var twentyoneToTwentytwo: Int? = 0,
-    @PropertyName("twentytwo_twentythree") var twentytwoToTwentythree: Int? = 0
+    var four_five: Int? = 0,
+    var five_six: Int? = 0,
+    var six_seven: Int? = 0,
+    var seven_eight: Int? = 0,
+    var eight_nine: Int? = 0,
+    var nine_ten: Int? = 0,
+    var ten_eleven: Int? = 0,
+    var eleven_twelve: Int? = 0,
+    var twelve_thirteen: Int? = 0,
+    var thirteen_fourteen: Int? = 0,
+    var fourteen_fiveteen: Int? = 0,
+    var fiveteen_sixteen: Int? = 0,
+    var sixteen_seventeen: Int? = 0,
+    var seventeen_eighteen: Int? = 0,
+    var eighteen_nineteen: Int? = 0,
+    var nineteen_twenty: Int? = 0,
+    var twenty_twentyOne: Int? = 0,
+    var twentyone_twentytwo: Int? = 0,
+    var twentytwo_twentythree: Int? = 0
 ) {
     @Exclude
     fun toMap(): Map<String, Any?> {
         return mapOf(
-            "four_five" to fourToFive,
-            "five_six" to fiveToSix,
-            "seven_Eight" to sevenToEight,
-            "eight_nine" to eightToNine,
-            "nine_ten" to nineToTen,
-            "ten_eleven" to tenToEleven,
-            "eleven_twelve" to elevenToTwelve,
-            "twelve_thirteen" to twelveToThirteen,
-            "thirteen_fourteen" to thirteenToFourteen,
-            "fourteen_fiveteen" to fourteenToFiveteen,
-            "fiveteen_sixteen" to fiveteenToSixteen,
-            "sixteen_seventeen" to sixteenToSeventeen,
-            "seventeen_eighteen" to seventeenToEighteen,
-            "eighteen_nineteen" to eighteenToNineteen,
-            "nineteen_twenty" to nineteenToTwenty,
-            "twenty_twentyOne" to twentyTotwentyone,
-            "twentyone_twentytwo" to twentyoneToTwentytwo,
-            "twentytwo_twentythree" to twentytwoToTwentythree
+            "four_five" to four_five,
+            "five_six" to five_six,
+            "seven_Eight" to seven_eight,
+            "eight_nine" to eight_nine,
+            "nine_ten" to nine_ten,
+            "ten_eleven" to ten_eleven,
+            "eleven_twelve" to eleven_twelve,
+            "twelve_thirteen" to twelve_thirteen,
+            "thirteen_fourteen" to thirteen_fourteen,
+            "fourteen_fiveteen" to fourteen_fiveteen,
+            "fiveteen_sixteen" to fiveteen_sixteen,
+            "sixteen_seventeen" to sixteen_seventeen,
+            "seventeen_eighteen" to seventeen_eighteen,
+            "eighteen_nineteen" to eighteen_nineteen,
+            "nineteen_twenty" to nineteen_twenty,
+            "twenty_twentyOne" to twenty_twentyOne,
+            "twentyone_twentytwo" to twentyone_twentytwo,
+            "twentytwo_twentythree" to twentytwo_twentythree
         )
+    }
+
+    companion object {
+        fun createFareWithSingleValue(vG: Int): Fare {
+            return Fare(
+                vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG, vG
+            )
+        }
     }
 
 }

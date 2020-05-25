@@ -2,11 +2,11 @@ package codes.malukimuthusi.hackathon
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import codes.malukimuthusi.hackathon.databinding.ActivityMainBinding
 import com.firebase.ui.auth.AuthUI
+import timber.log.Timber
 
 private const val SIGNED_IN = "signedin"
 private const val RC_SIGN_IN = 100
@@ -22,23 +22,30 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.navigation.setNavigationItemSelectedListener {
-            if (it.itemId == R.id.addSacco) {
-                navigateToAddSaccoActivity()
-                return@setNavigationItemSelectedListener true
+            when (it.itemId) {
+                R.id.openMaps -> {
+                    navigateToMapsActivity()
+                    true
+                }
+                R.id.addSacco -> {
+                    navigateToAddSaccoActivity()
+                    true
+                }
+                else -> false
             }
-            return@setNavigationItemSelectedListener false
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.addSacco) {
-            navigateToAddSaccoActivity()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+
+    // navigate to mapa activity
+    private fun navigateToMapsActivity() {
+        val intent = Intent(this, MapsActivity::class.java)
+        startActivity(intent)
     }
 
+    // navigate to activity for adding a new sacco entry.
     private fun navigateToAddSaccoActivity() {
+        Timber.d("Function to open maps activity called")
         val intent = Intent(this, NewSacco::class.java)
         startActivity(intent)
     }

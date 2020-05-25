@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_add_black_24dp"
         android:title="@string/add_sacco"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/openMaps"
+        android:icon="@drawable/ic_navigation_black_24dp"
+        android:title="@string/open_maps"
+        app:showAsAction="ifRoom" />
 </menu>
