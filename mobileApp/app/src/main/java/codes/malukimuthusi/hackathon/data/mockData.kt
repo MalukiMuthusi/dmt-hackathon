@@ -47,9 +47,7 @@ package codes.malukimuthusi.hackathon.data
 data class SaccoDetails(
     val name: String = "REMBO",
     val fare: Int = 50
-) {
-
-}
+)
 
 val saccosList = listOf<SaccoDetails>(
     SaccoDetails(), SaccoDetails("UWAZO SACCO", 60),
