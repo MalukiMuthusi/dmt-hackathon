@@ -1,0 +1,5 @@
+command
+osmconvert oregon-latest.osm.pbf -b=36.4966,-1.5864,37.3762,-0.7942 --complete-ways -o=portland.pbf
+
+
+url: https://boundingbox.klokantech.com/
