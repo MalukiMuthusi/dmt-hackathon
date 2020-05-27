@@ -1,6 +1,5 @@
 package codes.malukimuthusi.hackathon.webService
 
-import codes.malukimuthusi.hackathon.dataModel.Route
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit

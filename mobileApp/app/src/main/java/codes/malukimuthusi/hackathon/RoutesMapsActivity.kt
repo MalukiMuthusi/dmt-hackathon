@@ -7,11 +7,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import codes.malukimuthusi.hackathon.adapters.AllRoutesAdapter
 import codes.malukimuthusi.hackathon.databinding.ActivityRoutesMapsBinding
-import codes.malukimuthusi.hackathon.repository.Repository
 import codes.malukimuthusi.hackathon.viewModels.RouteMapsViewModel
+import codes.malukimuthusi.hackathon.webService.Route
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -34,6 +33,7 @@ class RoutesMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private var lastKnownLocation: Location? = null
     private val viewModel by viewModels<RouteMapsViewModel>()
     private lateinit var binding: ActivityRoutesMapsBinding
+    private var allRoutes: List<Route>? = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,15 +47,16 @@ class RoutesMapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
         val adapter = AllRoutesAdapter()
 
+        viewModel.fetchAllRoutes()
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.routesLive.value = Repository.allRoutes()
-        }
+
+
         binding.recyclerView.adapter = adapter
 
-        viewModel.routesLive.observe(this, Observer {
+        viewModel.routesLiveData.observe(this, Observer {
             adapter.submitList(it)
         })
+        adapter.submitList(allRoutes)
     }
 
     /**

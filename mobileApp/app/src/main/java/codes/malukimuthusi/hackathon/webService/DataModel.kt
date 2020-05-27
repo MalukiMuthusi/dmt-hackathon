@@ -13,7 +13,7 @@ data class Stop(
 data class Route(
     val id: String? = "",
     val agency: Agency? = Agency(),
-    val shortname: String? = "",
+    val shortName: String? = "",
     val longName: String? = "",
     val type: Int? = 3,
     val routeBikesAllowed: Int? = 0,

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="route"
-            type="codes.malukimuthusi.hackathon.dataModel.Route" />
+            type="codes.malukimuthusi.hackathon.webService.Route" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,9 +17,6 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:padding="@dimen/pad_8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,28 +31,31 @@
                     style="@style/TextAppearance.MaterialComponents.Headline4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="48A"
+                    android:text="@{route.shortName}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="45K" />
 
                 <TextView
                     android:id="@+id/start"
                     style="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:text="start"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/routeName" />
 
                 <TextView
                     android:id="@+id/fare"
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    style="@style/TextAppearance.MaterialComponents.Headline4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="208dp"
                     android:layout_marginTop="20dp"
                     android:text="50KSH"
                     app:layout_constraintBottom_toBottomOf="@id/desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/routeName"
                     app:layout_constraintTop_toTopOf="@+id/routeName" />
 
