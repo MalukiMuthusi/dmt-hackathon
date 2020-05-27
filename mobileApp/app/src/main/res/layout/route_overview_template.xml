@@ -7,11 +7,11 @@
 
         <variable
             name="route"
-            type="codes.malukimuthusi.hackathon.data.Route" />
+            type="codes.malukimuthusi.hackathon.dataModel.Route" />
 
         <variable
             name="clicklistener"
-            type="codes.malukimuthusi.hackathon.data.FareChartListener" />
+            type="codes.malukimuthusi.hackathon.adapters.FareChartListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,9 +1,10 @@
 package codes.malukimuthusi.hackathon.viewModels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import codes.malukimuthusi.hackathon.dataModel.Route
 
-class SharedHomeViewModel : ViewModel() {
-    lateinit var sharedChartData: Route
+class RouteMapsViewModel : ViewModel() {
 
+    var routesLive = MutableLiveData<List<Route>?>()
 }

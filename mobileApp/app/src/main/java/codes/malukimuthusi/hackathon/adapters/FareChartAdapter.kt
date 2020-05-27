@@ -1,10 +1,11 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import codes.malukimuthusi.hackathon.dataModel.Route
 import codes.malukimuthusi.hackathon.databinding.RouteOverviewTemplateBinding
 import timber.log.Timber
 

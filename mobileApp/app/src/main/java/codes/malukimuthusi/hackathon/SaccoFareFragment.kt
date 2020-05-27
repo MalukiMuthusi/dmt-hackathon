@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import codes.malukimuthusi.hackathon.data.Sacco
-import codes.malukimuthusi.hackathon.data.SaccoDetailViewHolder
+import codes.malukimuthusi.hackathon.adapters.SaccoDetailViewHolder
+import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
 import codes.malukimuthusi.hackathon.viewModels.SaccoFragmentViewModel
 import codes.malukimuthusi.hackathon.viewModels.SharedHomeViewModel

@@ -3,8 +3,8 @@ package codes.malukimuthusi.hackathon.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import codes.malukimuthusi.hackathon.data.Sacco
-import codes.malukimuthusi.hackathon.data.SaccosInRouteEventListener
+import codes.malukimuthusi.hackathon.dataModel.Sacco
+import codes.malukimuthusi.hackathon.repository.SaccosInRouteEventListener
 
 class SaccoFragmentViewModel : ViewModel() {
 
@@ -16,6 +16,9 @@ class SaccoFragmentViewModel : ViewModel() {
         get() = _saccoList
 
     // listener for sacco's in a given route.
-    val eventListenerForSacco = SaccosInRouteEventListener(_saccoList)
+    val eventListenerForSacco =
+        SaccosInRouteEventListener(
+            _saccoList
+        )
 
 }

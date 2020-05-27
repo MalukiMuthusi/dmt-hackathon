@@ -1,6 +1,7 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.repository
 
 import androidx.lifecycle.MutableLiveData
+import codes.malukimuthusi.hackathon.dataModel.Route
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

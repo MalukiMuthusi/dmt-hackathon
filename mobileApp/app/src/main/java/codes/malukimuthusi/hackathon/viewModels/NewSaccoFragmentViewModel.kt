@@ -1,8 +1,8 @@
 package codes.malukimuthusi.hackathon.viewModels
 
 import androidx.lifecycle.ViewModel
-import codes.malukimuthusi.hackathon.data.Route
-import codes.malukimuthusi.hackathon.data.Sacco
+import codes.malukimuthusi.hackathon.dataModel.Route
+import codes.malukimuthusi.hackathon.dataModel.Sacco
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber

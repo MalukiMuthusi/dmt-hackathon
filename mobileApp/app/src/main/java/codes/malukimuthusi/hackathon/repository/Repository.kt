@@ -1,6 +1,8 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.repository
 
 import androidx.lifecycle.MutableLiveData
+import codes.malukimuthusi.hackathon.dataModel.Route
+import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.webService.OpenTripPlannerService
 import codes.malukimuthusi.hackathon.webService.Stop
 import com.google.firebase.database.ChildEventListener
@@ -41,7 +43,10 @@ object Repository {
     // get sacco's in the database
     fun getSaccos(saccoList: MutableLiveData<MutableMap<String, Sacco>>) {
         val saccosPath = dbRef.child("saccos")
-        val valueEventListener = FetchSaccosEventListener(saccoList)
+        val valueEventListener =
+            FetchSaccosEventListener(
+                saccoList
+            )
         saccosPath.addValueEventListener(valueEventListener)
     }
 
@@ -104,7 +109,10 @@ object Repository {
 
         filteredMap.forEach {
             try {
-                val fare = getCurrentFareFromSacco(it)
+                val fare =
+                    getCurrentFareFromSacco(
+                        it
+                    )
                 Timber.d("Fare for sacco: %s is %d", it.name, fare)
                 faresOfSacco.add(fare)
             } catch (e: Exception) {
@@ -214,7 +222,7 @@ object Repository {
     suspend fun getStop(stopID: String): Stop = otpService.givenStop(stopID)
 
     // get all the routes
-    suspend fun allRoutes() {}
+    suspend fun allRoutes() = otpService.getAllRoutes()
 }
 
 // fetch a single sacco item from the database

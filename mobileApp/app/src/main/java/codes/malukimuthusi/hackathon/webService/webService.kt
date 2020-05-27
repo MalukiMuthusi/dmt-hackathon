@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.webService
 
+import codes.malukimuthusi.hackathon.dataModel.Route
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -7,6 +8,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+
 
 const val BASE_URL = "http://localhost:8080/otp/routers/default/index/"
 val moshi = Moshi.Builder()
@@ -28,7 +30,8 @@ interface OpenTripPlanner {
     ): Stop
 
     // get all the routes
-    suspend fun getAllRoutes()
+    @GET("routes")
+    suspend fun getAllRoutes(): List<Route>?
 
     // get a specific Route
     @GET("routes/{routeId}")

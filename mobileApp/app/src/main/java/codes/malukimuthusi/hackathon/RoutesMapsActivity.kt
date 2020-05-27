@@ -6,10 +6,12 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import codes.malukimuthusi.hackathon.databinding.ActivityMapsBinding
+import codes.malukimuthusi.hackathon.adapters.AllRoutesAdapter
+import codes.malukimuthusi.hackathon.databinding.ActivityRoutesMapsBinding
 import codes.malukimuthusi.hackathon.repository.Repository
-import codes.malukimuthusi.hackathon.viewModels.MapsActivityViewModel
+import codes.malukimuthusi.hackathon.viewModels.RouteMapsViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -18,31 +20,24 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 
-const val RC_FINELOCATIONPERMS = 34
-
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.PermissionCallbacks,
+class RoutesMapsActivity : AppCompatActivity(), OnMapReadyCallback,
+    EasyPermissions.PermissionCallbacks,
     EasyPermissions.RationaleCallbacks {
-
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationProvider: FusedLocationProviderClient
-    private var locationGranted = false
     private var lastKnownLocation: Location? = null
-
-    private lateinit var binding: ActivityMapsBinding
-    private val viewModel by viewModels<MapsActivityViewModel>()
-
+    private val viewModel by viewModels<RouteMapsViewModel>()
+    private lateinit var binding: ActivityRoutesMapsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
-
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_routes_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -50,20 +45,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
 
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
 
-        binding.selectLoaction.setOnClickListener {
-            val selected = map.cameraPosition.target
-            lifecycleScope.launch {
-                val x = Repository.nearByStopPoints(selected.latitude, selected.longitude)
-                if (x.isNullOrEmpty()) {
-                    Timber.e("No nearer stop")
-                } else {
-                    x.forEach {
-                        Timber.d(it.name)
-                    }
-                }
-            }
-        }
+        val adapter = AllRoutesAdapter()
 
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.routesLive.value = Repository.allRoutes()
+        }
+        binding.recyclerView.adapter = adapter
+
+        viewModel.routesLive.observe(this, Observer {
+            adapter.submitList(it)
+        })
     }
 
     /**
@@ -78,7 +70,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // set marker to the current location
+        // Add a marker in Sydney and move the camera
         getLocation()
 
         // set style
@@ -87,7 +79,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
         )
     }
 
-
     @AfterPermissionGranted(RC_FINELOCATIONPERMS)
     private fun getLocation() {
         if (haslocationpermission()) {
@@ -95,7 +86,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
             locationResult.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     lastKnownLocation = task.result
-                    Timber.e(lastKnownLocation.toString())
                     val newPlace = lastKnownLocation?.latitude?.let {
                         lastKnownLocation?.longitude?.let { it1 ->
                             LatLng(

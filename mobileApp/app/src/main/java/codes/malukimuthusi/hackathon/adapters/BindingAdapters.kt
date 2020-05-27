@@ -1,8 +1,10 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.adapters
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import codes.malukimuthusi.hackathon.R
+import codes.malukimuthusi.hackathon.dataModel.Sacco
+import codes.malukimuthusi.hackathon.repository.Repository
 
 @BindingAdapter("fare_value")
 fun fareAdapterr(text: TextView, fareAmout: Int?) {

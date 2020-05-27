@@ -7,7 +7,7 @@
 
         <variable
             name="sacco"
-            type="codes.malukimuthusi.hackathon.data.Sacco" />
+            type="codes.malukimuthusi.hackathon.dataModel.Sacco" />
 
     </data>
 

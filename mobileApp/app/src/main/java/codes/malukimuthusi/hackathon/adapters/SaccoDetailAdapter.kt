@@ -1,16 +1,21 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.databinding.SaccoDetailsBinding
 
 
-class SaccoDetailAdapter : ListAdapter<Sacco, SaccoDetailViewHolder>(Diif) {
+class SaccoDetailAdapter : ListAdapter<Sacco, SaccoDetailViewHolder>(
+    Diif
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaccoDetailViewHolder {
-        return SaccoDetailViewHolder.from(parent)
+        return SaccoDetailViewHolder.from(
+            parent
+        )
     }
 
     override fun onBindViewHolder(holder: SaccoDetailViewHolder, position: Int) {
@@ -28,7 +33,9 @@ class SaccoDetailViewHolder private constructor(val binding: SaccoDetailsBinding
         fun from(parent: ViewGroup): SaccoDetailViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = SaccoDetailsBinding.inflate(layoutInflater, parent, false)
-            return SaccoDetailViewHolder(binding)
+            return SaccoDetailViewHolder(
+                binding
+            )
         }
     }
 

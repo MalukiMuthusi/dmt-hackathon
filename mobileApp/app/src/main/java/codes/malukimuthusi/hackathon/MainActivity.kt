@@ -31,9 +31,18 @@ class MainActivity : AppCompatActivity() {
                     navigateToAddSaccoActivity()
                     true
                 }
+                R.id.routes -> {
+                    navigateToAllRoutes()
+                    true
+                }
                 else -> false
             }
         }
+    }
+
+    private fun navigateToAllRoutes() {
+        val intent = Intent(this, RoutesMapsActivity::class.java)
+        startActivity(intent)
     }
 
 

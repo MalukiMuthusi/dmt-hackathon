@@ -1,4 +1,4 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.repository
 
 //class SaccoListener : ValueEventListener {
 //    override fun onCancelled(p0: DatabaseError) {

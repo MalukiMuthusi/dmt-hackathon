@@ -1,4 +1,4 @@
-package codes.malukimuthusi.hackathon.data
+package codes.malukimuthusi.hackathon.dataModel
 
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties

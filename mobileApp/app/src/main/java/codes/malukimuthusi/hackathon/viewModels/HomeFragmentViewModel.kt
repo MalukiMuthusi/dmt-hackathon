@@ -3,8 +3,8 @@ package codes.malukimuthusi.hackathon.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import codes.malukimuthusi.hackathon.data.Route
-import codes.malukimuthusi.hackathon.data.RouteListener
+import codes.malukimuthusi.hackathon.dataModel.Route
+import codes.malukimuthusi.hackathon.repository.RouteListener
 
 class HomeFragmentViewModel : ViewModel() {
 
@@ -15,7 +15,10 @@ class HomeFragmentViewModel : ViewModel() {
         get() = _updateUI
 
     val listenerObject =
-        RouteListener(_updateUI, allRoutes)
+        RouteListener(
+            _updateUI,
+            allRoutes
+        )
 
 
 }

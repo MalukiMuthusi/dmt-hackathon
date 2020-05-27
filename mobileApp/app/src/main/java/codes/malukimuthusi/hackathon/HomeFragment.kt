@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import codes.malukimuthusi.hackathon.data.ChartViewHolder
-import codes.malukimuthusi.hackathon.data.FareChartListener
-import codes.malukimuthusi.hackathon.data.Route
+import codes.malukimuthusi.hackathon.adapters.ChartViewHolder
+import codes.malukimuthusi.hackathon.adapters.FareChartListener
+import codes.malukimuthusi.hackathon.dataModel.Route
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
 import codes.malukimuthusi.hackathon.viewModels.SharedHomeViewModel
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -89,12 +89,13 @@ class HomeFragment : Fragment() {
             .build()
 
         // navigate to saccos when a route is clicked
-        val navigateToRoute = FareChartListener {
-            findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(it.key)
-            )
-            sharedModel.sharedChartData = it
-        }
+        val navigateToRoute =
+            FareChartListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToSaccoFareFragment(it.key)
+                )
+                sharedModel.sharedChartData = it
+            }
 
         // recycler adapter
         val adapter = object : FirebaseRecyclerAdapter<Route, ChartViewHolder>(options) {

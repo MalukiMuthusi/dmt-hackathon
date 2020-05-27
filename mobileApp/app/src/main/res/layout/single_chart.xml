@@ -7,11 +7,11 @@
 
         <variable
             name="clicklistener"
-            type="codes.malukimuthusi.hackathon.data.FareChartListener" />
+            type="codes.malukimuthusi.hackathon.adapters.FareChartListener" />
 
         <variable
             name="routee"
-            type="codes.malukimuthusi.hackathon.data.Route" />
+            type="codes.malukimuthusi.hackathon.dataModel.Route" />
 
     </data>
 
