@@ -1,4 +1,4 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.viewModels
 
 import androidx.lifecycle.ViewModel
 import codes.malukimuthusi.hackathon.data.Route

@@ -8,12 +8,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import codes.malukimuthusi.hackathon.NewSaccoFragmentViewModel.Companion.pickHoursList
 import codes.malukimuthusi.hackathon.data.Fare
 import codes.malukimuthusi.hackathon.data.Fare.Companion.createFareWithSingleValue
 import codes.malukimuthusi.hackathon.data.Route
 import codes.malukimuthusi.hackathon.data.Sacco
 import codes.malukimuthusi.hackathon.databinding.FragmentNewSaccoBinding
+import codes.malukimuthusi.hackathon.viewModels.NewSaccoFragmentViewModel
+import codes.malukimuthusi.hackathon.viewModels.NewSaccoFragmentViewModel.Companion.pickHoursList
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

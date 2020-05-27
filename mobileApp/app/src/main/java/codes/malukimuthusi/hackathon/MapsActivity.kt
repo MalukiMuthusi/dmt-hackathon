@@ -3,7 +3,13 @@ package codes.malukimuthusi.hackathon
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import codes.malukimuthusi.hackathon.data.Repository
+import codes.malukimuthusi.hackathon.databinding.ActivityMapsBinding
+import codes.malukimuthusi.hackathon.viewModels.MapsActivityViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -11,7 +17,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.MapStyleOptions
+import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -28,15 +35,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
     private var locationGranted = false
     private var lastKnownLocation: Location? = null
 
+    private lateinit var binding: ActivityMapsBinding
+    private val viewModel by viewModels<MapsActivityViewModel>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+
+        binding.selectLoaction.setOnClickListener {
+            val selected = map.cameraPosition.target
+            lifecycleScope.launch {
+                val x = Repository.nearByStopPoints(selected.latitude, selected.longitude)
+                if (x.isNullOrEmpty()) {
+                    Timber.e("No nearer stop")
+                } else {
+                    x.forEach {
+                        Timber.d(it.name)
+                    }
+                }
+            }
+        }
 
     }
 
@@ -52,15 +78,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val nairobi = LatLng(-1.17384195328, 36.7587786913)
-        map.addMarker(MarkerOptions().position(nairobi).title("Nairobi"))
-        map.moveCamera(CameraUpdateFactory.newLatLng(nairobi))
-
         // set marker to the current location
         getLocation()
 
+        // set style
+        map.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
+        )
     }
+
 
     @AfterPermissionGranted(RC_FINELOCATIONPERMS)
     private fun getLocation() {
@@ -75,10 +101,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
                     )
                     map.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
-                            newPlace, 15f
+                            newPlace, 16f
                         )
                     )
-                    map.addMarker(MarkerOptions().position(newPlace))
                 } else {
                     Timber.e("Location is Null")
                 }

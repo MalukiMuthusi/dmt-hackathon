@@ -11,6 +11,8 @@ import androidx.navigation.fragment.navArgs
 import codes.malukimuthusi.hackathon.data.Sacco
 import codes.malukimuthusi.hackathon.data.SaccoDetailViewHolder
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccoFareBinding
+import codes.malukimuthusi.hackathon.viewModels.SaccoFragmentViewModel
+import codes.malukimuthusi.hackathon.viewModels.SharedHomeViewModel
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.DatabaseError

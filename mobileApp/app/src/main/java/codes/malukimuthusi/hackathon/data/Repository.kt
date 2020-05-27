@@ -1,6 +1,8 @@
 package codes.malukimuthusi.hackathon.data
 
 import androidx.lifecycle.MutableLiveData
+import codes.malukimuthusi.hackathon.webService.OpenTripPlannerService
+import codes.malukimuthusi.hackathon.webService.Stop
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -8,8 +10,11 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
+import kotlin.math.cos
 
 interface Repo {
     fun getRoutes(): List<Route>
@@ -19,6 +24,7 @@ interface Repo {
 
 object Repository {
     private val dbRef = Firebase.database.reference
+    val otpService = OpenTripPlannerService.otpServices
 
     /*
     * Get all the routes.
@@ -163,6 +169,52 @@ object Repository {
         return returnedFare
     }
 
+    // return list of stops near given point
+    suspend fun nearByStopPoints(lat: Double, log: Double): List<Stop>? {
+
+        val maxLat: Double
+        val maxLon: Double
+        val minLat: Double
+        val minLon: Double
+        val radius = 200.0
+
+        val radiusEarth = 6378000.0 //meters
+
+        val offset = 400.0
+        val negativeOffset = -400.0
+
+        val mapValues = mutableMapOf<String, Double>()
+
+        // Return stop points within a radius of 200 meters
+        maxLat = lat + (offset / radiusEarth) * (180.0 / Math.PI)
+        minLat = lat + (negativeOffset / radiusEarth) * (180.0 / Math.PI)
+
+        maxLon =
+            log + (offset / radiusEarth) * (180.0 / Math.PI) / cos(lat * Math.PI / 180.0)
+        minLon =
+            log + (negativeOffset / radiusEarth) * (180.0 / Math.PI) / cos(lat * Math.PI / 180.0)
+
+        // reference https://stackoverflow.com/questions/7477003/calculating-new-longitude-latitude-from-old-n-meters
+
+        return withContext(Dispatchers.IO) {
+            otpService.getListOfStops(
+                lat,
+                log,
+                maxLat,
+                minLat,
+                maxLon,
+                minLon,
+                radius
+            )
+
+        }
+    }
+
+    // get a single stop point
+    suspend fun getStop(stopID: String): Stop = otpService.givenStop(stopID)
+
+    // get all the routes
+    suspend fun allRoutes() {}
 }
 
 // fetch a single sacco item from the database

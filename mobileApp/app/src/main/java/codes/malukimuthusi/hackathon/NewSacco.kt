@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
-import codes.malukimuthusi.hackathon.NewSaccoFragmentViewModel.Companion.doSomethingWhenChecked
+import codes.malukimuthusi.hackathon.viewModels.NewSaccoFragmentViewModel
+import codes.malukimuthusi.hackathon.viewModels.NewSaccoFragmentViewModel.Companion.doSomethingWhenChecked
 
 class NewSacco : AppCompatActivity() {
 

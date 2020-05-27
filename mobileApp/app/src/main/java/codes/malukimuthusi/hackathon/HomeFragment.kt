@@ -11,6 +11,7 @@ import codes.malukimuthusi.hackathon.data.ChartViewHolder
 import codes.malukimuthusi.hackathon.data.FareChartListener
 import codes.malukimuthusi.hackathon.data.Route
 import codes.malukimuthusi.hackathon.databinding.FragmentHomeBinding
+import codes.malukimuthusi.hackathon.viewModels.SharedHomeViewModel
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.SnapshotParser
