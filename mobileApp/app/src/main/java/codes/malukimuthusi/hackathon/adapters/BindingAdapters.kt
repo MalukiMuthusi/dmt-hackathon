@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.adapters
 
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import codes.malukimuthusi.hackathon.R
@@ -98,6 +99,12 @@ fun fetchFares(saccoKeys: Map<String, Boolean>?): Int {
         Timber.e("Saccos are null")
         return 0
     }
+
+}
+
+@BindingAdapter("favoriteIcon")
+fun icon(imageView: ImageView, iconUrl: Int) {
+    imageView.setImageResource(iconUrl)
 }
 
 

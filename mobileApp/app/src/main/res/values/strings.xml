@@ -53,4 +53,8 @@
     <string name="title_activity_plan_trip_maps">Map</string>
     <string name="start_destination_marker">Start Destination Marker</string>
     <string name="plan_trip">Plan Trip</string>
+    <string name="welcome_message">Welcome Message</string>
+    <string name="start_point">Start Point</string>
+    <string name="image_of_nairobi_city">Image of Nairobi City</string>
+    <string name="where_do_you_want_to_go">Where do you want to go?</string>
 </resources>

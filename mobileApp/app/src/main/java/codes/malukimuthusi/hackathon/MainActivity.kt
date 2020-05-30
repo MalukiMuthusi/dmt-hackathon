@@ -39,6 +39,11 @@ class MainActivity : AppCompatActivity() {
                     navigateToPlanTrip()
                     true
                 }
+                R.id.startPoint -> {
+                    val intent = Intent(this, StartActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }

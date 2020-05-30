@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/start_nav"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="codes.malukimuthusi.hackathon.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_planTripFragment"
+            app:destination="@id/planTripFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/planTripFragment"
+        android:name="codes.malukimuthusi.hackathon.PlanTripFragment"
+        android:label="fragment_plan_trip"
+        tools:layout="@layout/fragment_plan_trip" />
+</navigation>
