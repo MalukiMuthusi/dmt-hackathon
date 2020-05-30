@@ -8,6 +8,8 @@ import timber.log.Timber.DebugTree
 
 
 class MainApplication : Application() {
+
+
     override fun onCreate() {
         super.onCreate()
 
@@ -19,5 +21,16 @@ class MainApplication : Application() {
             Timber.plant(DebugTree())
         }
 
+        createLocationRequest()
+
+
+
     }
+
+    //[start fun createLocationRequest]
+    fun createLocationRequest() {
+
+
+    }
+    //[End fun createLocationRequest]
 }

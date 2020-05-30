@@ -1,10 +1,8 @@
 package codes.malukimuthusi.hackathon
 
 import android.content.Intent
-import android.content.IntentSender
 import android.location.Location
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -13,8 +11,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import codes.malukimuthusi.hackathon.databinding.ActivityPlanTripMapsBinding
 import codes.malukimuthusi.hackathon.viewModels.PlanTripsViewModel
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,7 +21,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -49,15 +46,8 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private var endMarkPosition: LatLng? = null
     private val viewModel by viewModels<PlanTripsViewModel>()
 
-    private lateinit var locationResult: Task<Location>
 
-    private lateinit var resultReceiver: FetchAddressIntentService
-    private val locationRequest = LocationRequest()
-    private lateinit var locationCallback: LocationCallback
-
-    private var requestingLocationUpdates = false
-
-
+    //[ start onCreate]
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_plan_trip_maps)
@@ -74,6 +64,7 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Toast.makeText(this, "Error fetching trip: Check Stack Trace", Toast.LENGTH_LONG)
             toast.show()
         })
+
 
         // plot a path
         viewModel.pathPoints.observe(this, Observer { locationPoints ->
@@ -98,53 +89,16 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         })
 
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult?) {
-                super.onLocationResult(p0)
-                if (p0 == null) {
-                    Timber.e("Error")
-                }
-            }
-        }
 
     }
+    //[End onCreate]
 
-    private fun setLocationOptions() {
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10000
-        locationRequest.fastestInterval = 5000
-    }
 
     fun updateValuesFromBundle(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) return
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        fusedLocationProvider.requestLocationUpdates(locationRequest, locationCallback, null)
-    }
-
-    private fun startIntentService() {
-        val intent = Intent(this, FetchAddressIntentService::class.java)
-
-        val locationBuilder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-
-        val clientSettings = LocationServices.getSettingsClient(this)
-        val locationSettingsTask = clientSettings.checkLocationSettings(locationBuilder.build())
-        locationSettingsTask.addOnSuccessListener {
-            locationResult = fusedLocationProvider.lastLocation
-        }
-        locationSettingsTask.addOnFailureListener {
-            if (it is ResolvableApiException) {
-                try {
-                    it.startResolutionForResult(this, REQUEST_CHECK_SETTINGS)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    Timber.e(sendEx)
-                }
-            }
-        }
-    }
 
     /**
      * Manipulates the map once available.
@@ -199,8 +153,7 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     @AfterPermissionGranted(RC_FINELOCATIONPERMS)
     private fun getLocation() {
         if (haslocationpermission()) {
-            locationResult = fusedLocationProvider.lastLocation
-            locationResult.addOnCompleteListener(this) { task ->
+            fusedLocationProvider.lastLocation.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     lastKnownLocation = task.result
                     map.moveCamera(
@@ -235,12 +188,6 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         )
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
-
-    }
-
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             AppSettingsDialog.Builder(this).build().show()
@@ -258,6 +205,7 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         Timber.d("Permissons granted %s", perms.toString())
+        getLocation()
     }
 
     override fun onRequestPermissionsResult(
