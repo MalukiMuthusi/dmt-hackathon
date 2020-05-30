@@ -52,12 +52,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="208dp"
                     android:layout_marginTop="20dp"
-                    android:text="50KSH"
+                    android:text="@string/_50"
                     app:layout_constraintBottom_toBottomOf="@id/desc"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/routeName"
-                    app:layout_constraintTop_toTopOf="@+id/routeName" />
+                    app:layout_constraintTop_toTopOf="@+id/routeName"
+                    tools:text="50KSH" />
 
                 <TextView
                     android:id="@+id/desc"

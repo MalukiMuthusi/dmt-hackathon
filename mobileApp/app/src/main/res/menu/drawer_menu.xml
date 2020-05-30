@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/addSacco"
         android:icon="@drawable/ic_add_black_24dp"
-        android:title="@string/add_sacco"
-        app:showAsAction="ifRoom" />
+        android:title="@string/add_sacco" />
     <item
         android:id="@+id/openMaps"
         android:icon="@drawable/ic_navigation_black_24dp"
-        android:title="@string/open_maps"
-        app:showAsAction="ifRoom" />
+        android:title="@string/open_maps" />
     <item
         android:id="@+id/routes"
         android:icon="@drawable/ic_navigation_black_24dp"
         android:title="@string/all_routes" />
+    <item
+        android:id="@+id/planTrip"
+        android:icon="@drawable/bus"
+        android:title="@string/plan_trip" />
 </menu>

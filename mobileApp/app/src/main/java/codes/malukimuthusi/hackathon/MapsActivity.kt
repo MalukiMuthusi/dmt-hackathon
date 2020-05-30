@@ -79,7 +79,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
         map = googleMap
 
         // set marker to the current location
-        getLocation()
+        try {
+            getLocation()
+        } catch (e: java.lang.Exception) {
+            Timber.e(e)
+        }
 
         // set style
         map.setMapStyle(
@@ -96,21 +100,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
                 if (task.isSuccessful) {
                     lastKnownLocation = task.result
                     Timber.e(lastKnownLocation.toString())
-                    val newPlace = lastKnownLocation?.latitude?.let {
-                        lastKnownLocation?.longitude?.let { it1 ->
-                            LatLng(
-                                it,
-                                it1
-                            )
+                    try {
+                        val newPlace = lastKnownLocation?.latitude?.let {
+                            lastKnownLocation?.longitude?.let { it1 ->
+                                LatLng(
+                                    it,
+                                    it1
+                                )
+                            }
                         }
-                    }
-                    map.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            newPlace, 16f
+                        map.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                newPlace, 16f
+                            )
                         )
-                    )
+
+                    } catch (e: Exception) {
+                        Timber.e(e, "Failed to get Location")
+                        throw (e)
+                    }
+
                 } else {
-                    Timber.e("Location is Null")
+                    Timber.e("Task to get location failed")
                 }
             }
 

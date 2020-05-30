@@ -35,9 +35,18 @@ class MainActivity : AppCompatActivity() {
                     navigateToAllRoutes()
                     true
                 }
+                R.id.planTrip -> {
+                    navigateToPlanTrip()
+                    true
+                }
                 else -> false
             }
         }
+    }
+
+    private fun navigateToPlanTrip() {
+        val intent = Intent(this, PlanTripMapsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun navigateToAllRoutes() {

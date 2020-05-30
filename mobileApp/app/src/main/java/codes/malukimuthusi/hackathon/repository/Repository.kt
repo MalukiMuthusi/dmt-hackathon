@@ -1,6 +1,7 @@
 package codes.malukimuthusi.hackathon.repository
 
 import androidx.lifecycle.MutableLiveData
+import codes.malukimuthusi.hackathon.dataModel.Fare
 import codes.malukimuthusi.hackathon.dataModel.Route
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.webService.OpenTripPlannerService
@@ -26,7 +27,7 @@ interface Repo {
 
 object Repository {
     private val dbRef = Firebase.database.reference
-    val otpService = OpenTripPlannerService.otpServices
+    private val otpService = OpenTripPlannerService.otpServices
 
     /*
     * Get all the routes.
@@ -111,7 +112,7 @@ object Repository {
             try {
                 val fare =
                     getCurrentFareFromSacco(
-                        it
+                        it.fare
                     )
                 Timber.d("Fare for sacco: %s is %d", it.name, fare)
                 faresOfSacco.add(fare)
@@ -127,7 +128,7 @@ object Repository {
 
 
     // fetch current fare from a sacco.
-    fun getCurrentFareFromSacco(sacco: Sacco): Int {
+    fun getCurrentFareFromSacco(fare: Fare?): Int {
         val tz = TimeZone.getTimeZone("Africa/Nairobi")
         val calendarInstance = Calendar.getInstance(tz)
         val hourOfDay = calendarInstance.get(Calendar.HOUR_OF_DAY)
@@ -135,45 +136,45 @@ object Repository {
         val hourAndMinutes = hourOfDay * 60 + minutes
 
         val returnedFare = when (hourAndMinutes) {
-            in 300..360 -> sacco.fare?.five_six
+            in 300..360 -> fare?.five_six
                 ?: throw Exception("Fare Not set for this period!!")
-            in 360..420 -> sacco.fare?.six_seven
+            in 360..420 -> fare?.six_seven
                 ?: throw Exception("Fare Not set for this period!!")
-            in 420..480 -> sacco.fare?.seven_eight
+            in 420..480 -> fare?.seven_eight
                 ?: throw Exception("Fare Not set for this period!!")
-            in 480..540 -> sacco.fare?.eight_nine
+            in 480..540 -> fare?.eight_nine
                 ?: throw Exception("Fare Not set for this period!!")
-            in 540..600 -> sacco.fare?.nine_ten
+            in 540..600 -> fare?.nine_ten
                 ?: throw Exception("Fare Not set for this period!!")
-            in 600..660 -> sacco.fare?.ten_eleven
+            in 600..660 -> fare?.ten_eleven
                 ?: throw Exception("Fare Not set for this period!!")
-            in 660..720 -> sacco.fare?.eleven_twelve
+            in 660..720 -> fare?.eleven_twelve
                 ?: throw Exception("Fare Not set for this period!!")
-            in 720..780 -> sacco.fare?.twelve_thirteen
+            in 720..780 -> fare?.twelve_thirteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 780..840 -> sacco.fare?.thirteen_fourteen
+            in 780..840 -> fare?.thirteen_fourteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 840..900 -> sacco.fare?.fourteen_fiveteen
+            in 840..900 -> fare?.fourteen_fiveteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 900..960 -> sacco.fare?.fiveteen_sixteen
+            in 900..960 -> fare?.fiveteen_sixteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 960..1020 -> sacco.fare?.sixteen_seventeen
+            in 960..1020 -> fare?.sixteen_seventeen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1020..1080 -> sacco.fare?.seventeen_eighteen
+            in 1020..1080 -> fare?.seventeen_eighteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1080..1140 -> sacco.fare?.eighteen_nineteen
+            in 1080..1140 -> fare?.eighteen_nineteen
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1140..1200 -> sacco.fare?.nineteen_twenty
+            in 1140..1200 -> fare?.nineteen_twenty
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1200..1260 -> sacco.fare?.twenty_twentyOne
+            in 1200..1260 -> fare?.twenty_twentyOne
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1260..1320 -> sacco.fare?.twentyone_twentytwo
+            in 1260..1320 -> fare?.twentyone_twentytwo
                 ?: throw Exception("Fare Not set for this period!!")
-            in 1320..1380 -> sacco.fare?.twentytwo_twentythree
+            in 1320..1380 -> fare?.twentytwo_twentythree
                 ?: throw Exception("Fare Not set for this period!!")
             else -> 0
         }
-        Timber.d(" Fare For: %s : is %d", sacco.name, returnedFare)
+        Timber.d(" Fare For: %s : is %d", fare, returnedFare)
         return returnedFare
     }
 
@@ -223,6 +224,11 @@ object Repository {
 
     // get all the routes
     suspend fun allRoutes() = otpService.getAllRoutes()
+
+    // plan trip
+    suspend fun planTrip(values: Map<String, String>?) = withContext(Dispatchers.IO) {
+        otpService.planTrip(values)
+    }
 }
 
 // fetch a single sacco item from the database

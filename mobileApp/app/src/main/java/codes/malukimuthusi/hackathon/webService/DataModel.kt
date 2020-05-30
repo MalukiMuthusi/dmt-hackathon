@@ -12,14 +12,15 @@ data class Stop(
 
 data class Route(
     val id: String? = "",
-    val agency: Agency? = Agency(),
-    val shortName: String? = "",
+    @Transient val agency: Agency? = null,
+    val shortName: String? = "YES",
     val longName: String? = "",
     val type: Int? = 3,
-    val routeBikesAllowed: Int? = 0,
+    @Transient val routeBikesAllowed: Int? = 0,
     val sortOrder: Int? = -999,
     val eligibilityRestricted: Int? = -999,
-    val sortOrderSet: Boolean? = false
+    val sortOrderSet: Boolean? = false,
+    var fare: Int? = 0
 
 )
 

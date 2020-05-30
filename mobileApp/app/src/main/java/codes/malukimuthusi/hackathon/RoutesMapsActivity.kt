@@ -72,7 +72,11 @@ class RoutesMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         map = googleMap
 
         // Add a marker in Sydney and move the camera
-        getLocation()
+        try {
+            getLocation()
+        } catch (e: Exception) {
+            Timber.e("Failed to ge Location")
+        }
 
         // set style
         map.setMapStyle(
@@ -87,21 +91,27 @@ class RoutesMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             locationResult.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     lastKnownLocation = task.result
-                    val newPlace = lastKnownLocation?.latitude?.let {
-                        lastKnownLocation?.longitude?.let { it1 ->
-                            LatLng(
-                                it,
-                                it1
-                            )
+                    try {
+                        val newPlace = lastKnownLocation?.latitude?.let {
+                            lastKnownLocation?.longitude?.let { it1 ->
+                                LatLng(
+                                    it,
+                                    it1
+                                )
+                            }
                         }
-                    }
-                    map.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            newPlace, 16f
+                        map.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                newPlace, 16f
+                            )
                         )
-                    )
+                    } catch (e: java.lang.Exception) {
+                        Timber.e("Returned Null Location")
+                        throw e
+                    }
+
                 } else {
-                    Timber.e("Location is Null")
+                    Timber.e("Task to get Location Failed")
                 }
             }
 
