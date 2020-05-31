@@ -112,25 +112,25 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         getLocation()
-        binding.startButton.setOnClickListener {
-            // do something
-            putStartMark(map.cameraPosition.target)
-            binding.pointTracker.setImageResource(R.drawable.marker_flag_end)
-        }
+//        binding.startButton.setOnClickListener {
+//            // do something
+//            putStartMark(map.cameraPosition.target)
+//            binding.pointTracker.setImageResource(R.drawable.marker_flag_end)
+//        }
 
-        binding.endButton.setOnClickListener {
-            //do something
-            putEndMark(map.cameraPosition.target)
-            binding.pointTracker.visibility = View.GONE
-            val mapParameters = mutableMapOf<String, String>()
-            mapParameters["fromPlace"] =
-                "${startMarkPosition!!.latitude}, ${startMarkPosition!!.longitude}"
-            mapParameters["toPlace"] =
-                "${endMarkPosition!!.latitude}, ${endMarkPosition!!.longitude}"
-            viewModel.planTrip(mapParameters)
-
-            binding.progressBar.visibility = View.VISIBLE
-        }
+//        binding.endButton.setOnClickListener {
+//            //do something
+//            putEndMark(map.cameraPosition.target)
+//            binding.pointTracker.visibility = View.GONE
+//            val mapParameters = mutableMapOf<String, String>()
+//            mapParameters["fromPlace"] =
+//                "${startMarkPosition!!.latitude}, ${startMarkPosition!!.longitude}"
+//            mapParameters["toPlace"] =
+//                "${endMarkPosition!!.latitude}, ${endMarkPosition!!.longitude}"
+//            viewModel.planTrip(mapParameters)
+//
+//            binding.progressBar.visibility = View.VISIBLE
+//        }
     }
 
     private fun putStartMark(place: LatLng) {
@@ -164,6 +164,7 @@ class PlanTripMapsActivity : AppCompatActivity(), OnMapReadyCallback,
                             ), 15f
                         )
                     )
+
 
                 } else {
                     Timber.e("Task to get Location Failed")

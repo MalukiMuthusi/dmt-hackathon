@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="codes.malukimuthusi.hackathon.WelcomeFragment"
+        android:name="codes.malukimuthusi.hackathon.startPoint.WelcomeFragment"
         android:label="fragment_welcome"
         tools:layout="@layout/fragment_welcome">
         <action
@@ -16,7 +16,19 @@
     </fragment>
     <fragment
         android:id="@+id/planTripFragment"
-        android:name="codes.malukimuthusi.hackathon.PlanTripFragment"
-        android:label="fragment_plan_trip"
-        tools:layout="@layout/fragment_plan_trip" />
+        android:name="codes.malukimuthusi.hackathon.startPoint.PlanTripFragment"
+        android:label="PlanTripFragment">
+        <action
+            android:id="@+id/action_planTripFragment_to_searchFragment2"
+            app:destination="@id/searchFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment2"
+        android:name="codes.malukimuthusi.hackathon.startPoint.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment2_to_planTripFragment"
+            app:destination="@id/planTripFragment" />
+    </fragment>
 </navigation>

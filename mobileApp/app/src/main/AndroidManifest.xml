@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="codes.malukimuthusi.hackathon">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -20,11 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:targetApi="n">
-        <activity android:name=".StartActivity"></activity>
 
-        <service
-            android:name=".FetchAddressIntentService"
-            android:exported="false" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -36,6 +33,15 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".SearchRoutesActivity"
+            android:label="@string/title_activity_search_routes"></activity>
+        <activity android:name=".startPoint.StartActivity" />
+
+        <service
+            android:name=".FetchAddressIntentService"
+            android:exported="false" />
 
         <activity
             android:name=".PlanTripMapsActivity"

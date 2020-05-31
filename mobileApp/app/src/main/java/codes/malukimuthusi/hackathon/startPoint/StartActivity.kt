@@ -1,7 +1,8 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.startPoint
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import codes.malukimuthusi.hackathon.R
 
 class StartActivity : AppCompatActivity() {
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import codes.malukimuthusi.hackathon.databinding.ActivityMainBinding
+import codes.malukimuthusi.hackathon.startPoint.StartActivity
 import com.firebase.ui.auth.AuthUI
 import timber.log.Timber
 

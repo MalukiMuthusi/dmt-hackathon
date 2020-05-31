@@ -1,18 +1,20 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.startPoint
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import codes.malukimuthusi.hackathon.adapters.FavouritePlacesAdapter
 import codes.malukimuthusi.hackathon.dataModel.favouritePlaceEx
 import codes.malukimuthusi.hackathon.databinding.FragmentWelcomeBinding
+import com.google.android.material.snackbar.Snackbar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM5 = "param1"
+private const val ARG_PARAM6 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -30,8 +32,8 @@ class WelcomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            param1 = it.getString(ARG_PARAM5)
+            param2 = it.getString(ARG_PARAM6)
         }
     }
 
@@ -45,6 +47,15 @@ class WelcomeFragment : Fragment() {
         recyclerViewAdapter = FavouritePlacesAdapter()
         binding.recyclerView.adapter = recyclerViewAdapter
         recyclerViewAdapter.submitList(favouritePlaceEx)
+
+
+        binding.buttonQ.setOnClickListener {
+            val snackbar = Snackbar.make(it, "Navigating", Snackbar.LENGTH_LONG)
+            snackbar.show()
+            val directions =
+                WelcomeFragmentDirections.actionWelcomeFragmentToPlanTripFragment()
+            findNavController().navigate(directions)
+        }
 
         return binding.root
     }
@@ -63,8 +74,8 @@ class WelcomeFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             WelcomeFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM5, param1)
+                    putString(ARG_PARAM6, param2)
                 }
             }
     }
