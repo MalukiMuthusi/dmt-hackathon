@@ -43,7 +43,7 @@ class SearchResultsFragment : Fragment() {
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
 
         val adapter = SearchResultsAdapter(ItineraryClickListener { clickedItinerary ->
-            directionsViewModel.itinerary = clickedItinerary
+            sharedViewModel.selectedItinerary = clickedItinerary
             val action =
                 SearchResultsFragmentDirections.actionSearchResultsFragmentToDirectionsFragment()
             findNavController().navigate(action)

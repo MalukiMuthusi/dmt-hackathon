@@ -96,6 +96,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                     "${sharedViewModel.destination!!.latitude},${sharedViewModel.destination!!.longitude}"
                 options["fromPlace"] =
                     "${sharedViewModel.startPoint!!.latitude},${sharedViewModel.startPoint!!.longitude}"
+                options["showIntermediateStops"] = "true"
                 viewModel.searchRoutes(options)
                 binding.progressBar2.visibility = View.VISIBLE
             }

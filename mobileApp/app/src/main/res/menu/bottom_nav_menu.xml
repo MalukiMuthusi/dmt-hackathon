@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/planTrip"
+        android:icon="@drawable/ic_directions_bus_black_24dp"
+        android:title="@string/plan_trip" />
+    <item
+        android:id="@+id/routes"
+        android:icon="@drawable/widget_trip_stop_middle"
+        android:title="@string/routes" />
+    <item
+        android:id="@+id/currentFare"
+        android:icon="@drawable/ic_monetization_on_black_24dp"
+        android:title="Fares Now" />
+</menu>

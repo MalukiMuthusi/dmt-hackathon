@@ -53,5 +53,18 @@
         android:id="@+id/directionsFragment"
         android:name="codes.malukimuthusi.hackathon.DirectionsFragment"
         android:label="fragment_directions"
-        tools:layout="@layout/fragment_directions" />
+        tools:layout="@layout/fragment_directions">
+        <action
+            android:id="@+id/action_directionsFragment_to_saccosRouteFragment"
+            app:destination="@id/saccosRouteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/saccosRouteFragment"
+        android:name="codes.malukimuthusi.hackathon.startPoint.SaccosRouteFragment"
+        android:label="fragment_saccos_route"
+        tools:layout="@layout/fragment_saccos_route">
+        <action
+            android:id="@+id/action_saccosRouteFragment_to_directionsFragment"
+            app:destination="@id/directionsFragment" />
+    </fragment>
 </navigation>

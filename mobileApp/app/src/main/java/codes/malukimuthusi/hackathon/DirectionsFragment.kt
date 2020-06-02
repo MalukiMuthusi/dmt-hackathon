@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import codes.malukimuthusi.hackathon.adapters.LegClickListener
+import codes.malukimuthusi.hackathon.adapters.SingleTransitLegAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentDirectionsBinding
 import codes.malukimuthusi.hackathon.startPoint.SharedViewModel
-import codes.malukimuthusi.hackathon.viewModels.DirectionsFragmentViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -32,8 +34,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     private var param2: String? = null
     private lateinit var binding: FragmentDirectionsBinding
     private lateinit var map: GoogleMap
-    private val viewModel: DirectionsFragmentViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +51,22 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentDirectionsBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        val adapter = SingleTransitLegAdapter(LegClickListener { leg ->
+            sharedViewModel.leg = leg
+            val action =
+                DirectionsFragmentDirections.actionDirectionsFragmentToSaccosRouteFragment()
+            findNavController().navigate(action)
+        })
+        adapter.submitList(sharedViewModel.transitLegs)
 
 
+
+        binding.recyclerView.adapter = adapter
+
+        // return ViewGroup
         return binding.root
     }
 
@@ -80,9 +94,6 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         map = p0 ?: return
         val dottedPatern = listOf(Dot(), Gap(2f))
 
-        val lat = viewModel.itinerary.legs!!.first().from!!.lat
-        val lon = viewModel.itinerary.legs!!.first().from!!.lon
-        val cameraPoint = LatLng(lat!!, lon!!)
 
         val tripStart =
             LatLng(sharedViewModel.tripPlan.from!!.lat!!, sharedViewModel.tripPlan.from!!.lon!!)
@@ -95,7 +106,7 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 100)
         map.animateCamera(cameraUpdateFactory)
 
-        for (leg in viewModel.itinerary.legs!!) {
+        for (leg in sharedViewModel.selectedItinerary.legs!!) {
 
             if (leg.transitLeg!!) {
                 val points = PolyUtil.decode(leg.legGeometry!!.points)

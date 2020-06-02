@@ -22,32 +22,32 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
 
-        binding.navigation.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.openMaps -> {
-                    navigateToMapsActivity()
-                    true
-                }
-                R.id.addSacco -> {
-                    navigateToAddSaccoActivity()
-                    true
-                }
-                R.id.routes -> {
-                    navigateToAllRoutes()
-                    true
-                }
-                R.id.planTrip -> {
-                    navigateToPlanTrip()
-                    true
-                }
-                R.id.startPoint -> {
-                    val intent = Intent(this, StartActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
+//        binding.navigation.setNavigationItemSelectedListener {
+//            when (it.itemId) {
+//                R.id.openMaps -> {
+//                    navigateToMapsActivity()
+//                    true
+//                }
+//                R.id.addSacco -> {
+//                    navigateToAddSaccoActivity()
+//                    true
+//                }
+//                R.id.routes -> {
+//                    navigateToAllRoutes()
+//                    true
+//                }
+//                R.id.planTrip -> {
+//                    navigateToPlanTrip()
+//                    true
+//                }
+//                R.id.startPoint -> {
+//                    val intent = Intent(this, StartActivity::class.java)
+//                    startActivity(intent)
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
     }
 
     private fun navigateToPlanTrip() {

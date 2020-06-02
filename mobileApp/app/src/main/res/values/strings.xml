@@ -61,4 +61,14 @@
     <string name="choose_location">Choose Location</string>
     <string name="suggested_routes">Suggested Routes</string>
     <string name="duration_unknow">Duration Unknown</string>
+    <string name="duration_minutes">%1$d mins</string>
+    <string name="duration_mins_hrs">%1$d Hrs: %2$d mins</string>
+    <string name="routes">Routes</string>
+    <string name="saccos_operating">Saccos Operating</string>
+    <string name="start_point_of_the_bus">Start Point of the bus</string>
+    <string name="end_point_of_the_bus">End Point of the Bus</string>
+    <string name="saccos_operating_from">Saccos Operating From</string>
+    <string name="tusker_ronald_ngala">Tusker/Ronald Ngala</string>
+    <string name="thayo">Thayo</string>
+    <string name="bus_stops">Bus Stops</string>
 </resources>

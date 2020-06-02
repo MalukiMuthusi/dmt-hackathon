@@ -163,7 +163,7 @@ data class Leg(
     @Transient val routeBrandingUrl: String? = null,
     val from: Place? = Place(),
     val to: Place? = Place(),
-    @Transient val intermediateStops: List<Place>? = listOf(),
+    val intermediateStops: List<Place>? = listOf(),
     val legGeometry: EncodedPolylineBean? = EncodedPolylineBean(),
     @Transient val steps: List<WalkStep>? = listOf(),
     @Transient val alerts: LocalizedAlert? = LocalizedAlert(),

@@ -18,15 +18,15 @@ import timber.log.Timber
 
 @BindingAdapter("tripDuration")
 fun tripDuration(text: TextView, seconds: Long) {
-    val minutes = seconds / 1000
+    val minutes = seconds / 60
     when (minutes) {
         in 0..60 -> {
-            text.text = "$minutes mins"
+            text.text = text.context.getString(R.string.duration_minutes, minutes)
         }
         in 60..(60 * 24) -> {
             val hours = minutes / 60
             val min = minutes % 60
-            text.text = "$hours Hrs: $min mns"
+            text.text = text.context.getString(R.string.duration_mins_hrs, hours, min)
         }
         else -> text.text = text.context.getString(R.string.duration_unknow)
     }
