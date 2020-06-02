@@ -59,4 +59,6 @@
     <string name="where_do_you_want_to_go">Where do you want to go?</string>
     <string name="title_activity_search_routes">Map</string>
     <string name="choose_location">Choose Location</string>
+    <string name="suggested_routes">Suggested Routes</string>
+    <string name="duration_unknow">Duration Unknown</string>
 </resources>

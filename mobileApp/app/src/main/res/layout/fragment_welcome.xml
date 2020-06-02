@@ -15,7 +15,7 @@
         tools:context=".startPoint.WelcomeFragment">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+            android:id="@+id/constraintAppBar"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:fitsSystemWindows="true">
@@ -59,7 +59,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
                     android:elevation="0dp"
-                    app:layout_collapseMode="pin">
+                    app:layout_collapseMode="pin"
+                    app:title="Matt Fare">
 
                 </com.google.android.material.appbar.MaterialToolbar>
 

@@ -9,16 +9,19 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".startPoint.PlanTripFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolBar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_dehaze_black_24dp"
                 app:title="Choose Location" />
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,8 +40,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:context=".startPoint.PlanTripFragment" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/pointTracker"
@@ -90,7 +92,7 @@
                         app:layout_constraintTop_toTopOf="@id/imageView2" />
 
                     <Button
-                        android:id="@+id/button"
+                        android:id="@+id/okButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/pad_16"

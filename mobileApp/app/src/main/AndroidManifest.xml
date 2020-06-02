@@ -36,8 +36,13 @@
 
         <activity
             android:name=".SearchRoutesActivity"
-            android:label="@string/title_activity_search_routes"></activity>
-        <activity android:name=".startPoint.StartActivity" />
+            android:label="@string/title_activity_search_routes" />
+        <activity android:name=".startPoint.StartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".FetchAddressIntentService"
@@ -65,13 +70,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

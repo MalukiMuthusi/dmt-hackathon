@@ -16,6 +16,24 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 
+@BindingAdapter("tripDuration")
+fun tripDuration(text: TextView, seconds: Long) {
+    val minutes = seconds / 1000
+    when (minutes) {
+        in 0..60 -> {
+            text.text = "$minutes mins"
+        }
+        in 60..(60 * 24) -> {
+            val hours = minutes / 60
+            val min = minutes % 60
+            text.text = "$hours Hrs: $min mns"
+        }
+        else -> text.text = text.context.getString(R.string.duration_unknow)
+    }
+
+
+}
+
 @BindingAdapter("fare_value")
 fun fareAdapterr(text: TextView, fareAmout: Int?) {
     text.text = fareAmout?.toString() ?: (0).toString()

@@ -1,13 +1,16 @@
 package codes.malukimuthusi.hackathon.startPoint
 
-import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import codes.malukimuthusi.hackathon.R
-import codes.malukimuthusi.hackathon.RC_FINELOCATIONPERMS
 import codes.malukimuthusi.hackathon.databinding.FragmentPlanTripBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -16,7 +19,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
@@ -44,7 +46,10 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
     private lateinit var binding: FragmentPlanTripBinding
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProvider: FusedLocationProviderClient
-    private lateinit var lastKnownLocation: Location
+    private lateinit var lastKnownLocation: LatLng
+    val args: PlanTripFragmentArgs by navArgs()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,12 +65,37 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentPlanTripBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-
         mapFragment.getMapAsync(this)
-
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        val navController = findNavController()
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        binding.toolBar.setupWithNavController(navController, appBarConfiguration)
+
+        // check which location is been choosen. whether it is start or end destination
+        if (args.locationType == TO) {
+            val color = resources.getColor(R.color.red_600)
+            binding.pointTracker.setBackgroundColor(color)
+        } else {
+            val color = resources.getColor(R.color.indigo_400)
+            binding.pointTracker.setBackgroundColor(color)
+        }
+
+
+
+        binding.okButton.setOnClickListener {
+            if (args.locationType == TO) {
+                sharedViewModel.destination = googleMap.cameraPosition.target
+
+            } else {
+                sharedViewModel.startPoint = googleMap.cameraPosition.target
+            }
+            val action = PlanTripFragmentDirections.actionPlanTripFragmentToSearchFragment2()
+            findNavController().navigate(action)
+        }
 
         return binding.root
     }
@@ -92,47 +122,12 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
 
     override fun onMapReady(map: GoogleMap?) {
         googleMap = map ?: return
-        getLocation()
-    }
-
-    @AfterPermissionGranted(RC_FINELOCATIONPERMS)
-    private fun getLocation() {
-        if (haslocationpermission()) {
-            fusedLocationProvider.lastLocation.addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    lastKnownLocation = task.result ?: return@addOnCompleteListener
-                    googleMap.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(
-                                lastKnownLocation.latitude,
-                                lastKnownLocation.longitude
-                            ), 15f
-                        )
-                    )
-
-
-                } else {
-                    Timber.e("Task to get Location Failed")
-                }
-            }
-
-        } else {
-            EasyPermissions.requestPermissions(
-                this,
-                getString(R.string.rational_location),
-                RC_FINELOCATIONPERMS,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            )
+        if (sharedViewModel.startPoint != null) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint, 15f))
         }
+
     }
 
-    // check if we have location permission
-    private fun haslocationpermission(): Boolean {
-        return EasyPermissions.hasPermissions(
-            requireContext(),
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        )
-    }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
@@ -142,7 +137,6 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         Timber.d("Permissons granted %s", perms.toString())
-        getLocation()
     }
 
     override fun onRationaleDenied(requestCode: Int) {

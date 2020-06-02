@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="itinerary"
+            type="codes.malukimuthusi.hackathon.webService.Itinerary" />
+
+        <variable
+            name="clickListener"
+            type="codes.malukimuthusi.hackathon.adapters.ItineraryClickListener" />
+
+    </data>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pad_8dp"
+        android:onClick="@{()->clickListener.onClick(itinerary)}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parentViewHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/duration"
+                style="@style/TextAppearance.MyTheme.Subtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tripDuration="@{itinerary.duration}"
+                tools:text="48 min" />
+
+            <TextView
+                android:id="@+id/fare"
+                style="@style/TextAppearance.MyTheme.Subtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/_50"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/duration"
+                app:layout_constraintStart_toEndOf="@+id/duration"
+                app:layout_constraintTop_toTopOf="@+id/duration" />
+
+            <LinearLayout
+                android:id="@+id/legs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/duration"
+                app:layout_constraintTop_toBottomOf="@+id/duration">
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
