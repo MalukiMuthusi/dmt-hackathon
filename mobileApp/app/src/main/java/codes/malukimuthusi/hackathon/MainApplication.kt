@@ -1,6 +1,7 @@
 package codes.malukimuthusi.hackathon
 
 import android.app.Application
+import com.google.android.libraries.places.api.Places
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
@@ -23,7 +24,7 @@ class MainApplication : Application() {
 
         createLocationRequest()
 
-
+        Places.initialize(applicationContext, "AIzaSyDhmypbi5Eaw6MO2r4RF54qlOkSt67nwb0")
 
     }
 

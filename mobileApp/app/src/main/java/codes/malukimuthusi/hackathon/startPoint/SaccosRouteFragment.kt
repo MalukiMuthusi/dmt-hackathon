@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import codes.malukimuthusi.hackathon.adapters.BusStopListAdapter
 import codes.malukimuthusi.hackathon.adapters.SaccoListAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccosRouteBinding
@@ -43,6 +44,10 @@ class SaccosRouteFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentSaccosRouteBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+
+        // fetch saccos operating on the provided leg, route
+        sharedViewModel.fetchSaccos(sharedViewModel.leg.routeId!!.split(":").last())
 
         val stops = sharedViewModel.leg.intermediateStops
 
@@ -50,8 +55,11 @@ class SaccosRouteFragment : Fragment() {
         binding.saccosList.setHasFixedSize(true)
 
         binding.busStopList.adapter = busStopListAdapter
-        binding.busStopList.setHasFixedSize(true)
+        sharedViewModel.saccoListLD.observe(viewLifecycleOwner, Observer {
+            saccoListAdapter.submitList(it)
+        })
 
+        binding.busStopList.setHasFixedSize(true)
         busStopListAdapter.submitList(stops)
 
 

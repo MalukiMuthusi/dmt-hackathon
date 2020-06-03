@@ -2,7 +2,6 @@ package codes.malukimuthusi.hackathon.dataModel
 
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
-import com.google.firebase.database.PropertyName
 
 @IgnoreExtraProperties
 data class Route(
@@ -37,7 +36,7 @@ data class Route(
 data class Sacco(
     val name: String? = "",
     val fare: Fare? = Fare(),
-    @PropertyName("Routes") val routes: MutableMap<String, Boolean>? = HashMap(),
+    val Routes: MutableMap<String, Boolean>? = HashMap(),
     @Exclude var key: String? = ""
 ) {
     @Exclude
@@ -45,7 +44,7 @@ data class Sacco(
         return mapOf(
             "name" to name,
             "fare" to fare?.toMap(),
-            "Routes" to routes
+            "Routes" to Routes
         )
     }
 }
