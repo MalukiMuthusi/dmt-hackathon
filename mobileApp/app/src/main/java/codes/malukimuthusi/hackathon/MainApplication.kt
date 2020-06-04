@@ -25,6 +25,7 @@ class MainApplication : Application() {
         createLocationRequest()
 
         Places.initialize(applicationContext, "AIzaSyDhmypbi5Eaw6MO2r4RF54qlOkSt67nwb0")
+        val placesClient = Places.createClient(this)
 
     }
 

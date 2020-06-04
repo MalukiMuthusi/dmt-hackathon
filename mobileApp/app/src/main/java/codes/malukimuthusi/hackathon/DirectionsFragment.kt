@@ -1,9 +1,13 @@
 package codes.malukimuthusi.hackathon
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -97,6 +101,24 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
 
         val tripStart =
             LatLng(sharedViewModel.tripPlan.from!!.lat!!, sharedViewModel.tripPlan.from!!.lon!!)
+        val fromMarkerOptions = MarkerOptions()
+            .position(
+                LatLng(
+                    sharedViewModel.tripPlan.from!!.lat!!,
+                    sharedViewModel.tripPlan.from!!.lon!!
+                )
+            )
+            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_place_blue_24dp))
+        val toMarkerOptions = MarkerOptions()
+            .position(
+                LatLng(
+                    sharedViewModel.tripPlan.to!!.lat!!,
+                    sharedViewModel.tripPlan.to!!.lon!!
+                )
+            )
+            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_place_red_24dp))
+        map.addMarker(fromMarkerOptions)
+        map.addMarker(toMarkerOptions)
         val tripTo =
             LatLng(sharedViewModel.tripPlan.to!!.lat!!, sharedViewModel.tripPlan.to!!.lon!!)
         val bound = LatLngBounds.Builder()
@@ -125,6 +147,16 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
                 )
 
             }
+        }
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        return ContextCompat.getDrawable(context, vectorResId)?.run {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+            val bitmap =
+                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            draw(Canvas(bitmap))
+            BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
 }

@@ -1,11 +1,14 @@
 package codes.malukimuthusi.hackathon.repository
 
+import android.content.Context
+import android.location.Geocoder
 import androidx.lifecycle.MutableLiveData
 import codes.malukimuthusi.hackathon.dataModel.Fare
 import codes.malukimuthusi.hackathon.dataModel.Route
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.webService.OpenTripPlannerService
 import codes.malukimuthusi.hackathon.webService.Stop
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,6 +31,33 @@ interface Repo {
 object Repository {
     private val dbRef = Firebase.database.reference
     private val otpService = OpenTripPlannerService.otpServices
+
+    suspend fun fetchAddress(latLng: LatLng, context: Context): String {
+        val geocode = Geocoder(context)
+        try {
+            val addresses = withContext(Dispatchers.IO) {
+                geocode.getFromLocation(
+                    latLng.latitude,
+                    latLng.longitude,
+                    1
+                )
+            }
+            return if (addresses.size > 0) {
+                val fetchedAdd = addresses.first()
+                val straddr = StringBuilder()
+                for (i in 0..fetchedAdd.maxAddressLineIndex) {
+                    straddr.append(fetchedAdd.getAddressLine(i)).append(" ")
+                }
+                straddr.toString()
+            } else {
+                "Searching Current Address"
+            }
+
+        } catch (e: Exception) {
+            Timber.e(e, "failed to get address")
+            return "Searching Current Address"
+        }
+    }
 
     /*
     * Get all the routes.

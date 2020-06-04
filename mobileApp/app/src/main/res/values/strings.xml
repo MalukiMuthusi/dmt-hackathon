@@ -71,4 +71,5 @@
     <string name="tusker_ronald_ngala">Tusker/Ronald Ngala</string>
     <string name="thayo">Thayo</string>
     <string name="bus_stops">Bus Stops</string>
+    <string name="fare">%1$d KSH</string>
 </resources>

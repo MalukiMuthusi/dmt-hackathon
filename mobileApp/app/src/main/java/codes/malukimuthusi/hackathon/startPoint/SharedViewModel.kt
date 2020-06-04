@@ -67,7 +67,9 @@ class SharedViewModel : ViewModel() {
         override fun onDataChange(p0: DataSnapshot) {
             val sacco = p0.getValue<Sacco>()
             if (sacco != null) {
-                saccoList.add(sacco)
+                if (!saccoList.contains(sacco)) {
+                    saccoList.add(sacco)
+                }
                 _saccoListMLD.postValue(saccoList)
             } else {
                 Timber.e("Null sacco returned")

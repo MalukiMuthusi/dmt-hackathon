@@ -1,17 +1,20 @@
 package codes.malukimuthusi.hackathon.startPoint
 
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentPlanTripBinding
+import codes.malukimuthusi.hackathon.repository.Repository.fetchAddress
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,15 +22,18 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+const val AUTOCOMPLETE_REQUEST_CODE = 1
 
 /**
  * A simple [Fragment] subclass.
@@ -50,6 +56,8 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
     val args: PlanTripFragmentArgs by navArgs()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var geocoder: Geocoder
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,16 +82,6 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
-
-        // check which location is been choosen. whether it is start or end destination
-        if (args.locationType == TO) {
-            val color = resources.getColor(R.color.red_600)
-            binding.pointTracker.setBackgroundColor(color)
-        } else {
-            val color = resources.getColor(R.color.indigo_400)
-            binding.pointTracker.setBackgroundColor(color)
-        }
-
 
 
         binding.okButton.setOnClickListener {
@@ -125,6 +123,17 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
         if (sharedViewModel.startPoint != null) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint, 15f))
         }
+
+        geocoder = Geocoder(requireContext(), Locale.getDefault())
+        googleMap.setOnCameraIdleListener {
+            lifecycleScope.launch {
+                binding.textView2.text = fetchAddress(
+                    googleMap.cameraPosition.target,
+                    requireContext()
+                )
+            }
+        }
+
 
     }
 

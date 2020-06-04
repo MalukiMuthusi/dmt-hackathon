@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="codes.malukimuthusi.hackathon.startPoint.WelcomeFragment"
-        android:label="Matt Fare"
+        android:label=""
         tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_welcomeFragment_to_planTripFragment"

@@ -6,15 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import codes.malukimuthusi.hackathon.adapters.ItineraryClickListener
 import codes.malukimuthusi.hackathon.adapters.SearchResultsAdapter
 import codes.malukimuthusi.hackathon.databinding.SearchResultsFragmentBinding
-import codes.malukimuthusi.hackathon.viewModels.DirectionsFragmentViewModel
-import codes.malukimuthusi.hackathon.viewModels.SearchResultsViewModel
 
 
 class SearchResultsFragment : Fragment() {
@@ -24,11 +21,9 @@ class SearchResultsFragment : Fragment() {
             SearchResultsFragment()
     }
 
-    private val viewModel: SearchResultsViewModel by viewModels()
     private lateinit var binding: SearchResultsFragmentBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val directionsViewModel: DirectionsFragmentViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -41,6 +36,14 @@ class SearchResultsFragment : Fragment() {
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
+
+        sharedViewModel.tripPlan.from?.name.let {
+            binding.startPlace.text = it
+        }
+
+        sharedViewModel.tripPlan.to?.name.let {
+            binding.toPlace.text = it
+        }
 
         val adapter = SearchResultsAdapter(ItineraryClickListener { clickedItinerary ->
             sharedViewModel.selectedItinerary = clickedItinerary

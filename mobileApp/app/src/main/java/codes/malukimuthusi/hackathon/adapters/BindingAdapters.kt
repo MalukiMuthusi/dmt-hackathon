@@ -16,6 +16,52 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 
+private val db = Firebase.database.reference
+private val saccosRef = db.child("saccos")
+private val routesRef = db.child("Routes")
+
+@BindingAdapter("fetchSaccoFare")
+fun fetchSaccoFare(text: TextView, routeId: String) {
+    val id = routeId.split(":").last()
+
+    class SaccoVEL2 : ValueEventListener {
+        override fun onCancelled(p0: DatabaseError) {
+            Timber.e(p0.toException(), "Request Cancelled")
+        }
+
+        // fetch value of each sacco
+        override fun onDataChange(p0: DataSnapshot) {
+            val sacco = p0.getValue<Sacco>()
+            if (sacco != null) {
+                text.text = text.context.getString(
+                    R.string.fare,
+                    Repository.getCurrentFareFromSacco(sacco.fare)
+                )
+            } else {
+                Timber.e("Null sacco returned")
+            }
+        }
+    }
+
+    class SaccosInRouteVEL2 : ValueEventListener {
+        override fun onCancelled(p0: DatabaseError) {
+            Timber.e(p0.toException())
+        }
+
+        override fun onDataChange(p0: DataSnapshot) {
+            val saccoEntry = p0.children.first()
+            val key = saccoEntry.key
+            if (key != null) {
+                saccosRef.child(key).addValueEventListener(SaccoVEL2())
+            } else {
+                Timber.e("No error")
+            }
+        }
+    }
+    routesRef.child(id).child("saccos").addValueEventListener(SaccosInRouteVEL2())
+}
+
+
 @BindingAdapter("tripDuration")
 fun tripDuration(text: TextView, seconds: Long) {
     val minutes = seconds / 60

@@ -65,12 +65,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:text="50 KSH"
+                    app:fetchSaccoFare="@{leg.routeId}"
                     app:layout_constraintBottom_toBottomOf="@+id/time"
                     app:layout_constraintEnd_toEndOf="@+id/startPoint"
                     app:layout_constraintHorizontal_bias="0.442"
                     app:layout_constraintStart_toEndOf="@+id/time"
-                    app:layout_constraintTop_toTopOf="@+id/time" />
+                    app:layout_constraintTop_toTopOf="@+id/time"
+                    tools:text="50 KSH" />
 
                 <ImageView
                     android:id="@+id/imageView3"

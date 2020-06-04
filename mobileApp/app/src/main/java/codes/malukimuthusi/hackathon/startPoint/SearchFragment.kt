@@ -1,5 +1,8 @@
 package codes.malukimuthusi.hackathon.startPoint
 
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentSearchBinding
+import codes.malukimuthusi.hackathon.repository.Repository
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,8 +25,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
@@ -47,6 +58,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     private val viewModel: SearchFragmentViewModel by viewModels()
     private var navigate by Delegates.notNull<Boolean>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -59,19 +71,30 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // autocomplete places
+        val fields = listOf(Place.Field.ID, Place.Field.NAME)
+        val intent = Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.FULLSCREEN, fields
+        ).build(requireContext())
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
 //        binding.toolBar.setupWithNavController(navController, appBarConfiguration)
-        binding.startPlace.text = sharedViewModel.startPoint.toString()
-        binding.toPlace.text = sharedViewModel.destination.toString()
+        lifecycleScope.launch {
+            binding.startPlace.text =
+                Repository.fetchAddress(sharedViewModel.startPoint!!, requireContext())
+            binding.toPlace.text =
+                Repository.fetchAddress(sharedViewModel.destination!!, requireContext())
+        }
+
 
         // event for when start place button is clicked
         binding.startPlace.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragment2ToPlanTripFragment(TO)
-            findNavController().navigate(action)
+//            findNavController().navigate(action)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
 
         // event for when start place button is clicked
@@ -143,6 +166,26 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
 
         mapFragment.getMapAsync(this)
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            AUTOCOMPLETE_REQUEST_CODE -> {
+                if (requestCode == RESULT_OK) {
+                    val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                    Timber.e("%s", place?.name ?: "no name")
+                }
+                if (requestCode == AutocompleteActivity.RESULT_CANCELED) {
+                    val status = data?.let { Autocomplete.getStatusFromIntent(it) }
+                    Timber.e(status?.statusMessage)
+                }
+                if (resultCode == RESULT_CANCELED) {
+                    Timber.e("User Cancelled")
+                }
+
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     companion object {
