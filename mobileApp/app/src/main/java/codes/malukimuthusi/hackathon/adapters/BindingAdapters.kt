@@ -49,13 +49,18 @@ fun fetchSaccoFare(text: TextView, routeId: String) {
         }
 
         override fun onDataChange(p0: DataSnapshot) {
-            val saccoEntry = p0.children.first()
-            val key = saccoEntry.key
-            if (key != null) {
-                saccosRef.child(key).addValueEventListener(SaccoVEL2())
-            } else {
-                Timber.e("No error")
+            try {
+                val saccoEntry = p0.children.first()
+                val key = saccoEntry.key
+                if (key != null) {
+                    saccosRef.child(key).addValueEventListener(SaccoVEL2())
+                } else {
+                    Timber.e("No error")
+                }
+            } catch (e: Exception) {
+                text.text = text.context.getString(R.string.fare_unknown)
             }
+
         }
     }
     routesRef.child(id).child("saccos").addValueEventListener(SaccosInRouteVEL2())
