@@ -1,4 +1,4 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.startPoint
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,10 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.adapters.LegClickListener
 import codes.malukimuthusi.hackathon.adapters.SingleTransitLegAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentDirectionsBinding
-import codes.malukimuthusi.hackathon.startPoint.SharedViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,8 +24,8 @@ import com.google.maps.android.PolyUtil
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM10 = "param1"
+private const val ARG_PARAM20 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -44,8 +44,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            param1 = it.getString(ARG_PARAM10)
+            param2 = it.getString(ARG_PARAM20)
         }
     }
 
@@ -88,8 +88,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         fun newInstance(param1: String, param2: String) =
             DirectionsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM10, param1)
+                    putString(ARG_PARAM20, param2)
                 }
             }
     }
@@ -108,7 +108,12 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
                     sharedViewModel.tripPlan.from!!.lon!!
                 )
             )
-            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_place_blue_24dp))
+            .icon(
+                bitmapDescriptorFromVector(
+                    requireContext(),
+                    R.drawable.ic_place_blue_24dp
+                )
+            )
         val toMarkerOptions = MarkerOptions()
             .position(
                 LatLng(
@@ -116,7 +121,12 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
                     sharedViewModel.tripPlan.to!!.lon!!
                 )
             )
-            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_place_red_24dp))
+            .icon(
+                bitmapDescriptorFromVector(
+                    requireContext(),
+                    R.drawable.ic_place_red_24dp
+                )
+            )
         map.addMarker(fromMarkerOptions)
         map.addMarker(toMarkerOptions)
         val tripTo =

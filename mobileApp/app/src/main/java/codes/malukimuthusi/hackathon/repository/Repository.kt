@@ -75,7 +75,7 @@ object Repository {
     fun getSaccos(saccoList: MutableLiveData<MutableMap<String, Sacco>>) {
         val saccosPath = dbRef.child("saccos")
         val valueEventListener =
-            FetchSaccosEventListener(
+            FetchSaccoEventListener(
                 saccoList
             )
         saccosPath.addValueEventListener(valueEventListener)
@@ -165,7 +165,7 @@ object Repository {
         val minutes = calendarInstance.get(Calendar.MINUTE)
         val hourAndMinutes = hourOfDay * 60 + minutes
 
-        val returnedFare = when (hourAndMinutes) {
+        return when (hourAndMinutes) {
             in 300..360 -> fare?.five_six
                 ?: throw Exception("Fare Not set for this period!!")
             in 360..420 -> fare?.six_seven
@@ -204,8 +204,6 @@ object Repository {
                 ?: throw Exception("Fare Not set for this period!!")
             else -> 0
         }
-        Timber.d(" Fare For: %s : is %d", fare, returnedFare)
-        return returnedFare
     }
 
     // return list of stops near given point
@@ -300,7 +298,7 @@ class SaccosInRouteEventListener(
 }
 
 // event listener to fetch all the sacco's in database
-class FetchSaccosEventListener(val saccoList: MutableLiveData<MutableMap<String, Sacco>>) :
+class FetchSaccoEventListener(private val saccoList: MutableLiveData<MutableMap<String, Sacco>>) :
     ValueEventListener {
     private val allSacco = mutableMapOf<String, Sacco>()
     override fun onCancelled(p0: DatabaseError) {

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/MainActivity.kt" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/FetchAddressIntentService.kt" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/PlanTripMapsActivity.kt" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/RoutesMapsActivity.kt" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/viewModels/PlanTripsViewModel.kt" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_plan_trip_maps.xml" />

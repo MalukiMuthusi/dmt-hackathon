@@ -121,11 +121,6 @@ fun routeStartFormatedUI(text: TextView, start: String) {
     text.text = text.context.getString(R.string.start_station, start)
 }
 
-@BindingAdapter("routeName")
-fun routeNameRouteOverview(text: TextView, name: String) {
-    text.text = text.context.getString(R.string.route_name, name)
-}
-
 @BindingAdapter("routeEnd")
 fun endOfRoute(text: TextView, end: String) {
     text.text = text.context.getString(R.string.end_station, end)

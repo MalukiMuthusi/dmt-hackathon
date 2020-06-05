@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import codes.malukimuthusi.hackathon.adapters.BusStopListAdapter
 import codes.malukimuthusi.hackathon.adapters.SaccoListAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentSaccosRouteBinding
+import codes.malukimuthusi.hackathon.webService.Place
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +30,7 @@ class SaccosRouteFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val saccoListAdapter = SaccoListAdapter()
     private val busStopListAdapter = BusStopListAdapter()
+    private val dummyPlace = Place()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +51,6 @@ class SaccosRouteFragment : Fragment() {
         // fetch saccos operating on the provided leg, route
         sharedViewModel.fetchSaccos(sharedViewModel.leg.routeId!!.split(":").last())
 
-        val stops = sharedViewModel.leg.intermediateStops
-
         binding.saccosList.adapter = saccoListAdapter
         binding.saccosList.setHasFixedSize(true)
 
@@ -60,7 +60,13 @@ class SaccosRouteFragment : Fragment() {
         })
 
         binding.busStopList.setHasFixedSize(true)
-        busStopListAdapter.submitList(stops)
+        sharedViewModel.stopsLD.observe(viewLifecycleOwner, Observer {
+            val stop = it as MutableList<Place>
+            if (!stop.contains(dummyPlace)) {
+                stop.add(0, dummyPlace)
+            }
+            busStopListAdapter.submitList(stop)
+        })
 
 
         // return root view

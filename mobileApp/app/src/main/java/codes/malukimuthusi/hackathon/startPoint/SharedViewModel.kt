@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.webService.Itinerary
 import codes.malukimuthusi.hackathon.webService.Leg
+import codes.malukimuthusi.hackathon.webService.Place
 import codes.malukimuthusi.hackathon.webService.TripPlan
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
@@ -25,6 +26,11 @@ class SharedViewModel : ViewModel() {
     private val routesRef = db.child("Routes")
     private val saccoList = mutableListOf<Sacco>()
     private var _saccoListMLD = MutableLiveData<List<Sacco>>()
+    private var _stopsMLD = MutableLiveData<List<Place>>()
+    val stopsLD: LiveData<List<Place>>
+        get() = _stopsMLD
+    private var stopsList = mutableListOf<Place>()
+
     val saccoListLD: LiveData<List<Sacco>>
         get() = _saccoListMLD
 
@@ -70,6 +76,8 @@ class SharedViewModel : ViewModel() {
                 if (!saccoList.contains(sacco)) {
                     saccoList.add(sacco)
                     _saccoListMLD.postValue(saccoList)
+                    stopsList = leg.intermediateStops as MutableList<Place>
+                    _stopsMLD.value = stopsList
                 }
             } else {
                 Timber.e("Null sacco returned")

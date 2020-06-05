@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/directionsFragment"
-        android:name="codes.malukimuthusi.hackathon.DirectionsFragment"
+        android:name="codes.malukimuthusi.hackathon.startPoint.DirectionsFragment"
         android:label="fragment_directions"
         tools:layout="@layout/fragment_directions">
         <action
