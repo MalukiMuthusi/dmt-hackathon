@@ -2,11 +2,18 @@ package codes.malukimuthusi.hackathon.startPoint
 
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TimePicker
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -33,6 +40,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
+import java.util.*
 import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
@@ -47,7 +55,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class SearchFragment : Fragment(), OnMapReadyCallback,
     EasyPermissions.PermissionCallbacks,
-    EasyPermissions.RationaleCallbacks {
+    EasyPermissions.RationaleCallbacks, AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -57,6 +65,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: SearchFragmentViewModel by viewModels()
     private var navigate by Delegates.notNull<Boolean>()
+    val options = mutableMapOf<String, String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +99,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         }
 
 
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.depart_options, android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinner.adapter = adapter
+        }
+
+
         // event for when start place button is clicked
         binding.startPlace.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragment2ToPlanTripFragment(TO)
@@ -114,7 +131,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                     Snackbar.make(binding.parentView, "Select Start Poimt.", Snackbar.LENGTH_LONG)
                 snackbar.show()
             } else {
-                val options = mutableMapOf<String, String>()
+
                 options["toPlace"] =
                     "${sharedViewModel.destination!!.latitude},${sharedViewModel.destination!!.longitude}"
                 options["fromPlace"] =
@@ -259,5 +276,37 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
 
     override fun onRationaleAccepted(requestCode: Int) {
         TODO("Not yet implemented")
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (position == 1) {
+            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+        }
+    }
+
+    inner class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+        override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+            val time = hourOfDay * 60 * 60 + minute * 60
+            options["time"] = "$time"
+        }
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val c = Calendar.getInstance()
+            val hour = c.get(Calendar.HOUR_OF_DAY)
+            val minute = c.get(Calendar.MINUTE)
+
+            // Create a new instance of TimePickerDialog and return it
+            return TimePickerDialog(
+                activity,
+                this,
+                hour,
+                minute,
+                DateFormat.is24HourFormat(activity)
+            )
+        }
     }
 }

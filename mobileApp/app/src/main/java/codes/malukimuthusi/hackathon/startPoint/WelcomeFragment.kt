@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.startPoint
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import codes.malukimuthusi.hackathon.AllRoutesActivity
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.RC_FINELOCATIONPERMS
 import codes.malukimuthusi.hackathon.adapters.FavouritePlacesAdapter
@@ -85,6 +87,19 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
             val directions =
                 WelcomeFragmentDirections.actionWelcomeFragmentToPlanTripFragment(TO)
             findNavController().navigate(directions)
+        }
+
+        binding.bottomNavigation.setOnNavigationItemReselectedListener { }
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.routes -> {
+                    val intent = Intent(requireContext(), AllRoutesActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+
         }
 
         return binding.root

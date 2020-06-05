@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="depart_options">
+        <item>
+            Depart Now
+        </item>
+        <item>
+            Set Your Departure time.
+        </item>
+        <item>
+            Set desired arrival time
+        </item>
+    </string-array>
+</resources>

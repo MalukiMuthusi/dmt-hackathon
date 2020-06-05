@@ -3,9 +3,11 @@
   <component name="ProjectPlainTextFileTypeManager">
     <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/MainActivity.kt" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/PlanTripMapsActivity.kt" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/RoutesMapsActivity.kt" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/codes/malukimuthusi/hackathon/viewModels/PlanTripsViewModel.kt" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_plan_trip_maps.xml" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_routes_maps.xml" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

@@ -20,6 +20,16 @@ private val db = Firebase.database.reference
 private val saccosRef = db.child("saccos")
 private val routesRef = db.child("Routes")
 
+@BindingAdapter("routeName")
+fun routeName(view: TextView, routeName: String) {
+    var name: String
+    if (routeName.length >= 20) {
+        name = routeName.substring(0, 20)
+    }
+    name = routeName
+    view.text = name
+}
+
 @BindingAdapter("fetchSaccoFare")
 fun fetchSaccoFare(text: TextView, routeId: String) {
     val id = routeId.split(":").last()

@@ -69,8 +69,8 @@ class SharedViewModel : ViewModel() {
             if (sacco != null) {
                 if (!saccoList.contains(sacco)) {
                     saccoList.add(sacco)
+                    _saccoListMLD.postValue(saccoList)
                 }
-                _saccoListMLD.postValue(saccoList)
             } else {
                 Timber.e("Null sacco returned")
             }
