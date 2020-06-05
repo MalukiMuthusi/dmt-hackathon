@@ -80,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:backgroundTint="@color/brown_400"
+                    android:backgroundTint="@color/green_500"
                     android:backgroundTintMode="src_in"
                     android:fadingEdge="horizontal"
                     android:tint="@color/fui_linkColor"

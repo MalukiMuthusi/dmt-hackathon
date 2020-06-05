@@ -134,14 +134,14 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
                 val points = PolyUtil.decode(leg.legGeometry!!.points)
                 map.addPolyline(
                     PolylineOptions()
-                        .color(R.color.indigo_400)
+                        .color(R.color.purple_700)
                         .addAll(points)
                 )
             } else {
                 val points = PolyUtil.decode(leg.legGeometry!!.points)
                 map.addPolyline(
                     PolylineOptions()
-                        .color(R.color.brown_400)
+                        .color(R.color.green_500)
                         .pattern(dottedPatern)
                         .addAll(points)
                 )

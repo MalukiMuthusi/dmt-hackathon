@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:targetApi="n">
-        <activity android:name=".AllRoutesActivity"></activity>
+        <activity android:name=".AllRoutesActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -48,16 +48,6 @@
             android:name=".FetchAddressIntentService"
             android:exported="false" />
 
-        <activity
-            android:name=".PlanTripMapsActivity"
-            android:label="@string/title_activity_plan_trip_maps">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".RoutesMapsActivity"
-            android:label="@string/title_activity_routes_maps" />
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">

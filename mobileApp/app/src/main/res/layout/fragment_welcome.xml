@@ -53,7 +53,7 @@
                     app:icon="@drawable/ic_search_black_24dp"
                     app:iconGravity="end"
                     app:iconSize="32dp"
-                    app:iconTint="@color/brown_700" />
+                    app:iconTint="@color/green_500" />
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolBar"

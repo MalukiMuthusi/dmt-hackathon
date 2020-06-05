@@ -47,7 +47,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:strokeColor="@color/indigo_400"
+                        app:strokeColor="@color/green_500"
                         tools:text="Choose Location" />
 
                     <com.google.android.material.button.MaterialButton
@@ -63,7 +63,7 @@
                         android:textStyle="normal"
                         android:typeface="normal"
                         app:icon="@drawable/stop20"
-                        app:iconTint="@color/indigo_400"
+                        app:iconTint="@color/green_500"
                         app:layout_constraintEnd_toEndOf="@+id/startPlace"
                         app:layout_constraintStart_toStartOf="@+id/startPlace"
                         app:layout_constraintTop_toBottomOf="@+id/startPlace" />
