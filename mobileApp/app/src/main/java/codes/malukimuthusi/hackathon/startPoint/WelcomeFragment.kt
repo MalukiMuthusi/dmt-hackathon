@@ -10,12 +10,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import codes.malukimuthusi.hackathon.AllRoutesActivity
 import codes.malukimuthusi.hackathon.R
-import codes.malukimuthusi.hackathon.RC_FINELOCATIONPERMS
 import codes.malukimuthusi.hackathon.adapters.FavouritePlacesAdapter
 import codes.malukimuthusi.hackathon.dataModel.favouritePlaceEx
 import codes.malukimuthusi.hackathon.databinding.FragmentWelcomeBinding
+import codes.malukimuthusi.hackathon.routes.AllRoutesActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
@@ -29,6 +28,7 @@ import timber.log.Timber
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM5 = "param1"
 private const val ARG_PARAM6 = "param2"
+const val RC_FINELOCATIONPERMS = 109
 
 /**
  * A simple [Fragment] subclass.

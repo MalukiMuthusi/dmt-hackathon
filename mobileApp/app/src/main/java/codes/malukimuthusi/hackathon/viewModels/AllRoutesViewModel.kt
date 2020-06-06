@@ -12,7 +12,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AllRoutesViewModel : ViewModel() {
-
     private var _routesMLD = MutableLiveData<List<Route>>()
     private var routesList = mutableListOf<Route>()
     val routesLD: LiveData<List<Route>>

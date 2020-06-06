@@ -1,4 +1,4 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.routes
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import codes.malukimuthusi.hackathon.adapters.AllRoutesListAdapter
+import codes.malukimuthusi.hackathon.adapters.RouteClickListener
 import codes.malukimuthusi.hackathon.databinding.FragmentAllRoutesBinding
 import codes.malukimuthusi.hackathon.viewModels.AllRoutesViewModel
 
@@ -45,7 +47,11 @@ class AllRoutesFragment : Fragment() {
         binding = FragmentAllRoutesBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val adapter = AllRoutesListAdapter()
+        val adapter = AllRoutesListAdapter(RouteClickListener {
+            val action =
+                AllRoutesFragmentDirections.actionAllRoutesFragmentToSaccosInRouteFragment(it)
+            findNavController().navigate(action)
+        })
         binding.recycler.setHasFixedSize(true)
         binding.recycler.adapter = adapter
         viewModel.routesLD.observe(viewLifecycleOwner, Observer {
@@ -69,9 +75,6 @@ class AllRoutesFragment : Fragment() {
                 binding.progressBar3.visibility = View.GONE
             }
         })
-
-
-
 
         return binding.root
     }

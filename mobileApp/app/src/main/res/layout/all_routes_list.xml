@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="clickListener"
+            type="codes.malukimuthusi.hackathon.adapters.RouteClickListener" />
+
+        <variable
             name="route"
             type="codes.malukimuthusi.hackathon.webService.Route" />
 
@@ -18,6 +22,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="@{()->clickListener.onClick(route.id)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

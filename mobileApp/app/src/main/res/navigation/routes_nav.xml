@@ -7,7 +7,20 @@
 
     <fragment
         android:id="@+id/allRoutesFragment"
-        android:name="codes.malukimuthusi.hackathon.AllRoutesFragment"
+        android:name="codes.malukimuthusi.hackathon.routes.AllRoutesFragment"
         android:label="fragment_all_routes"
-        tools:layout="@layout/fragment_all_routes" />
+        tools:layout="@layout/fragment_all_routes">
+        <action
+            android:id="@+id/action_allRoutesFragment_to_saccosInRouteFragment"
+            app:destination="@id/saccosInRouteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/saccosInRouteFragment"
+        android:name="codes.malukimuthusi.hackathon.routes.SaccosInRouteFragment"
+        android:label="fragment_saccos_in_route"
+        tools:layout="@layout/fragment_saccos_in_route">
+        <argument
+            android:name="routeId"
+            app:argType="string" />
+    </fragment>
 </navigation>

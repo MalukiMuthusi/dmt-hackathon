@@ -1,8 +1,9 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.routes
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.ActivityAllRoutesBinding
 
 class AllRoutesActivity : AppCompatActivity() {
@@ -10,6 +11,9 @@ class AllRoutesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_all_routes)
+        binding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_all_routes
+        )
     }
 }
