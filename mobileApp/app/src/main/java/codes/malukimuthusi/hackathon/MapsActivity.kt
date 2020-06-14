@@ -45,7 +45,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, EasyPermissions.Pe
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+            .findFragmentById(R.id.map_Location) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)

@@ -20,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:targetApi="n">
+
         <activity android:name=".AllRoutesActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -36,17 +37,13 @@
         <activity
             android:name=".SearchRoutesActivity"
             android:label="@string/title_activity_search_routes" />
+
         <activity android:name=".startPoint.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".FetchAddressIntentService"
-            android:exported="false" />
 
         <activity
             android:name=".MapsActivity"
@@ -55,11 +52,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".NewSacco">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

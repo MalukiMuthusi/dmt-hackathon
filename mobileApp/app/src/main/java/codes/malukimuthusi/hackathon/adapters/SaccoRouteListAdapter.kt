@@ -2,13 +2,12 @@ package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.databinding.SaccosRouteListBinding
 
-class SaccoListAdapter : ListAdapter<Sacco, SaccoListViewHolder>(saccoDIFF) {
+class SaccoListAdapter : ListAdapter<Sacco, SaccoListViewHolder>(SaccoDIFF) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaccoListViewHolder {
         return SaccoListViewHolder.Instance(parent)
     }
@@ -33,12 +32,3 @@ class SaccoListViewHolder private constructor(private val binding: SaccosRouteLi
     }
 }
 
-object saccoDIFF : DiffUtil.ItemCallback<Sacco>() {
-    override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
-        return oldItem == newItem
-    }
-}
