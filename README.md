@@ -10,4 +10,26 @@ The requirements were to develop a solution that:
   
   - - -  
   
-  The app provides the stated requirements.
+The app provides the stated requirements.
+  
+ScreenShots
+===========
+
+Welcome Screen
+  
+![Welcome Page]( docs_images/image1_edited.jpg "Welcome Page")  
+
+Plan Trip Screen
+  
+![]( docs_images/image2_edited.jpg "Search For Available means to get to destination")
+
+Search Results.
+![]( docs_images/image3_edited.jpg "Route Search Results")
+
+Buses and Fares for Routes to the destination
+![]( docs_images/image4_edited.jpg "Route Legs and Fares for each Leg.")
+
+Bus Stops and Saccos/Agencies offering transport services
+![]( docs_images/image5_edited.jpg "Bus Stops and Saccos")
+
+
