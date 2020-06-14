@@ -29,8 +29,6 @@ interface Repo {
 }
 
 object Repository {
-    private val dbRef = Firebase.database.reference
-    private val otpService = OpenTripPlannerService.otpServices
 
     suspend fun fetchAddress(latLng: LatLng, context: Context): String {
         val geocode = Geocoder(context)
@@ -67,13 +65,13 @@ object Repository {
     * */
     fun getRoutes(childEventListener: ChildEventListener) {
 
-        val routesPath = dbRef.child("Routes")
+        val routesPath = Firebase.database.reference.child("Routes")
         routesPath.addChildEventListener(childEventListener)
     }
 
     // get sacco's in the database
     fun getSaccos(saccoList: MutableLiveData<MutableMap<String, Sacco>>) {
-        val saccosPath = dbRef.child("saccos")
+        val saccosPath = Firebase.database.reference.child("saccos")
         val valueEventListener =
             FetchSaccoEventListener(
                 saccoList
@@ -91,7 +89,8 @@ object Repository {
         routeId: String,
         saccosInRouteEventListener: SaccosInRouteEventListener
     ) {
-        val saccosInRouteRef = dbRef.child("Routes").child(routeId).child("saccos")
+        val saccosInRouteRef =
+            Firebase.database.reference.child("Routes").child(routeId).child("saccos")
 
         // check if the route has sacco's. If the route has no Saccos return null
         if (saccosInRouteRef.key != null) {
@@ -110,7 +109,8 @@ object Repository {
         eventListener: SingleSaccoValueEventListener
     ) {
 
-        dbRef.child("saccos").child(saccoID).addValueEventListener(eventListener)
+        Firebase.database.reference.child("saccos").child(saccoID)
+            .addValueEventListener(eventListener)
 
     }
 
@@ -234,7 +234,7 @@ object Repository {
         // reference https://stackoverflow.com/questions/7477003/calculating-new-longitude-latitude-from-old-n-meters
 
         return withContext(Dispatchers.IO) {
-            otpService.getListOfStops(
+            OpenTripPlannerService.otpServices.getListOfStops(
                 lat,
                 log,
                 maxLat,
@@ -248,14 +248,14 @@ object Repository {
     }
 
     // get a single stop point
-    suspend fun getStop(stopID: String): Stop = otpService.givenStop(stopID)
+    suspend fun getStop(stopID: String): Stop = OpenTripPlannerService.otpServices.givenStop(stopID)
 
     // get all the routes
-    suspend fun allRoutes() = otpService.getAllRoutes()
+    suspend fun allRoutes() = OpenTripPlannerService.otpServices.getAllRoutes()
 
     // plan trip
     suspend fun planTrip(values: Map<String, String>?) = withContext(Dispatchers.IO) {
-        otpService.planTrip(values)
+        OpenTripPlannerService.otpServices.planTrip(values)
     }
 }
 

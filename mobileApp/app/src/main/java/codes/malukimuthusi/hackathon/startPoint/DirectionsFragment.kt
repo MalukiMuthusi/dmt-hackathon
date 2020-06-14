@@ -56,7 +56,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentDirectionsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_Location) as SupportMapFragment
         mapFragment.getMapAsync(this)
         val adapter = SingleTransitLegAdapter(LegClickListener { leg ->
             sharedViewModel.leg = leg

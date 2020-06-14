@@ -75,7 +75,8 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
         binding = FragmentPlanTripBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_Location) as SupportMapFragment
         mapFragment.getMapAsync(this)
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
 
