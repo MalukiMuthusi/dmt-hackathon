@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -32,23 +33,25 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-            <fragment
-                android:id="@+id/map_Location"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+            <com.mapbox.mapboxsdk.maps.MapView
+                android:id="@+id/mapView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toTopOf="@+id/materialCardView2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                mapbox:mapbox_cameraTargetLat="-1.2857"
+                mapbox:mapbox_cameraTargetLng="36.8250"
+                mapbox:mapbox_cameraZoom="11" />
 
             <ImageView
                 android:id="@+id/pointTracker"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:contentDescription="@string/start_destination_marker"
-                android:elevation="4dp"
+                android:tint="@color/purple_700"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

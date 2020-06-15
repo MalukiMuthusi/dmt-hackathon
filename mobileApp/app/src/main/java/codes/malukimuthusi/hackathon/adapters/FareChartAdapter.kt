@@ -11,7 +11,7 @@ import timber.log.Timber
 
 class FareChartAdapter(val clicklistener: FareChartListener) :
     ListAdapter<Route, ChartViewHolder>(
-        DIFFCALLBACK
+        RouteDiff
     ) {
 
 
@@ -48,7 +48,7 @@ class ChartViewHolder private constructor(
 
 }
 
-object DIFFCALLBACK : DiffUtil.ItemCallback<Route>() {
+private object RouteDiff : DiffUtil.ItemCallback<Route>() {
 
     override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
         return oldItem === newItem

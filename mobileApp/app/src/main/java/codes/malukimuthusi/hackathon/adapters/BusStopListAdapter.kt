@@ -115,7 +115,7 @@ class BusStopTitleViewHolder private constructor(binding: StopsListTitleBinding)
     }
 }
 
-object PlaceDIFF : DiffUtil.ItemCallback<Place>() {
+private object PlaceDIFF : DiffUtil.ItemCallback<Place>() {
     override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
         return oldItem === newItem
     }

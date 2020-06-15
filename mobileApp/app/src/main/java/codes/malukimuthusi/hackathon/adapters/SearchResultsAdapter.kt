@@ -17,7 +17,7 @@ import codes.malukimuthusi.hackathon.webService.Itinerary
 import codes.malukimuthusi.hackathon.webService.Leg
 
 class SearchResultsAdapter(private val itineraryClickListener: ItineraryClickListener) :
-    ListAdapter<Itinerary, SearchResultAdapterViewHolder>(ItinaryDIFF) {
+    ListAdapter<Itinerary, SearchResultAdapterViewHolder>(ItineraryDIFF) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -162,7 +162,7 @@ class SearchResultAdapterViewHolder private constructor(
     }
 }
 
-object ItinaryDIFF : DiffUtil.ItemCallback<Itinerary>() {
+object ItineraryDIFF : DiffUtil.ItemCallback<Itinerary>() {
     override fun areItemsTheSame(oldItem: Itinerary, newItem: Itinerary): Boolean {
         return oldItem === newItem
     }

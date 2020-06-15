@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.android.libraries.places.api.Places
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.mapbox.mapboxsdk.Mapbox
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -22,17 +23,11 @@ class MainApplication : Application() {
             Timber.plant(DebugTree())
         }
 
-        createLocationRequest()
-
         Places.initialize(applicationContext, "AIzaSyDhmypbi5Eaw6MO2r4RF54qlOkSt67nwb0")
-        val placesClient = Places.createClient(this)
+        Places.createClient(this)
 
+        // Mapbox Access token
+        Mapbox.getInstance(applicationContext, getString(R.string.mapbox_access_token))
     }
 
-    //[start fun createLocationRequest]
-    fun createLocationRequest() {
-
-
-    }
-    //[End fun createLocationRequest]
 }

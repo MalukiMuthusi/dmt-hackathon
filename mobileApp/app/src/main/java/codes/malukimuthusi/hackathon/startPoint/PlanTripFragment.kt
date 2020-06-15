@@ -1,32 +1,22 @@
 package codes.malukimuthusi.hackathon.startPoint
 
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentPlanTripBinding
-import codes.malukimuthusi.hackathon.repository.Repository.fetchAddress
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.launch
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.maps.Style
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
-import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -40,7 +30,7 @@ const val AUTOCOMPLETE_REQUEST_CODE = 1
  * Use the [PlanTripFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PlanTripFragment : Fragment(), OnMapReadyCallback,
+class PlanTripFragment : Fragment(),
     EasyPermissions.PermissionCallbacks,
     EasyPermissions.RationaleCallbacks {
 
@@ -50,13 +40,8 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
     private var param2: String? = null
 
     private lateinit var binding: FragmentPlanTripBinding
-    private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProvider: FusedLocationProviderClient
-    private lateinit var lastKnownLocation: LatLng
-    val args: PlanTripFragmentArgs by navArgs()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var geocoder: Geocoder
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +50,7 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(
@@ -75,9 +61,23 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
         binding = FragmentPlanTripBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_Location) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        // mapbox
+        Mapbox.getInstance(
+            requireContext(),
+            getString(R.string.mapbox_access_token)
+        )
+        binding.mapView.onCreate(savedInstanceState)
+        // map box
+        binding.mapView.getMapAsync { mapboxMap ->
+            // set style
+            mapboxMap.setStyle(Style.MAPBOX_STREETS) { style ->
+
+                val uiSettings = mapboxMap.uiSettings
+
+                uiSettings.isDoubleTapGesturesEnabled = true
+            }
+        }
+
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         val navController = findNavController()
@@ -85,18 +85,34 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
 
 
-        binding.okButton.setOnClickListener {
-            if (args.locationType == TO) {
-                sharedViewModel.destination = googleMap.cameraPosition.target
 
-            } else {
-                sharedViewModel.startPoint = googleMap.cameraPosition.target
-            }
-            val action = PlanTripFragmentDirections.actionPlanTripFragmentToSearchFragment2()
-            findNavController().navigate(action)
-        }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.mapView.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
     }
 
     companion object {
@@ -117,25 +133,6 @@ class PlanTripFragment : Fragment(), OnMapReadyCallback,
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
-
-    override fun onMapReady(map: GoogleMap?) {
-        googleMap = map ?: return
-        if (sharedViewModel.startPoint != null) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint, 15f))
-        }
-
-        geocoder = Geocoder(requireContext(), Locale.getDefault())
-        googleMap.setOnCameraIdleListener {
-            lifecycleScope.launch {
-                binding.textView2.text = fetchAddress(
-                    googleMap.cameraPosition.target,
-                    requireContext()
-                )
-            }
-        }
-
-
     }
 
 

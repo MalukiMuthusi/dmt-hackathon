@@ -38,7 +38,7 @@ class AllRoutesViewHolder private constructor(
     }
 }
 
-object RouteDIFF : DiffUtil.ItemCallback<Route>() {
+private object RouteDIFF : DiffUtil.ItemCallback<Route>() {
     override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
         return oldItem === newItem
     }

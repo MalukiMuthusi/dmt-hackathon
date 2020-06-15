@@ -35,7 +35,7 @@ class SaccosListViewHolder private constructor(private val binding: SaccosListBi
     }
 }
 
-object SaccoDiff : DiffUtil.ItemCallback<Sacco>() {
+private object SaccoDiff : DiffUtil.ItemCallback<Sacco>() {
     override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
         return oldItem === newItem
     }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.dataModel.Favorite
 import codes.malukimuthusi.hackathon.databinding.FavouritesBinding
 
-class FavouritePlacesAdapter : ListAdapter<Favorite, FavoritePlaceViewHolder>(favoriteDIFF) {
+class FavouritePlacesAdapter : ListAdapter<Favorite, FavoritePlaceViewHolder>(FavoriteDIFF) {
     override fun onBindViewHolder(holder: FavoritePlaceViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
@@ -34,7 +34,7 @@ class FavoritePlaceViewHolder private constructor(private val binding: Favourite
     }
 }
 
-object favoriteDIFF : DiffUtil.ItemCallback<Favorite>() {
+private object FavoriteDIFF : DiffUtil.ItemCallback<Favorite>() {
     override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
         return oldItem === newItem
     }

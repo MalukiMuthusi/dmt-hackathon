@@ -88,7 +88,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_Location) as SupportMapFragment
+            childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
 //        binding.toolBar.setupWithNavController(navController, appBarConfiguration)

@@ -2,26 +2,10 @@ package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.databinding.SaccoDetailsBinding
 
-
-class SaccoDetailAdapter : ListAdapter<Sacco, SaccoDetailViewHolder>(
-    Diif
-) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaccoDetailViewHolder {
-        return SaccoDetailViewHolder.from(
-            parent
-        )
-    }
-
-    override fun onBindViewHolder(holder: SaccoDetailViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-}
 
 class SaccoDetailViewHolder private constructor(val binding: SaccoDetailsBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -41,13 +25,3 @@ class SaccoDetailViewHolder private constructor(val binding: SaccoDetailsBinding
 
 }
 
-object Diif : DiffUtil.ItemCallback<Sacco>() {
-    override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
-        return oldItem == newItem
-    }
-
-}
