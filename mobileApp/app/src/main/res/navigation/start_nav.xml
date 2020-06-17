@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_welcomeFragment_to_planTripFragment"
             app:destination="@id/planTripFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_searchFragment2"
+            app:destination="@id/searchFragment2" />
     </fragment>
     <fragment
         android:id="@+id/planTripFragment"

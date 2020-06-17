@@ -49,6 +49,18 @@ class BusStopListAdapter : ListAdapter<Place, RecyclerView.ViewHolder>(PlaceDIFF
             else -> (holder as MidBusStopViewHolder).bind(getItem(position))
         }
     }
+
+    companion object {
+        private object PlaceDIFF : DiffUtil.ItemCallback<Place>() {
+            override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
+                return oldItem === newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }
 
 class MidBusStopViewHolder private constructor(private val binding: MidBusStopListBinding) :
@@ -115,12 +127,3 @@ class BusStopTitleViewHolder private constructor(binding: StopsListTitleBinding)
     }
 }
 
-private object PlaceDIFF : DiffUtil.ItemCallback<Place>() {
-    override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean {
-        return oldItem == newItem
-    }
-}

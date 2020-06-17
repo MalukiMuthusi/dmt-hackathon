@@ -1,7 +1,7 @@
 package codes.malukimuthusi.hackathon.startPoint
 
-import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -10,20 +10,16 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TimePicker
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentSearchBinding
-import codes.malukimuthusi.hackathon.repository.Repository
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -34,12 +30,16 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
+import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
+import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
 import pub.devrel.easypermissions.EasyPermissions
-import timber.log.Timber
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -47,6 +47,8 @@ import kotlin.properties.Delegates
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+var time = ""
+var date = ""
 
 /**
  * A simple [Fragment] subclass.
@@ -91,13 +93,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
-//        binding.toolBar.setupWithNavController(navController, appBarConfiguration)
-        lifecycleScope.launch {
-            binding.startPlace.text =
-                Repository.fetchAddress(sharedViewModel.startPoint!!, requireContext())
-            binding.toPlace.text =
-                Repository.fetchAddress(sharedViewModel.destination!!, requireContext())
-        }
+
+
+        // set text for start and destination.
+        binding.toPlace.text = sharedViewModel.destinationString
+        binding.startPlace.text = sharedViewModel.startPointString
 
 
         ArrayAdapter.createFromResource(
@@ -106,19 +106,38 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinner.adapter = adapter
         }
+        binding.spinner.onItemSelectedListener = this
 
 
         // event for when start place button is clicked
         binding.startPlace.setOnClickListener {
-            val action = SearchFragmentDirections.actionSearchFragment2ToPlanTripFragment(TO)
-//            findNavController().navigate(action)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            val placeOptions = PlaceOptions.builder()
+                .country("Kenya")
+                .bbox(36.213083, -1.864678, 37.48887, -0.759486)
+                .build()
+
+            val intenta = PlaceAutocomplete.IntentBuilder()
+                .accessToken(requireContext().getString(R.string.mapbox_access_token))
+                .placeOptions(placeOptions)
+                .build(requireActivity())
+            startActivityForResult(intenta, AUTOCOMPLETE_REQUEST_CODE)
         }
 
         // event for when start place button is clicked
         binding.toPlace.setOnClickListener {
-            val action = SearchFragmentDirections.actionSearchFragment2ToPlanTripFragment(TO)
-            findNavController().navigate(action)
+            val cameraPosition = CameraPosition.Builder()
+                .target(LatLng(-1.2909, 36.8282))
+                .zoom(16.0)
+                .build()
+            val placePickerOptions = PlacePickerOptions.builder()
+                .statingCameraPosition(cameraPosition)
+                .includeReverseGeocode(false)
+                .build()
+            val toIntent = PlacePicker.IntentBuilder()
+                .accessToken(Mapbox.getAccessToken()!!)
+                .placeOptions(placePickerOptions)
+                .build(requireActivity())
+            startActivityForResult(toIntent, PLACE_SELECTION_REQUEST_CODE)
         }
 
         // take action when search button is pressed.
@@ -187,22 +206,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            AUTOCOMPLETE_REQUEST_CODE -> {
-                if (requestCode == RESULT_OK) {
-                    val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
-                    Timber.e("%s", place?.name ?: "no name")
-                }
-                if (requestCode == AutocompleteActivity.RESULT_CANCELED) {
-                    val status = data?.let { Autocomplete.getStatusFromIntent(it) }
-                    Timber.e(status?.statusMessage)
-                }
-                if (resultCode == RESULT_CANCELED) {
-                    Timber.e("User Cancelled")
-                }
-
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            val feature = PlaceAutocomplete.getPlace(data)
+            Toast.makeText(requireContext(), feature.text(), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -224,6 +231,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                     putString(ARG_PARAM2, param2)
                 }
             }
+
+        private val PLACE_SELECTION_REQUEST_CODE = 56789
     }
 
     override fun onMapReady(map: GoogleMap?) {
@@ -284,15 +293,23 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (position == 1) {
-            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+        when (position) {
+            1 -> {
+                TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+            }
         }
     }
 
-    inner class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+    class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
         override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-            val time = hourOfDay * 60 * 60 + minute * 60
-            options["time"] = "$time"
+            var am_pm = "am"
+            var hour = hourOfDay.toString()
+            if (hourOfDay > 12) {
+                am_pm = "pm"
+                hour = (hourOfDay - 12).toString()
+            }
+            time = "${hour}:${minute}${am_pm}"
+
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -308,6 +325,24 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                 minute,
                 DateFormat.is24HourFormat(activity)
             )
+        }
+    }
+
+    class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            // Use the current date as the default date in the picker
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+
+            // Create a new instance of DatePickerDialog and return it
+            return DatePickerDialog(requireActivity(), this, year, month, day)
+        }
+
+        override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
+            // Do something with the date chosen by the user
         }
     }
 }

@@ -18,6 +18,9 @@ import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 
 class SharedViewModel : ViewModel() {
+    var destinationString: String = "unknown"
+    var startPointString: String = "unknown"
+
     var startPoint: LatLng? = null
     var destination: LatLng? = null
     lateinit var leg: Leg

@@ -30,6 +30,7 @@ interface Repo {
 
 object Repository {
 
+    // perform geocode
     suspend fun fetchAddress(latLng: LatLng, context: Context): String {
         val geocode = Geocoder(context)
         try {

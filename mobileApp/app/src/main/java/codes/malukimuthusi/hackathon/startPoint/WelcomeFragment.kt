@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.startPoint
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +19,10 @@ import codes.malukimuthusi.hackathon.routes.AllRoutesActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.snackbar.Snackbar
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
+import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -53,6 +57,7 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -82,11 +87,24 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
 
 
         binding.buttonQ.setOnClickListener {
-            val snackbar = Snackbar.make(it, "Navigating", Snackbar.LENGTH_LONG)
-            snackbar.show()
-            val directions =
-                WelcomeFragmentDirections.actionWelcomeFragmentToPlanTripFragment(TO)
-            findNavController().navigate(directions)
+            // camera options
+            val cameraPosition = CameraPosition.Builder()
+                .target(com.mapbox.mapboxsdk.geometry.LatLng(-1.2909, 36.8282))
+                .zoom(16.0)
+                .build()
+
+            // place picker options
+            val placePickerOptions = PlacePickerOptions.builder()
+                .statingCameraPosition(cameraPosition)
+                .includeReverseGeocode(true)
+                .build()
+
+            // intent to start places picker activity
+            val toIntent = PlacePicker.IntentBuilder()
+                .accessToken(Mapbox.getAccessToken()!!)
+                .placeOptions(placePickerOptions)
+                .build(requireActivity())
+            startActivityForResult(toIntent, PICKER_CODE)
         }
 
         binding.bottomNavigation.setOnNavigationItemReselectedListener { }
@@ -103,6 +121,23 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
         }
 
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICKER_CODE && resultCode == RESULT_OK) {
+            val carmenFeature = PlacePicker.getPlace(data)
+            if (carmenFeature != null) {
+                val coordinates = carmenFeature.center()
+                sharedViewModel.destinationString = carmenFeature.placeName()!!
+                sharedViewModel.destination =
+                    LatLng(coordinates!!.latitude(), coordinates.longitude())
+
+                val action = WelcomeFragmentDirections.actionWelcomeFragmentToSearchFragment2()
+                findNavController().navigate(action)
+            }
+
+        }
     }
 
     companion object {
@@ -123,6 +158,8 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
                     putString(ARG_PARAM6, param2)
                 }
             }
+
+        val PICKER_CODE = 3089
     }
 
     @AfterPermissionGranted(RC_FINELOCATIONPERMS)

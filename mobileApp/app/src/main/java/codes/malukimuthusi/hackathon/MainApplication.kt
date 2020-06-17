@@ -26,7 +26,8 @@ class MainApplication : Application() {
         Places.initialize(applicationContext, "AIzaSyDhmypbi5Eaw6MO2r4RF54qlOkSt67nwb0")
         Places.createClient(this)
 
-        // Mapbox Access token
+        // Mapbox access token is configured here. This needs to be called either in your application
+        // object or in the same activity which contains the mapview.
         Mapbox.getInstance(applicationContext, getString(R.string.mapbox_access_token))
     }
 

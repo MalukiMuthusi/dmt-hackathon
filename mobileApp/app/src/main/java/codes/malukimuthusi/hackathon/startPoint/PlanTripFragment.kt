@@ -1,9 +1,12 @@
 package codes.malukimuthusi.hackathon.startPoint
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,11 +15,15 @@ import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentPlanTripBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.android.core.permissions.PermissionsListener
+import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.LocationComponentOptions
+import com.mapbox.mapboxsdk.location.modes.CameraMode
+import com.mapbox.mapboxsdk.location.modes.RenderMode
+import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
-import timber.log.Timber
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,9 +38,9 @@ const val AUTOCOMPLETE_REQUEST_CODE = 1
  * create an instance of this fragment.
  */
 class PlanTripFragment : Fragment(),
-    EasyPermissions.PermissionCallbacks,
-    EasyPermissions.RationaleCallbacks {
-
+    OnMapReadyCallback, PermissionsListener {
+    private var permissionsManager: PermissionsManager = PermissionsManager(this)
+    private lateinit var mapboxMap: MapboxMap
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -61,30 +68,19 @@ class PlanTripFragment : Fragment(),
         binding = FragmentPlanTripBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        // mapbox
-        Mapbox.getInstance(
-            requireContext(),
-            getString(R.string.mapbox_access_token)
-        )
-        binding.mapView.onCreate(savedInstanceState)
-        // map box
-        binding.mapView.getMapAsync { mapboxMap ->
-            // set style
-            mapboxMap.setStyle(Style.MAPBOX_STREETS) { style ->
-
-                val uiSettings = mapboxMap.uiSettings
-
-                uiSettings.isDoubleTapGesturesEnabled = true
-            }
-        }
-
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
 
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(this)
 
+        binding.okButton.setOnClickListener {
+            val action = PlanTripFragmentDirections.actionPlanTripFragmentToSearchFragment2()
+            findNavController().navigate(action)
+        }
 
 
         return binding.root
@@ -136,22 +132,52 @@ class PlanTripFragment : Fragment(),
     }
 
 
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            AppSettingsDialog.Builder(this).build().show()
+    override fun onMapReady(mapboxMap: MapboxMap) {
+        this.mapboxMap = mapboxMap
+
+        mapboxMap.setStyle(
+            Style.MAPBOX_STREETS
+        ) {
+
+            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+            enableLocationComponent(it)
         }
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        Timber.d("Permissons granted %s", perms.toString())
-    }
+    @SuppressLint("MissingPermission")
+    private fun enableLocationComponent(loadedMapStyle: Style) {
+        // Check if permissions are enabled and if not request
+        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
 
-    override fun onRationaleDenied(requestCode: Int) {
-        TODO("Not yet implemented")
-    }
+            // Create and customize the LocationComponent's options
+            val customLocationComponentOptions = LocationComponentOptions.builder(requireContext())
+                .trackingGesturesManagement(true)
+                .accuracyColor(ContextCompat.getColor(requireContext(), R.color.purple_700))
+                .build()
 
-    override fun onRationaleAccepted(requestCode: Int) {
-        TODO("Not yet implemented")
+            val locationComponentActivationOptions =
+                LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle)
+                    .locationComponentOptions(customLocationComponentOptions)
+                    .build()
+
+            // Get an instance of the LocationComponent and then adjust its settings
+            mapboxMap.locationComponent.apply {
+                // Activate the LocationComponent with options
+                activateLocationComponent(locationComponentActivationOptions)
+
+                // Enable to make the LocationComponent visible
+                isLocationComponentEnabled = true
+
+                // Set the LocationComponent's camera mode
+                cameraMode = CameraMode.TRACKING
+
+                // Set the LocationComponent's render mode
+                renderMode = RenderMode.COMPASS
+            }
+        } else {
+            permissionsManager = PermissionsManager(this)
+            permissionsManager.requestLocationPermissions(requireActivity())
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -159,8 +185,20 @@ class PlanTripFragment : Fragment(),
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
+    }
+
+    override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
+        Toast.makeText(requireContext(), "give Permissions", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onPermissionResult(granted: Boolean) {
+        if (granted) {
+            enableLocationComponent(mapboxMap.style!!)
+        } else {
+            Toast.makeText(requireContext(), "give Permissions", Toast.LENGTH_LONG).show()
+            requireActivity().finish()
+        }
     }
 }

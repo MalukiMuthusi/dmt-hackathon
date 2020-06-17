@@ -16,6 +16,19 @@ class SaccoListAdapter : ListAdapter<Sacco, SaccoListViewHolder>(SaccoDIFF) {
     override fun onBindViewHolder(holder: SaccoListViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    companion object {
+        private object SaccoDIFF : DiffUtil.ItemCallback<Sacco>() {
+            override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
+                return oldItem === newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+
 }
 
 class SaccoListViewHolder private constructor(private val binding: SaccosRouteListBinding) :
@@ -33,13 +46,5 @@ class SaccoListViewHolder private constructor(private val binding: SaccosRouteLi
     }
 }
 
-private object SaccoDIFF : DiffUtil.ItemCallback<Sacco>() {
-    override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
-        return oldItem === newItem
-    }
 
-    override fun areContentsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
-        return oldItem == newItem
-    }
-}
 
