@@ -11,31 +11,14 @@
         android:label=""
         tools:layout="@layout/fragment_welcome">
         <action
-            android:id="@+id/action_welcomeFragment_to_planTripFragment"
-            app:destination="@id/planTripFragment" />
-        <action
             android:id="@+id/action_welcomeFragment_to_searchFragment2"
             app:destination="@id/searchFragment2" />
-    </fragment>
-    <fragment
-        android:id="@+id/planTripFragment"
-        android:name="codes.malukimuthusi.hackathon.startPoint.PlanTripFragment"
-        android:label="Select Location">
-        <action
-            android:id="@+id/action_planTripFragment_to_searchFragment2"
-            app:destination="@id/searchFragment2" />
-        <argument
-            android:name="locationType"
-            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment2"
         android:name="codes.malukimuthusi.hackathon.startPoint.SearchFragment"
         android:label=""
         tools:layout="@layout/fragment_search">
-        <action
-            android:id="@+id/action_searchFragment2_to_planTripFragment"
-            app:destination="@id/planTripFragment" />
         <action
             android:id="@+id/action_searchFragment2_to_searchResultsFragment"
             app:destination="@id/searchResultsFragment" />

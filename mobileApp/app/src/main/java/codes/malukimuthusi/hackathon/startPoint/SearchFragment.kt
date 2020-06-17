@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -20,35 +21,28 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentSearchBinding
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
+import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
+import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
-import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
-import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 var time = ""
-var date = ""
+const val AUTOCOMPLETE_REQUEST_CODE = 333
+
 
 /**
  * A simple [Fragment] subclass.
@@ -56,18 +50,36 @@ var date = ""
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment(), OnMapReadyCallback,
-    EasyPermissions.PermissionCallbacks,
-    EasyPermissions.RationaleCallbacks, AdapterView.OnItemSelectedListener {
+    AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var googleMap: GoogleMap
+    private lateinit var mapboxMap: MapboxMap
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: SearchFragmentViewModel by viewModels()
-    private var navigate by Delegates.notNull<Boolean>()
-    val options = mutableMapOf<String, String>()
+    private val options = mutableMapOf<String, String>()
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView.onPause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.mapView.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,15 +94,12 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // autocomplete places
-        val fields = listOf(Place.Field.ID, Place.Field.NAME)
-        val intent = Autocomplete.IntentBuilder(
-            AutocompleteActivityMode.FULLSCREEN, fields
-        ).build(requireContext())
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false)
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(this)
+
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
@@ -113,14 +122,19 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         binding.startPlace.setOnClickListener {
             val placeOptions = PlaceOptions.builder()
                 .country("Kenya")
-                .bbox(36.213083, -1.864678, 37.48887, -0.759486)
-                .build()
+                .backgroundColor(Color.parseColor("#EEEEEE"))
+                .build(PlaceOptions.MODE_CARDS)
 
-            val intenta = PlaceAutocomplete.IntentBuilder()
-                .accessToken(requireContext().getString(R.string.mapbox_access_token))
+            //.bbox(36.213083, -1.864678, 37.48887, -0.759486)
+
+            val intent = PlaceAutocomplete.IntentBuilder()
+                .accessToken(
+                    Mapbox.getAccessToken()
+                        ?: requireContext().getString(R.string.mapbox_access_token)
+                )
                 .placeOptions(placeOptions)
                 .build(requireActivity())
-            startActivityForResult(intenta, AUTOCOMPLETE_REQUEST_CODE)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
 
         // event for when start place button is clicked
@@ -201,7 +215,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             snackbar.show()
         })
 
-        mapFragment.getMapAsync(this)
         return binding.root
     }
 
@@ -235,58 +248,41 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         private val PLACE_SELECTION_REQUEST_CODE = 56789
     }
 
-    override fun onMapReady(map: GoogleMap?) {
-        googleMap = map ?: return
-        if (sharedViewModel.destination != null) {
-            googleMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(sharedViewModel.destination, 12f)
-            )
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(sharedViewModel.destination!!)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_75pct))
-            )
-        }
-        if (sharedViewModel.startPoint != null) {
-            googleMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint, 12f)
-            )
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(sharedViewModel.startPoint!!)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_75pct))
-            )
-        }
-        if (sharedViewModel.startPoint != null && sharedViewModel.destination != null) {
-            val points = listOf(sharedViewModel.destination!!, sharedViewModel.startPoint!!)
-            val bound = LatLngBounds.Builder()
-                .include(sharedViewModel.startPoint)
-                .include(sharedViewModel.destination)
-                .build()
-            val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 100)
-            googleMap.animateCamera(cameraUpdateFactory)
-            googleMap.addPolyline(
-                PolylineOptions()
-                    .addAll(points)
-            )
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onMapReady(map: MapboxMap) {
+        mapboxMap = map
+        map.setStyle(Style.MAPBOX_STREETS) {
+            if (sharedViewModel.destination != null) {
+                mapboxMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(sharedViewModel.destination!!, 12.0)
+                )
+
+                // add marker
+            }
+            if (sharedViewModel.startPoint != null) {
+                mapboxMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint!!, 12.0)
+                )
+
+                // add marker
+            }
+            if (sharedViewModel.startPoint != null && sharedViewModel.destination != null) {
+                val bound = LatLngBounds.Builder()
+                    .include(sharedViewModel.startPoint!!)
+                    .include(sharedViewModel.destination!!)
+                    .build()
+                val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 100)
+                mapboxMap.animateCamera(cameraUpdateFactory)
+
+                // draw the path
+            }
         }
     }
 
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onRationaleDenied(requestCode: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onRationaleAccepted(requestCode: Int) {
-        TODO("Not yet implemented")
-    }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")

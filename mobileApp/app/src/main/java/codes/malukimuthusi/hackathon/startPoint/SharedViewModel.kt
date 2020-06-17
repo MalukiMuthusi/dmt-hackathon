@@ -8,13 +8,13 @@ import codes.malukimuthusi.hackathon.webService.Itinerary
 import codes.malukimuthusi.hackathon.webService.Leg
 import codes.malukimuthusi.hackathon.webService.Place
 import codes.malukimuthusi.hackathon.webService.TripPlan
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.mapbox.mapboxsdk.geometry.LatLng
 import timber.log.Timber
 
 class SharedViewModel : ViewModel() {

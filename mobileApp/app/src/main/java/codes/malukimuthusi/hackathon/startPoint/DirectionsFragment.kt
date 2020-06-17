@@ -1,26 +1,21 @@
 package codes.malukimuthusi.hackathon.startPoint
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.adapters.LegClickListener
 import codes.malukimuthusi.hackathon.adapters.SingleTransitLegAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentDirectionsBinding
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
-import com.google.maps.android.PolyUtil
+import com.mapbox.geojson.LineString
+import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
+import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.LineManager
+import com.mapbox.mapboxsdk.plugins.annotation.LineOptions
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +32,7 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentDirectionsBinding
-    private lateinit var map: GoogleMap
+    private lateinit var map: MapboxMap
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
 
@@ -56,9 +51,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentDirectionsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+
+        // recycler view adapter
         val adapter = SingleTransitLegAdapter(LegClickListener { leg ->
             sharedViewModel.leg = leg
             val action =
@@ -66,14 +60,16 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
             findNavController().navigate(action)
         })
         adapter.submitList(sharedViewModel.transitLegs)
-
-
-
         binding.recyclerView.adapter = adapter
+
+        // mapbox
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(this)
 
         // return ViewGroup
         return binding.root
     }
+
 
     companion object {
         /**
@@ -95,79 +91,71 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
-        map = p0 ?: return
-        val dottedPatern = listOf(Dot(), Gap(2f))
 
+    override fun onMapReady(mapboxMap: MapboxMap) {
+        map = mapboxMap
 
-        val tripStart =
-            LatLng(sharedViewModel.tripPlan.from!!.lat!!, sharedViewModel.tripPlan.from!!.lon!!)
-        val fromMarkerOptions = MarkerOptions()
-            .position(
-                LatLng(
-                    sharedViewModel.tripPlan.from!!.lat!!,
-                    sharedViewModel.tripPlan.from!!.lon!!
-                )
-            )
-            .icon(
-                bitmapDescriptorFromVector(
-                    requireContext(),
-                    R.drawable.ic_place_blue_24dp
-                )
-            )
-        val toMarkerOptions = MarkerOptions()
-            .position(
-                LatLng(
-                    sharedViewModel.tripPlan.to!!.lat!!,
-                    sharedViewModel.tripPlan.to!!.lon!!
-                )
-            )
-            .icon(
-                bitmapDescriptorFromVector(
-                    requireContext(),
-                    R.drawable.ic_place_red_24dp
-                )
-            )
-        map.addMarker(fromMarkerOptions)
-        map.addMarker(toMarkerOptions)
-        val tripTo =
-            LatLng(sharedViewModel.tripPlan.to!!.lat!!, sharedViewModel.tripPlan.to!!.lon!!)
-        val bound = LatLngBounds.Builder()
-            .include(tripStart)
-            .include(tripTo)
-            .build()
-        val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 100)
-        map.animateCamera(cameraUpdateFactory)
+        map.setStyle(Style.MAPBOX_STREETS) { style ->
+            // put marker at start of trip
 
-        for (leg in sharedViewModel.selectedItinerary.legs!!) {
+            // put marker at the end of trip
 
-            if (leg.transitLeg!!) {
-                val points = PolyUtil.decode(leg.legGeometry!!.points)
-                map.addPolyline(
-                    PolylineOptions()
-                        .color(R.color.purple_700)
-                        .addAll(points)
-                )
-            } else {
-                val points = PolyUtil.decode(leg.legGeometry!!.points)
-                map.addPolyline(
-                    PolylineOptions()
-                        .color(R.color.green_500)
-                        .pattern(dottedPatern)
-                        .addAll(points)
-                )
+            // update camera to be within the the path
 
+            for (leg in sharedViewModel.selectedItinerary.legs!!) {
+
+                if (leg.transitLeg!!) {
+                    // draw the leg
+                    val lineManager = LineManager(binding.mapView, map, style)
+                    val lineManagerOptions = LineOptions()
+                        .withGeometry(LineString.fromPolyline(leg.legGeometry!!.points!!, 5))
+
+                    lineManager.create(lineManagerOptions)
+                } else {
+                    val lineManager = LineManager(binding.mapView, map, style)
+                    val lineManagerOptions = LineOptions()
+                        .withGeometry(LineString.fromPolyline(leg.legGeometry!!.points!!, 5))
+                        .withLinePattern("-")
+
+                    lineManager.create(lineManagerOptions)
+
+                    // this leg has mode WALK, draw path with dotted steps
+                }
             }
         }
+
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-        return ContextCompat.getDrawable(context, vectorResId)?.run {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap =
-                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-            draw(Canvas(bitmap))
-            BitmapDescriptorFactory.fromBitmap(bitmap)
-        }
+    // map box lifecycle methods.
+    // There is a cleaner way to do this!!
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.mapView.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
     }
 }

@@ -18,9 +18,9 @@ import codes.malukimuthusi.hackathon.databinding.FragmentWelcomeBinding
 import codes.malukimuthusi.hackathon.routes.AllRoutesActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
 import pub.devrel.easypermissions.AfterPermissionGranted
