@@ -11,11 +11,18 @@ import codes.malukimuthusi.hackathon.adapters.LegClickListener
 import codes.malukimuthusi.hackathon.adapters.SingleTransitLegAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentDirectionsBinding
 import com.mapbox.geojson.LineString
+import com.mapbox.geojson.Point
+import com.mapbox.geojson.utils.PolylineUtils
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.LineManager
 import com.mapbox.mapboxsdk.plugins.annotation.LineOptions
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +41,9 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentDirectionsBinding
     private lateinit var map: MapboxMap
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
+
+    private lateinit var lineString: MutableList<LatLng>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +99,10 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
                     putString(ARG_PARAM20, param2)
                 }
             }
+
+        private const val MAKI_ICON_AIRPORT = "airport-15"
+        private const val MAKI_ICON_CAFE = "cafe-15"
+        private const val PROPERTY_LINE_DASHARRAY = "line-dasharray"
     }
 
 
@@ -102,26 +116,49 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
 
             // update camera to be within the the path
 
-            for (leg in sharedViewModel.selectedItinerary.legs!!) {
+            val latLngBounds = LatLngBounds.Builder()
+            var bounding: MutableList<Point>
+            var latLngList: List<LatLng>
+            val symbolManager = SymbolManager(binding.mapView, map, style)
+            symbolManager.iconAllowOverlap = true
+            symbolManager.textAllowOverlap = true
+            val symbolOptions = SymbolOptions()
+                .withLatLng(sharedViewModel.destination)
+                .withIconImage(MAKI_ICON_AIRPORT)
 
-                if (leg.transitLeg!!) {
-                    // draw the leg
+            symbolManager.create(symbolOptions)
+            for (leg in sharedViewModel.selectedItinerary.legs!!) {
+                bounding = PolylineUtils.decode(leg.legGeometry!!.points!!, 5)
+                latLngList = bounding.map {
+                    LatLng(it.latitude(), it.longitude())
+                }
+
+                // put marker at start of leg and at end of the leg
+
+                latLngBounds.includes(latLngList)
+
+                if (leg.transitLeg!!) {                    // draw the leg
+
+
                     val lineManager = LineManager(binding.mapView, map, style)
                     val lineManagerOptions = LineOptions()
-                        .withGeometry(LineString.fromPolyline(leg.legGeometry!!.points!!, 5))
-
+                        .withGeometry(LineString.fromPolyline(leg.legGeometry.points!!, 5))
+                        .withLineWidth(2.0f)
                     lineManager.create(lineManagerOptions)
                 } else {
+
                     val lineManager = LineManager(binding.mapView, map, style)
                     val lineManagerOptions = LineOptions()
-                        .withGeometry(LineString.fromPolyline(leg.legGeometry!!.points!!, 5))
-                        .withLinePattern("-")
-
+                        .withLineWidth(5.0f)
+                        .withLinePattern("airfield-11")
+                        .withGeometry(LineString.fromPolyline(leg.legGeometry.points!!, 5))
                     lineManager.create(lineManagerOptions)
 
                     // this leg has mode WALK, draw path with dotted steps
                 }
             }
+            val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 30)
+            map.easeCamera(cameraUpdateFactory)
         }
 
     }
