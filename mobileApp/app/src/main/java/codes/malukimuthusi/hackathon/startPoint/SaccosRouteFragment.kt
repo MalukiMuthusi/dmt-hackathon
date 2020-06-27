@@ -60,17 +60,20 @@ class SaccosRouteFragment : Fragment() {
         })
 
         binding.busStopList.setHasFixedSize(true)
-        sharedViewModel.stopsLD.observe(viewLifecycleOwner, Observer {
-            val stop = it as MutableList<Place>
-            if (!stop.contains(dummyPlace)) {
-                stop.add(0, dummyPlace)
-            }
-            busStopListAdapter.submitList(stop)
+        sharedViewModel.updateUi.observe(viewLifecycleOwner, Observer {
+            updateStops()
         })
-
 
         // return root view
         return binding.root
+    }
+
+    private fun updateStops() {
+        val stops = sharedViewModel.leg.intermediateStops as MutableList
+        if (!stops.contains(dummyPlace)) {
+            stops.add(0, dummyPlace)
+        }
+        busStopListAdapter.submitList(stops)
     }
 
     companion object {

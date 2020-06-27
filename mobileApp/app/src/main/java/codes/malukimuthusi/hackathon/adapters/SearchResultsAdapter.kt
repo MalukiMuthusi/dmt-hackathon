@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.setPadding
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.R
@@ -17,7 +16,7 @@ import codes.malukimuthusi.hackathon.webService.Itinerary
 import codes.malukimuthusi.hackathon.webService.Leg
 
 class SearchResultsAdapter(private val itineraryClickListener: ItineraryClickListener) :
-    ListAdapter<Itinerary, SearchResultAdapterViewHolder>(ItineraryDIFF) {
+    ListAdapter<Itinerary, SearchResultAdapterViewHolder>(Itinerary.IteneraryDiff) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -85,8 +84,7 @@ class SearchResultAdapterViewHolder private constructor(
         params.marginStart = dp(4f)
         params.marginEnd = dp(4f)
         val expandMore = ImageView(binding.root.context)
-        expandMore.setImageResource(R.drawable.ic_expand_more_black_24dp)
-        expandMore.animate().rotation(-90f)
+        expandMore.setImageResource(R.drawable.ic_navigate_next_black_24dp)
         binding.legs.addView(expandMore, binding.legs.childCount)
         if (transitType) {
             val image = ImageView(binding.root.context)
@@ -159,16 +157,6 @@ class SearchResultAdapterViewHolder private constructor(
             val binding = SearchResultListBinding.inflate(inflater, parentView, false)
             return SearchResultAdapterViewHolder(binding, itineraryClickListener)
         }
-    }
-}
-
-object ItineraryDIFF : DiffUtil.ItemCallback<Itinerary>() {
-    override fun areItemsTheSame(oldItem: Itinerary, newItem: Itinerary): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Itinerary, newItem: Itinerary): Boolean {
-        return oldItem == newItem
     }
 }
 

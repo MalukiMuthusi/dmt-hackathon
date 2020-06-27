@@ -2,14 +2,13 @@ package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.databinding.SingleTransitLegBinding
 import codes.malukimuthusi.hackathon.webService.Leg
 
 class SingleTransitLegAdapter(private val legClickListener: LegClickListener) :
-    ListAdapter<Leg, SingleTranstLegViewHolder>(LegDIFF) {
+    ListAdapter<Leg, SingleTranstLegViewHolder>(Leg.LegDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleTranstLegViewHolder {
         return SingleTranstLegViewHolder.Instance(parent, legClickListener)
     }
@@ -40,16 +39,6 @@ class SingleTranstLegViewHolder private constructor(
             val binding = SingleTransitLegBinding.inflate(inflater, parent, false)
             return SingleTranstLegViewHolder(binding, legClickListener)
         }
-    }
-}
-
-object LegDIFF : DiffUtil.ItemCallback<Leg>() {
-    override fun areItemsTheSame(oldItem: Leg, newItem: Leg): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Leg, newItem: Leg): Boolean {
-        return oldItem == newItem
     }
 }
 

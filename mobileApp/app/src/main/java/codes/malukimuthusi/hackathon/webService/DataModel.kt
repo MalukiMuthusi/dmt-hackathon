@@ -1,5 +1,7 @@
 package codes.malukimuthusi.hackathon.webService
 
+import androidx.recyclerview.widget.DiffUtil
+
 data class Stop(
     val id: String? = "",
     val name: String? = "",
@@ -21,8 +23,17 @@ data class Route(
     val eligibilityRestricted: Int? = -999,
     val sortOrderSet: Boolean? = false,
     var fare: Int? = 0
+) {
+    object RouteDiff : DiffUtil.ItemCallback<Route>() {
+        override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
+            return oldItem === newItem
+        }
 
-)
+        override fun areContentsTheSame(oldItem: Route, newItem: Route): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
 
 data class Agency(
     val id: String? = "",

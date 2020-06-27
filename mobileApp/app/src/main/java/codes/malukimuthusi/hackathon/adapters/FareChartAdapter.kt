@@ -2,7 +2,6 @@ package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.dataModel.Route
@@ -11,7 +10,7 @@ import timber.log.Timber
 
 class FareChartAdapter(val clicklistener: FareChartListener) :
     ListAdapter<Route, ChartViewHolder>(
-        RouteDiff
+        Route.RouteDiff
     ) {
 
 
@@ -44,18 +43,6 @@ class ChartViewHolder private constructor(
             val binding = RouteOverviewTemplateBinding.inflate(layoutInflater, parent, false)
             return ChartViewHolder(binding)
         }
-    }
-
-}
-
-private object RouteDiff : DiffUtil.ItemCallback<Route>() {
-
-    override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Route, newItem: Route): Boolean {
-        return oldItem == newItem
     }
 
 }

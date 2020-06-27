@@ -11,7 +11,10 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,9 +25,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentSearchBinding
 import com.google.android.material.snackbar.Snackbar
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.exceptions.MapboxConfigurationException
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -38,8 +43,8 @@ import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+//private const val ARG_PARAM1 = "param1"
+//private const val ARG_PARAM2 = "param2"
 var time = ""
 const val AUTOCOMPLETE_REQUEST_CODE = 333
 
@@ -85,8 +90,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -121,7 +126,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         // event for when start place button is clicked
         binding.startPlace.setOnClickListener {
             val placeOptions = PlaceOptions.builder()
-                .country("Kenya")
                 .backgroundColor(Color.parseColor("#EEEEEE"))
                 .build(PlaceOptions.MODE_CARDS)
 
@@ -130,10 +134,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             val intent = PlaceAutocomplete.IntentBuilder()
                 .accessToken(
                     Mapbox.getAccessToken()
-                        ?: requireContext().getString(R.string.mapbox_access_token)
+                        ?: throw MapboxConfigurationException()
                 )
                 .placeOptions(placeOptions)
-                .build(requireActivity())
+                .build(activity)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
 
@@ -222,7 +226,23 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             val feature = PlaceAutocomplete.getPlace(data)
-            Toast.makeText(requireContext(), feature.text(), Toast.LENGTH_LONG).show()
+            sharedViewModel.startPointString = feature.placeName() ?: "Searching Location"
+            binding.startPlace.text = sharedViewModel.startPointString
+            sharedViewModel.startPoint = LatLng(
+                (feature.geometry() as Point).latitude(),
+                (feature.geometry() as Point).longitude()
+            )
+//            Toast.makeText(requireContext(), feature.text(), Toast.LENGTH_LONG).show()
+
+            if (resultCode == RESULT_OK && requestCode == PLACE_SELECTION_REQUEST_CODE) {
+                val feature1 = PlacePicker.getPlace(data)
+                sharedViewModel.destinationString = feature1?.placeName() ?: "Searching Place"
+                binding.toPlace.text = sharedViewModel.destinationString
+                sharedViewModel.destination = LatLng(
+                    (feature1?.geometry() as Point).latitude(),
+                    (feature1.geometry() as Point).longitude()
+                )
+            }
         }
     }
 
@@ -240,8 +260,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         fun newInstance(param1: String, param2: String) =
             SearchFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
                 }
             }
 

@@ -1,5 +1,7 @@
 package codes.malukimuthusi.hackathon.webService
 
+import androidx.recyclerview.widget.DiffUtil
+
 data class Response(
     // A dictionary of the parameters provided in the request that triggered this response.
     @Transient val requestParameters: RequestParameters? = RequestParameters(),
@@ -59,7 +61,17 @@ data class Place(
     @Transient val bikeShareId: String? = "",
     @Transient val boardAlightType: String? = "",
     val flagStopArea: EncodedPolylineBean? = EncodedPolylineBean()
-)
+) {
+    object PlaceDiff : DiffUtil.ItemCallback<Place>() {
+        override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
 
 /*
 * Distinguish between special ways a passenger may board or alight at a stop.
@@ -107,7 +119,18 @@ data class Itinerary(
     @Transient val fare: Fare? = Fare(),
     val legs: List<Leg>? = listOf(),
     @Transient val tooSloped: Boolean? = false
-)
+) {
+    // List Adapter Diff
+    object IteneraryDiff : DiffUtil.ItemCallback<Itinerary>() {
+        override fun areItemsTheSame(oldItem: Itinerary, newItem: Itinerary): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Itinerary, newItem: Itinerary): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
 
 data class Fare(
     @Transient val fare: Money? = Money(),
@@ -183,7 +206,17 @@ data class Leg(
     val transitLeg: Boolean? = false,
     val duration: Long? = 0L
 
-)
+) {
+    object LegDiff : DiffUtil.ItemCallback<Leg>() {
+        override fun areItemsTheSame(oldItem: Leg, newItem: Leg): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Leg, newItem: Leg): Boolean {
+            return oldItem == newItem
+        }
+    }
+}
 
 data class WalkStep(
     @Transient val distance: Long? = 0,

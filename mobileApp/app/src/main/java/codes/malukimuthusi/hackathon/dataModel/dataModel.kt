@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.dataModel
 
+import androidx.recyclerview.widget.DiffUtil
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 
@@ -29,6 +30,17 @@ data class Route(
     override fun toString(): String {
         return name ?: super.toString()
     }
+
+    // comparator for use in recycler view adapters
+    object RouteDiff : DiffUtil.ItemCallback<Route>() {
+        override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Route, newItem: Route): Boolean {
+            return oldItem == newItem
+        }
+    }
 }
 
 
@@ -46,6 +58,17 @@ data class Sacco(
             "fare" to fare?.toMap(),
             "Routes" to Routes
         )
+    }
+
+    // Diff comparator for use in recycler view
+    object SaccoDiff : DiffUtil.ItemCallback<Sacco>() {
+        override fun areItemsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Sacco, newItem: Sacco): Boolean {
+            return oldItem == newItem
+        }
     }
 }
 

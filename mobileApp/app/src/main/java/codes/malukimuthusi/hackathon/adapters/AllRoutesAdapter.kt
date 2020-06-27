@@ -2,14 +2,13 @@ package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.databinding.AllRoutesListBinding
 import codes.malukimuthusi.hackathon.webService.Route
 
 class AllRoutesListAdapter(private val clickListener: RouteClickListener) :
-    ListAdapter<Route, AllRoutesViewHolder>(RouteDIFF) {
+    ListAdapter<Route, AllRoutesViewHolder>(Route.RouteDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllRoutesViewHolder {
         return AllRoutesViewHolder.from(parent)
     }
@@ -35,16 +34,6 @@ class AllRoutesViewHolder private constructor(
             val binding = AllRoutesListBinding.inflate(layoutInflater, parent, false)
             return AllRoutesViewHolder(binding)
         }
-    }
-}
-
-private object RouteDIFF : DiffUtil.ItemCallback<Route>() {
-    override fun areItemsTheSame(oldItem: Route, newItem: Route): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Route, newItem: Route): Boolean {
-        return oldItem == newItem
     }
 }
 

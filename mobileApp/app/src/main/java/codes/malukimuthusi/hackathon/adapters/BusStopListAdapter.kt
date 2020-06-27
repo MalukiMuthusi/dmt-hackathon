@@ -11,7 +11,7 @@ import codes.malukimuthusi.hackathon.databinding.MidBusStopListBinding
 import codes.malukimuthusi.hackathon.databinding.StopsListTitleBinding
 import codes.malukimuthusi.hackathon.webService.Place
 
-class BusStopListAdapter : ListAdapter<Place, RecyclerView.ViewHolder>(PlaceDIFF) {
+class BusStopListAdapter : ListAdapter<Place, RecyclerView.ViewHolder>(Place.PlaceDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             0 -> BusStopTitleViewHolder.instance(parent) // title viewHolder
@@ -24,30 +24,57 @@ class BusStopListAdapter : ListAdapter<Place, RecyclerView.ViewHolder>(PlaceDIFF
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> 0 // title, dummy item.
-            1 -> 1 // first bus stop
-            (itemCount - 1) -> 3 // last bus stop
-            else -> 2 // mid bus stop
+        return when (itemCount) {
+            1 -> {
+                0
+            }
+
+            2 -> {
+                when (position) {
+                    0 -> 0 // title, dummy item.
+                    else -> 2 // mid bus stop
+                }
+            }
+            else -> {
+                when (position) {
+                    0 -> 0 // title, dummy item.
+                    1 -> 1 // first bus stop
+                    (itemCount - 1) -> 3 // last bus stop
+                    else -> 2 // mid bus stop
+                }
+            }
         }
+
 
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (position) {
+        when (itemCount) {
+            1 -> {
+                (holder as BusStopTitleViewHolder).bind()
+            }
+            2 -> {
+                when (position) {
+                    0 -> (holder as BusStopTitleViewHolder).bind()
+                    else -> (holder as MidBusStopViewHolder).bind(getItem(position))
+                }
+            }
+            else -> when (position) {
 
-            // first bus stop
-            1 -> (holder as FirstBusStopViewHolder).bind(getItem(position))
+                // first bus stop
+                1 -> (holder as FirstBusStopViewHolder).bind(getItem(position))
 
-            // last bus stop
-            (itemCount - 1) -> (holder as LastBusStopViewHolder).bind(getItem(position))
+                // last bus stop
+                (itemCount - 1) -> (holder as LastBusStopViewHolder).bind(getItem(position))
 
-            // title
-            0 -> (holder as BusStopTitleViewHolder).bind()
+                // title
+                0 -> (holder as BusStopTitleViewHolder).bind()
 
-            // mid bus stop
-            else -> (holder as MidBusStopViewHolder).bind(getItem(position))
+                // mid bus stop
+                else -> (holder as MidBusStopViewHolder).bind(getItem(position))
+            }
         }
+
     }
 
     companion object {

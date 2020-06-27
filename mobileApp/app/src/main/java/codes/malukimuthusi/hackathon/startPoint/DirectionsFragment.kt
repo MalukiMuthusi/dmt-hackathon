@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.adapters.LegClickListener
 import codes.malukimuthusi.hackathon.adapters.SingleTransitLegAdapter
 import codes.malukimuthusi.hackathon.databinding.FragmentDirectionsBinding
@@ -23,11 +25,13 @@ import com.mapbox.mapboxsdk.plugins.annotation.LineManager
 import com.mapbox.mapboxsdk.plugins.annotation.LineOptions
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
+import com.mapbox.mapboxsdk.utils.BitmapUtils
+import com.mapbox.mapboxsdk.utils.ColorUtils
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM10 = "param1"
-private const val ARG_PARAM20 = "param2"
+//private const val ARG_PARAM10 = "param1"
+//private const val ARG_PARAM20 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -49,8 +53,6 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM10)
-            param2 = it.getString(ARG_PARAM20)
         }
     }
 
@@ -60,7 +62,6 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentDirectionsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
 
         // recycler view adapter
         val adapter = SingleTransitLegAdapter(LegClickListener { leg ->
@@ -70,11 +71,16 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
             findNavController().navigate(action)
         })
         adapter.submitList(sharedViewModel.transitLegs)
-        binding.recyclerView.adapter = adapter
+        with(binding) {
+            lifecycleOwner = this@DirectionsFragment
+            recyclerView.adapter = adapter
 
-        // mapbox
-        binding.mapView.onCreate(savedInstanceState)
-        binding.mapView.getMapAsync(this)
+            // mapbox
+            with(mapView) {
+                onCreate(savedInstanceState)
+                getMapAsync(this@DirectionsFragment)
+            }
+        }
 
         // return ViewGroup
         return binding.root
@@ -95,14 +101,13 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         fun newInstance(param1: String, param2: String) =
             DirectionsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM10, param1)
-                    putString(ARG_PARAM20, param2)
+//                    putString(ARG_PARAM10, param1)
+//                    putString(ARG_PARAM20, param2)
                 }
             }
 
-        private const val MAKI_ICON_AIRPORT = "airport-15"
-        private const val MAKI_ICON_CAFE = "cafe-15"
-        private const val PROPERTY_LINE_DASHARRAY = "line-dasharray"
+        private const val LOCATION_MARKER = "location_marker"
+
     }
 
 
@@ -110,6 +115,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
         map = mapboxMap
 
         map.setStyle(Style.MAPBOX_STREETS) { style ->
+
+            addPointsMarkers(style)
             // put marker at start of trip
 
             // put marker at the end of trip
@@ -120,13 +127,26 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
             var bounding: MutableList<Point>
             var latLngList: List<LatLng>
             val symbolManager = SymbolManager(binding.mapView, map, style)
-            symbolManager.iconAllowOverlap = true
-            symbolManager.textAllowOverlap = true
+            with(symbolManager) {
+                iconAllowOverlap = true
+                textAllowOverlap = true
+            }
+
             val symbolOptions = SymbolOptions()
                 .withLatLng(sharedViewModel.destination)
-                .withIconImage(MAKI_ICON_AIRPORT)
-
+                .withIconImage(LOCATION_MARKER)
+                .withIconSize(2f)
+                .withIconColor(
+                    ColorUtils.colorToRgbaString(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.purple_700
+                        )
+                    )
+                )
             symbolManager.create(symbolOptions)
+
+
             for (leg in sharedViewModel.selectedItinerary.legs!!) {
                 bounding = PolylineUtils.decode(leg.legGeometry!!.points!!, 5)
                 latLngList = bounding.map {
@@ -137,9 +157,8 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
 
                 latLngBounds.includes(latLngList)
 
-                if (leg.transitLeg!!) {                    // draw the leg
-
-
+                if (leg.transitLeg!!) {
+                    // draw the leg
                     val lineManager = LineManager(binding.mapView, map, style)
                     val lineManagerOptions = LineOptions()
                         .withGeometry(LineString.fromPolyline(leg.legGeometry.points!!, 5))
@@ -161,6 +180,16 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
             map.easeCamera(cameraUpdateFactory)
         }
 
+    }
+
+    private fun addPointsMarkers(style: Style) {
+        BitmapUtils.getBitmapFromDrawable(requireActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
+            ?.let {
+                style.addImage(
+                    LOCATION_MARKER,
+                    it, true
+                )
+            }
     }
 
     // map box lifecycle methods.

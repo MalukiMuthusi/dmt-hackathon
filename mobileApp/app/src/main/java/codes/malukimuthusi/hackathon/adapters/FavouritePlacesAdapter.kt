@@ -2,13 +2,13 @@ package codes.malukimuthusi.hackathon.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import codes.malukimuthusi.hackathon.dataModel.Favorite
 import codes.malukimuthusi.hackathon.databinding.FavouritesBinding
 
-class FavouritePlacesAdapter : ListAdapter<Favorite, FavoritePlaceViewHolder>(FavoriteDIFF) {
+class FavouritePlacesAdapter :
+    ListAdapter<Favorite, FavoritePlaceViewHolder>(Favorite.FavouriteDiff) {
     override fun onBindViewHolder(holder: FavoritePlaceViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
@@ -34,12 +34,3 @@ class FavoritePlaceViewHolder private constructor(private val binding: Favourite
     }
 }
 
-private object FavoriteDIFF : DiffUtil.ItemCallback<Favorite>() {
-    override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-        return oldItem === newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-        return oldItem == newItem
-    }
-}

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.webService.Itinerary
 import codes.malukimuthusi.hackathon.webService.Leg
-import codes.malukimuthusi.hackathon.webService.Place
 import codes.malukimuthusi.hackathon.webService.TripPlan
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -16,6 +15,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.mapbox.mapboxsdk.geometry.LatLng
 import timber.log.Timber
+import kotlin.random.Random
 
 class SharedViewModel : ViewModel() {
     var destinationString: String = "unknown"
@@ -29,10 +29,6 @@ class SharedViewModel : ViewModel() {
     private val routesRef = db.child("Routes")
     private val saccoList = mutableListOf<Sacco>()
     private var _saccoListMLD = MutableLiveData<List<Sacco>>()
-    private var _stopsMLD = MutableLiveData<List<Place>>()
-    val stopsLD: LiveData<List<Place>>
-        get() = _stopsMLD
-    private var stopsList = mutableListOf<Place>()
 
     val saccoListLD: LiveData<List<Sacco>>
         get() = _saccoListMLD
@@ -46,7 +42,13 @@ class SharedViewModel : ViewModel() {
             it.transitLeg!!
         }
 
+    // update UI
+    private var _updateUi = MutableLiveData<Int>()
+    val updateUi: LiveData<Int>
+        get() = _updateUi
+
     fun fetchSaccos(routeId: String) {
+        // fetch the Sacco's ID from the Route.
         routesRef.child(routeId).child("saccos").addValueEventListener(SaccosInRouteVEL())
     }
 
@@ -56,6 +58,7 @@ class SharedViewModel : ViewModel() {
         }
 
         override fun onDataChange(p0: DataSnapshot) {
+            // fetch sacco from its id
             for (saccosEntry in p0.children) {
                 val key = saccosEntry.key
                 if (key != null) {
@@ -79,8 +82,8 @@ class SharedViewModel : ViewModel() {
                 if (!saccoList.contains(sacco)) {
                     saccoList.add(sacco)
                     _saccoListMLD.postValue(saccoList)
-                    stopsList = leg.intermediateStops as MutableList<Place>
-                    _stopsMLD.value = stopsList
+                    // notify to update UI.
+                    _updateUi.value = Random.nextInt(0, 1000)
                 }
             } else {
                 Timber.e("Null sacco returned")
