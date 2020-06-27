@@ -25,6 +25,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentSearchBinding
 import com.google.android.material.snackbar.Snackbar
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -35,10 +36,16 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.LineManager
+import com.mapbox.mapboxsdk.plugins.annotation.LineOptions
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
+import com.mapbox.mapboxsdk.utils.BitmapUtils
+import com.mapbox.mapboxsdk.utils.ColorUtils
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -266,6 +273,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             }
 
         private val PLACE_SELECTION_REQUEST_CODE = 56789
+        private val MARKER = "marker15"
     }
 
     override fun onStart() {
@@ -275,7 +283,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
 
     override fun onMapReady(map: MapboxMap) {
         mapboxMap = map
-        map.setStyle(Style.MAPBOX_STREETS) {
+        map.setStyle(Style.MAPBOX_STREETS) { mapStyle ->
+            addPointsMarkers(mapStyle)
+
             if (sharedViewModel.destination != null) {
                 mapboxMap.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(sharedViewModel.destination!!, 12.0)
@@ -299,8 +309,62 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                 mapboxMap.animateCamera(cameraUpdateFactory)
 
                 // draw the path
+                val points = listOf<Point>(
+                    Point.fromLngLat(
+                        sharedViewModel.destination!!.longitude,
+                        sharedViewModel.destination!!.latitude
+                    ),
+                    Point.fromLngLat(
+                        sharedViewModel.startPoint!!.longitude,
+                        sharedViewModel.startPoint!!.latitude
+                    )
+                )
+
+                // draw line from start to destination
+                val lineManager = LineManager(binding.mapView, mapboxMap, mapStyle)
+                val lineOptions = LineOptions()
+                    .withGeometry(LineString.fromLngLats(points))
+                    .withLineWidth(2f)
+                lineManager.create(lineOptions)
+
+                // put marker on start and destination
+                val symbolManager = SymbolManager(binding.mapView, mapboxMap, mapStyle)
+                val iconColor = ColorUtils.colorToRgbaString(Color.BLUE)
+                val destinationMarkerOptions = SymbolOptions()
+                    .withIconImage(MARKER)
+                    .withIconColor(iconColor)
+                    .withIconSize(2f)
+                    .withGeometry(
+                        Point.fromLngLat(
+                            sharedViewModel.destination!!.longitude,
+                            sharedViewModel.destination!!.latitude
+                        )
+                    )
+                val startPointMarkerOptions = SymbolOptions()
+                    .withIconImage(MARKER)
+                    .withIconColor(iconColor)
+                    .withGeometry(
+                        Point.fromLngLat(
+                            sharedViewModel.startPoint!!.longitude,
+                            sharedViewModel.startPoint!!.latitude
+                        )
+                    )
+                    .withIconSize(2f)
+
+                symbolManager.create(listOf(destinationMarkerOptions, startPointMarkerOptions))
+
             }
         }
+    }
+
+    private fun addPointsMarkers(style: Style) {
+        BitmapUtils.getBitmapFromDrawable(requireActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
+            ?.let {
+                style.addImage(
+                    MARKER,
+                    it, true
+                )
+            }
     }
 
 

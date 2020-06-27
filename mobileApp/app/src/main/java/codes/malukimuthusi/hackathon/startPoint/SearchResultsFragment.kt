@@ -26,42 +26,33 @@ class SearchResultsFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
 
-    private val searchResultsAdapter: SearchResultsAdapter
-        get() {
-            val adapter = SearchResultsAdapter(ItineraryClickListener { clickedItinerary ->
-                sharedViewModel.selectedItinerary = clickedItinerary
-                val action =
-                    SearchResultsFragmentDirections.actionSearchResultsFragmentToDirectionsFragment()
-                findNavController().navigate(action)
-            })
-            return adapter
-        }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SearchResultsFragmentBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
 
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        with(binding) {
-            toolBar.setupWithNavController(navController, appBarConfiguration)
+        binding.toolBar.setupWithNavController(navController, appBarConfiguration)
 
-            lifecycleOwner = this@SearchResultsFragment
-
-            recyclerView.adapter = searchResultsAdapter
-
-            sharedViewModel.tripPlan.from?.name.let {
-                startPlace.text = it
-            }
-
-            sharedViewModel.tripPlan.to?.name.let {
-                toPlace.text = it
-            }
+        sharedViewModel.tripPlan.from?.name.let {
+            binding.startPlace.text = it
         }
 
-        searchResultsAdapter.submitList(sharedViewModel.tripPlan.itineraries)
+        sharedViewModel.tripPlan.to?.name.let {
+            binding.toPlace.text = it
+        }
+
+        val adapter = SearchResultsAdapter(ItineraryClickListener { clickedItinerary ->
+            sharedViewModel.selectedItinerary = clickedItinerary
+            val action =
+                SearchResultsFragmentDirections.actionSearchResultsFragmentToDirectionsFragment()
+            findNavController().navigate(action)
+        })
+        binding.recyclerView.adapter = adapter
+        adapter.submitList(sharedViewModel.tripPlan.itineraries)
 
         return binding.root
     }
