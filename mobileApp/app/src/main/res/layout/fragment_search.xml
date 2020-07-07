@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="codes.malukimuthusi.hackathon.startPoint.SharedViewModel" />
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -36,7 +40,7 @@
                         android:layout_marginEnd="8dp"
                         android:backgroundTint="@color/white_50"
                         android:elevation="4dp"
-                        android:text="@string/choose_location"
+                        android:text="@{viewModel.startPointString}"
                         android:textAlignment="viewStart"
                         android:textColor="@color/black_800"
                         android:textSize="10sp"
@@ -47,8 +51,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:strokeColor="@color/green_500"
-                        tools:text="Choose Location" />
+                        app:strokeColor="@color/green_500" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/toPlace"
@@ -56,7 +59,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:backgroundTint="@color/white_50"
-                        android:text="@string/choose_location"
+                        android:text="@{viewModel.destinationString}"
                         android:textAlignment="viewStart"
                         android:textColor="@color/black_800"
                         android:textSize="10sp"

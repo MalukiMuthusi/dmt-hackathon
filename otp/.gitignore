@@ -1,6 +1,6 @@
 otp-1.4.0-shaded.jar
 lucene
-graphs/current/nairobi.gtfs.zip
+graphs/nairobi/nairobi.gtfs.zip
 graphs/current/*.zip
 graphs/current/*.pbf
 graphs/current/*.obj

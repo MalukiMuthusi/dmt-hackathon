@@ -1,5 +1,6 @@
 package codes.malukimuthusi.hackathon.startPoint
 
+import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.Dialog
@@ -53,7 +54,6 @@ import java.util.*
 //private const val ARG_PARAM1 = "param1"
 //private const val ARG_PARAM2 = "param2"
 var time = ""
-const val AUTOCOMPLETE_REQUEST_CODE = 333
 
 
 /**
@@ -109,16 +109,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false)
 
+        binding.viewModel = sharedViewModel
+
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
 
         val navController = findNavController()
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
-
-        // set text for start and destination.
-        binding.toPlace.text = sharedViewModel.destinationString
-        binding.startPlace.text = sharedViewModel.startPointString
 
 
         ArrayAdapter.createFromResource(
@@ -132,59 +130,17 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
 
         // event for when start place button is clicked
         binding.startPlace.setOnClickListener {
-            val placeOptions = PlaceOptions.builder()
-                .backgroundColor(Color.parseColor("#EEEEEE"))
-                .build(PlaceOptions.MODE_CARDS)
-
-            //.bbox(36.213083, -1.864678, 37.48887, -0.759486)
-
-            val intent = PlaceAutocomplete.IntentBuilder()
-                .accessToken(
-                    Mapbox.getAccessToken()
-                        ?: throw MapboxConfigurationException()
-                )
-                .placeOptions(placeOptions)
-                .build(activity)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            startPlaceAutocompleteSearch()
         }
 
         // event for when start place button is clicked
         binding.toPlace.setOnClickListener {
-            val cameraPosition = CameraPosition.Builder()
-                .target(LatLng(-1.2909, 36.8282))
-                .zoom(16.0)
-                .build()
-            val placePickerOptions = PlacePickerOptions.builder()
-                .statingCameraPosition(cameraPosition)
-                .includeReverseGeocode(false)
-                .build()
-            val toIntent = PlacePicker.IntentBuilder()
-                .accessToken(Mapbox.getAccessToken()!!)
-                .placeOptions(placePickerOptions)
-                .build(requireActivity())
-            startActivityForResult(toIntent, PLACE_SELECTION_REQUEST_CODE)
+            toPlacePicker()
         }
 
         // take action when search button is pressed.
         binding.searchButton.setOnClickListener {
-            if (sharedViewModel.destination == null) {
-                val snackbar =
-                    Snackbar.make(binding.parentView, "Select Destonation.", Snackbar.LENGTH_LONG)
-                snackbar.show()
-            } else if (sharedViewModel.startPoint == null) {
-                val snackbar =
-                    Snackbar.make(binding.parentView, "Select Start Poimt.", Snackbar.LENGTH_LONG)
-                snackbar.show()
-            } else {
-
-                options["toPlace"] =
-                    "${sharedViewModel.destination!!.latitude},${sharedViewModel.destination!!.longitude}"
-                options["fromPlace"] =
-                    "${sharedViewModel.startPoint!!.latitude},${sharedViewModel.startPoint!!.longitude}"
-                options["showIntermediateStops"] = "true"
-                viewModel.searchRoutes(options)
-                binding.progressBar2.visibility = View.VISIBLE
-            }
+            planTrip()
         }
 
         // valid trip was found, take action
@@ -229,28 +185,113 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         return binding.root
     }
 
+    private fun toPlacePicker() {
+        val cameraPosition = CameraPosition.Builder()
+            .target(LatLng(-1.2909, 36.8282))
+            .zoom(16.0)
+            .build()
+        val placePickerOptions = PlacePickerOptions.builder()
+            .statingCameraPosition(cameraPosition)
+            .includeReverseGeocode(true)
+            .build()
+        val toIntent = PlacePicker.IntentBuilder()
+            .accessToken(Mapbox.getAccessToken()!!)
+            .placeOptions(placePickerOptions)
+            .build(requireActivity())
+        startActivityForResult(toIntent, PLACE_PICKER_REQUEST_CODE)
+    }
+
+    private fun startPlaceAutocompleteSearch() {
+        //            .bbox("-1.021331, 36.586533, -1.525889, 37.243996")
+        val placeOptions = PlaceOptions.builder()
+            .backgroundColor(Color.parseColor("#EEEEEE"))
+            .country("KE")
+            .build(PlaceOptions.MODE_CARDS)
+
+        //.bbox(36.213083, -1.864678, 37.48887, -0.759486)
+        // minX=-1.021331, minY=36.586533, maxX=-1.525889, maxY=37.243996
+
+        val intent = PlaceAutocomplete.IntentBuilder()
+            .accessToken(
+                Mapbox.getAccessToken()
+                    ?: throw MapboxConfigurationException()
+            )
+            .placeOptions(placeOptions)
+            .build(requireActivity())
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+    }
+
+    private fun planTrip() {
+        if (sharedViewModel.destination == null) {
+            val snackbar =
+                Snackbar.make(binding.parentView, "Select Destonation.", Snackbar.LENGTH_LONG)
+            snackbar.show()
+        } else if (sharedViewModel.startPoint == null) {
+            val snackbar =
+                Snackbar.make(binding.parentView, "Select Start Poimt.", Snackbar.LENGTH_LONG)
+            snackbar.show()
+        } else {
+
+            options["toPlace"] =
+                "${sharedViewModel.destination!!.latitude},${sharedViewModel.destination!!.longitude}"
+            options["fromPlace"] =
+                "${sharedViewModel.startPoint!!.latitude},${sharedViewModel.startPoint!!.longitude}"
+            options["showIntermediateStops"] = "true"
+            if (time.isNotEmpty()) {
+                options["time"] = "8:00am"
+                options["date"] = "7-7-2020"
+            }
+            viewModel.searchRoutes(options)
+            binding.progressBar2.visibility = View.VISIBLE
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            val feature = PlaceAutocomplete.getPlace(data)
-            sharedViewModel.startPointString = feature.placeName() ?: "Searching Location"
-            binding.startPlace.text = sharedViewModel.startPointString
-            sharedViewModel.startPoint = LatLng(
-                (feature.geometry() as Point).latitude(),
-                (feature.geometry() as Point).longitude()
-            )
-//            Toast.makeText(requireContext(), feature.text(), Toast.LENGTH_LONG).show()
+        when (requestCode) {
 
-            if (resultCode == RESULT_OK && requestCode == PLACE_SELECTION_REQUEST_CODE) {
-                val feature1 = PlacePicker.getPlace(data)
-                sharedViewModel.destinationString = feature1?.placeName() ?: "Searching Place"
-                binding.toPlace.text = sharedViewModel.destinationString
-                sharedViewModel.destination = LatLng(
-                    (feature1?.geometry() as Point).latitude(),
-                    (feature1.geometry() as Point).longitude()
-                )
+            // Autocomplete Place Selection
+            AUTOCOMPLETE_REQUEST_CODE -> {
+
+                when (resultCode) {
+                    RESULT_OK -> {
+                        val feature = PlaceAutocomplete.getPlace(data)
+                        sharedViewModel.startPointString =
+                            feature.placeName() ?: "Searching Location"
+                        sharedViewModel.startPoint = LatLng(
+                            (feature.geometry() as Point).latitude(),
+                            (feature.geometry() as Point).longitude()
+                        )
+
+                        // draw the map agin
+                    }
+                }
+
             }
+
+            // Place Picker Activity
+            PLACE_PICKER_REQUEST_CODE -> {
+                when (resultCode) {
+                    RESULT_OK -> {
+                        val feature1 = PlacePicker.getPlace(data)
+                        sharedViewModel.destinationString =
+                            feature1?.placeName() ?: "Searching Place"
+                        sharedViewModel.destination = LatLng(
+                            (feature1?.geometry() as Point).latitude(),
+                            (feature1.geometry() as Point).longitude()
+                        )
+
+                        // draw the map again
+                    }
+
+                    RESULT_CANCELED -> {
+                        // do nothing
+                    }
+                }
+            }
+
         }
+
     }
 
     companion object {
@@ -272,8 +313,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                 }
             }
 
-        private val PLACE_SELECTION_REQUEST_CODE = 56789
+        private val PLACE_PICKER_REQUEST_CODE = 56789
         private val MARKER = "marker15"
+        private val AUTOCOMPLETE_REQUEST_CODE = 333
     }
 
     override fun onStart() {
@@ -381,18 +423,23 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (position) {
             1 -> {
-                TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+                TimePickerFragment().show(
+                    requireActivity().supportFragmentManager,
+                    "timePicker"
+                )
             }
         }
     }
 
     class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+
+        // when user selects the time.
         override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-            var am_pm = "am"
-            var hour = hourOfDay.toString()
-            if (hourOfDay > 12) {
-                am_pm = "pm"
-                hour = (hourOfDay - 12).toString()
+            var am_pm = "AM"
+            var hour = hourOfDay
+            if (hourOfDay >= 12) {
+                am_pm = "PM"
+                hour = (hourOfDay - 12)
             }
             time = "${hour}:${minute}${am_pm}"
 
@@ -427,6 +474,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             return DatePickerDialog(requireActivity(), this, year, month, day)
         }
 
+        // when user selects the date
         override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
             // Do something with the date chosen by the user
         }

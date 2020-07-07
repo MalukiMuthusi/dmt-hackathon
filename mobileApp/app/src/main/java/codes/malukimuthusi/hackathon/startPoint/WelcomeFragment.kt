@@ -2,12 +2,15 @@ package codes.malukimuthusi.hackathon.startPoint
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -18,11 +21,15 @@ import codes.malukimuthusi.hackathon.databinding.FragmentWelcomeBinding
 import codes.malukimuthusi.hackathon.routes.AllRoutesActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -104,7 +111,7 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
                 .accessToken(Mapbox.getAccessToken()!!)
                 .placeOptions(placePickerOptions)
                 .build(requireActivity())
-            startActivityForResult(toIntent, PICKER_CODE)
+            startActivityForResult(toIntent, DESTINATION_PICKER_CODE)
         }
 
         binding.bottomNavigation.setOnNavigationItemReselectedListener { }
@@ -125,11 +132,11 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICKER_CODE && resultCode == RESULT_OK) {
+        if (requestCode == DESTINATION_PICKER_CODE && resultCode == RESULT_OK) {
             val carmenFeature = PlacePicker.getPlace(data)
             if (carmenFeature != null) {
                 val coordinates = carmenFeature.center()
-                sharedViewModel.destinationString = carmenFeature.placeName()!!
+                sharedViewModel.destinationString = carmenFeature.placeName() ?: "UnKnown"
                 sharedViewModel.destination =
                     LatLng(coordinates!!.latitude(), coordinates.longitude())
 
@@ -159,7 +166,7 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
                 }
             }
 
-        val PICKER_CODE = 3089
+        val DESTINATION_PICKER_CODE = 3089
     }
 
     @AfterPermissionGranted(RC_FINELOCATIONPERMS)
@@ -167,11 +174,16 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
         if (hasLocationPermission()) {
             fusedLocationProvider.lastLocation.addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    if (task.result != null) {
+                    val locationAdd = task.result
+                    if (locationAdd != null) {
                         sharedViewModel.startPoint =
-                            LatLng(task.result!!.latitude, task.result!!.longitude)
-                        sharedViewModel.destination =
-                            LatLng(task.result!!.latitude, task.result!!.longitude)
+                            LatLng(locationAdd.latitude, locationAdd.longitude)
+
+                        // get name of street.
+                        if (Geocoder.isPresent()) {
+                            geocodeLocation(task)
+                        }
+
                     } else {
                         sharedViewModel.startPoint = LatLng(-1.2873788121, 36.8282264471)
                     }
@@ -187,6 +199,26 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
                 RC_FINELOCATIONPERMS,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             )
+        }
+    }
+
+    private fun geocodeLocation(task: Task<Location>) {
+        val geocoder = Geocoder(requireContext())
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val address = geocoder.getFromLocation(
+                    task.result!!.latitude,
+                    task.result!!.longitude,
+                    1
+                )
+                val firstAdd = address.firstOrNull()
+                if (firstAdd !== null) {
+                    if (firstAdd.featureName == null) sharedViewModel.startPointString =
+                        "Unknown Place"
+                    else sharedViewModel.startPointString = firstAdd.featureName
+
+                }
+            }
         }
     }
 

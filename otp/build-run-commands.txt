@@ -1,0 +1,5 @@
+# to build the graph
+java -Xmx3G -jar otp-1.4.0-shaded.jar --build graphs/nairobi
+
+# to run the otp server
+java -Xmx3G -jar otp-1.4.0-shaded.jar --router nairobi --graphs graphs --server

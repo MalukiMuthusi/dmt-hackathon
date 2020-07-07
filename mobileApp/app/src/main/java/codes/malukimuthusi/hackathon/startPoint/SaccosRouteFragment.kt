@@ -74,7 +74,7 @@ class SaccosRouteFragment : Fragment() {
             stops.add(0, dummyPlace)
         }
         busStopListAdapter.submitList(stops)
-        binding.parentView.invalidate()
+        saccoListAdapter.notifyDataSetChanged()
     }
 
     companion object {
