@@ -286,14 +286,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         map.setStyle(Style.MAPBOX_STREETS) { mapStyle ->
             addPointsMarkers(mapStyle)
 
-            if (sharedViewModel.destination != null) {
+            if (sharedViewModel.destination != null && sharedViewModel.startPoint == null) {
                 mapboxMap.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(sharedViewModel.destination!!, 12.0)
                 )
 
                 // add marker
             }
-            if (sharedViewModel.startPoint != null) {
+            if (sharedViewModel.startPoint != null && sharedViewModel.destination == null) {
                 mapboxMap.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint!!, 12.0)
                 )
@@ -305,7 +305,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                     .include(sharedViewModel.startPoint!!)
                     .include(sharedViewModel.destination!!)
                     .build()
-                val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 100)
+                val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 300)
                 mapboxMap.animateCamera(cameraUpdateFactory)
 
                 // draw the path
@@ -329,11 +329,16 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
 
                 // put marker on start and destination
                 val symbolManager = SymbolManager(binding.mapView, mapboxMap, mapStyle)
+                symbolManager.iconAllowOverlap = true
                 val iconColor = ColorUtils.colorToRgbaString(Color.BLUE)
+                val iconElevation = arrayOf(-1f, -8f)
+                val iconAnchorPosition = "bottom"
                 val destinationMarkerOptions = SymbolOptions()
                     .withIconImage(MARKER)
                     .withIconColor(iconColor)
                     .withIconSize(2f)
+                    .withIconAnchor(iconAnchorPosition)
+                    .withIconRotate(0f)
                     .withGeometry(
                         Point.fromLngLat(
                             sharedViewModel.destination!!.longitude,
@@ -343,6 +348,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                 val startPointMarkerOptions = SymbolOptions()
                     .withIconImage(MARKER)
                     .withIconColor(iconColor)
+                    .withIconAnchor(iconAnchorPosition)
                     .withGeometry(
                         Point.fromLngLat(
                             sharedViewModel.startPoint!!.longitude,

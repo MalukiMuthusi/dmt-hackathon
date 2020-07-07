@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 /.idea/.name
+/.settings/org.eclipse.buildship.core.prefs
+/.project
+/.idea/dictionaries/maluki_muthusi.xml

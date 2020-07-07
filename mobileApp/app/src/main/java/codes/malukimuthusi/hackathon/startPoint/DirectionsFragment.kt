@@ -136,6 +136,7 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
                 .withLatLng(sharedViewModel.destination)
                 .withIconImage(LOCATION_MARKER)
                 .withIconSize(2f)
+                .withIconAnchor("bottom")
                 .withIconColor(
                     ColorUtils.colorToRgbaString(
                         ContextCompat.getColor(
@@ -168,9 +169,10 @@ class DirectionsFragment : Fragment(), OnMapReadyCallback {
 
                     val lineManager = LineManager(binding.mapView, map, style)
                     val lineManagerOptions = LineOptions()
-                        .withLineWidth(5.0f)
-                        .withLinePattern("airfield-11")
+                        .withLineWidth(4.0f)
                         .withGeometry(LineString.fromPolyline(leg.legGeometry.points!!, 5))
+                    lineManager.lineDasharray =
+                        arrayOf(0.8f, 0.2f, 0.4f, 0.2f)
                     lineManager.create(lineManagerOptions)
 
                     // this leg has mode WALK, draw path with dotted steps
