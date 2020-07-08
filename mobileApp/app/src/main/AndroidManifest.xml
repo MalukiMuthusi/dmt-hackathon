@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".NewSacco">
+        <activity android:name=".newSacco.NewSacco">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

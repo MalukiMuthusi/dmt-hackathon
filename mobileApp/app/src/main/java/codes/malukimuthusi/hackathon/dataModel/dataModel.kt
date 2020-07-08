@@ -28,7 +28,7 @@ data class Route(
 
     @Exclude
     override fun toString(): String {
-        return name ?: super.toString()
+        return short_name ?: super.toString()
     }
 
     // comparator for use in recycler view adapters

@@ -7,9 +7,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import codes.malukimuthusi.hackathon.NewSacco
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.ActivityStartBinding
+import codes.malukimuthusi.hackathon.newSacco.NewSacco
 import timber.log.Timber
 
 class StartActivity : AppCompatActivity() {

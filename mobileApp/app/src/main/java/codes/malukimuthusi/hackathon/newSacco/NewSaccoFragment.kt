@@ -1,4 +1,4 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.newSacco
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.dataModel.Fare
 import codes.malukimuthusi.hackathon.dataModel.Fare.Companion.createFareWithSingleValue
 import codes.malukimuthusi.hackathon.dataModel.Route
@@ -129,7 +130,10 @@ class NewSaccoFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private fun validateInputs(): Boolean {
         if (selectedRoute == null) {
-            Snackbar.make(binding.farePickHours, R.string.select_route, Snackbar.LENGTH_SHORT)
+            Snackbar.make(
+                binding.farePickHours,
+                R.string.select_route, Snackbar.LENGTH_SHORT
+            )
                 .show()
             return false
         }

@@ -1,9 +1,10 @@
-package codes.malukimuthusi.hackathon
+package codes.malukimuthusi.hackathon.newSacco
 
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
+import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.viewModels.NewSaccoFragmentViewModel
 import codes.malukimuthusi.hackathon.viewModels.NewSaccoFragmentViewModel.Companion.doSomethingWhenChecked
 

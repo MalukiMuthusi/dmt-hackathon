@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/newSaccoFragment"
-        android:name="codes.malukimuthusi.hackathon.NewSaccoFragment"
+        android:name="codes.malukimuthusi.hackathon.newSacco.NewSaccoFragment"
         android:label="fragment_new_sacco"
         tools:layout="@layout/fragment_new_sacco" />
 </navigation>
