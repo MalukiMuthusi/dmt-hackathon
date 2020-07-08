@@ -64,6 +64,9 @@ class SaccosRouteFragment : Fragment() {
             updateStops()
         })
 
+        binding.from.text = sharedViewModel.leg.intermediateStops?.first()?.name ?: "Place Unknown"
+        binding.to.text = sharedViewModel.leg.intermediateStops?.last()?.name ?: "Place Unknown"
+
         // return root view
         return binding.root
     }

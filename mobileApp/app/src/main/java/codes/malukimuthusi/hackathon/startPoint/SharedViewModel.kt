@@ -3,7 +3,6 @@ package codes.malukimuthusi.hackathon.startPoint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import codes.malukimuthusi.hackathon.dataModel.Sacco
 import codes.malukimuthusi.hackathon.webService.Itinerary
 import codes.malukimuthusi.hackathon.webService.Leg
@@ -15,9 +14,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.mapbox.mapboxsdk.geometry.LatLng
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.random.Random
 
@@ -93,16 +89,6 @@ class SharedViewModel : ViewModel() {
                 Timber.e("Null sacco returned")
             }
         }
-    }
-
-    // geocode
-    fun geocode() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-
-            }
-        }
-
     }
 
 }

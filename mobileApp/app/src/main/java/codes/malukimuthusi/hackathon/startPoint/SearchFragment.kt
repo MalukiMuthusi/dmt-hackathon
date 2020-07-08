@@ -26,7 +26,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.databinding.FragmentSearchBinding
 import com.google.android.material.snackbar.Snackbar
-import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -37,10 +36,7 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
-import com.mapbox.mapboxsdk.plugins.annotation.LineManager
-import com.mapbox.mapboxsdk.plugins.annotation.LineOptions
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
+import com.mapbox.mapboxsdk.plugins.annotation.*
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
@@ -63,6 +59,14 @@ var time = ""
  */
 class SearchFragment : Fragment(), OnMapReadyCallback,
     AdapterView.OnItemSelectedListener {
+
+    private lateinit var mapBoxStyle: Style
+    private lateinit var startToDestLineOptions: LineOptions
+    private lateinit var startToDestLine: Line
+    private lateinit var startToDestLineManager: LineManager
+    private lateinit var destSymbolManager: SymbolManager
+    private lateinit var startSymbolManager: SymbolManager
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -72,6 +76,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: SearchFragmentViewModel by viewModels()
     private val options = mutableMapOf<String, String>()
+    private lateinit var destSymbol: Symbol
+    private lateinit var startSymbol: Symbol
 
     override fun onResume() {
         super.onResume()
@@ -187,7 +193,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
 
     private fun toPlacePicker() {
         val cameraPosition = CameraPosition.Builder()
-            .target(LatLng(-1.2909, 36.8282))
+            .target(sharedViewModel.destination ?: LatLng(-1.2909, 36.8282))
             .zoom(16.0)
             .build()
         val placePickerOptions = PlacePickerOptions.builder()
@@ -250,7 +256,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
 
-            // Autocomplete Place Selection
+            // Autocomplete Place Selection. For Start Place
             AUTOCOMPLETE_REQUEST_CODE -> {
 
                 when (resultCode) {
@@ -263,7 +269,13 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                             (feature.geometry() as Point).longitude()
                         )
 
-                        // draw the map agin
+                        // draw the map again
+                        startSymbol.latLng = sharedViewModel.startPoint!!
+                        startSymbolManager.update(startSymbol)
+
+                        updateCamera()
+
+                        updateLine()
                     }
                 }
 
@@ -282,6 +294,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
                         )
 
                         // draw the map again
+                        destSymbol.latLng = sharedViewModel.destination!!
+                        destSymbolManager.update(destSymbol)
+
+                        updateLine()
+                        updateCamera()
                     }
 
                     RESULT_CANCELED -> {
@@ -326,83 +343,128 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
     override fun onMapReady(map: MapboxMap) {
         mapboxMap = map
         map.setStyle(Style.MAPBOX_STREETS) { mapStyle ->
+            mapBoxStyle = mapStyle
+
+
             addPointsMarkers(mapStyle)
 
-            if (sharedViewModel.destination != null && sharedViewModel.startPoint == null) {
+            // update camera
+            updateCamera()
+
+            // draw line from start to destination
+            drawLineStartToDest()
+
+            // put marker on start
+            drawStartMarker(mapStyle)
+
+            // draw marker on destination
+            drawDestMarker(mapStyle)
+
+        }
+    }
+
+    // update camera of the map
+    private fun updateCamera() {
+        when {
+            sharedViewModel.destination != null && sharedViewModel.startPoint == null -> {
                 mapboxMap.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(sharedViewModel.destination!!, 12.0)
                 )
-
-                // add marker
             }
-            if (sharedViewModel.startPoint != null && sharedViewModel.destination == null) {
-                mapboxMap.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint!!, 12.0)
-                )
 
-                // add marker
-            }
-            if (sharedViewModel.startPoint != null && sharedViewModel.destination != null) {
+            sharedViewModel.startPoint != null && sharedViewModel.destination != null -> {
                 val bound = LatLngBounds.Builder()
                     .include(sharedViewModel.startPoint!!)
                     .include(sharedViewModel.destination!!)
                     .build()
                 val cameraUpdateFactory = CameraUpdateFactory.newLatLngBounds(bound, 300)
                 mapboxMap.animateCamera(cameraUpdateFactory)
+            }
 
-                // draw the path
-                val points = listOf<Point>(
-                    Point.fromLngLat(
-                        sharedViewModel.destination!!.longitude,
-                        sharedViewModel.destination!!.latitude
-                    ),
-                    Point.fromLngLat(
-                        sharedViewModel.startPoint!!.longitude,
-                        sharedViewModel.startPoint!!.latitude
-                    )
+            sharedViewModel.startPoint != null && sharedViewModel.destination == null -> {
+                mapboxMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(sharedViewModel.startPoint!!, 12.0)
                 )
-
-                // draw line from start to destination
-                val lineManager = LineManager(binding.mapView, mapboxMap, mapStyle)
-                val lineOptions = LineOptions()
-                    .withGeometry(LineString.fromLngLats(points))
-                    .withLineWidth(2f)
-                lineManager.create(lineOptions)
-
-                // put marker on start and destination
-                val symbolManager = SymbolManager(binding.mapView, mapboxMap, mapStyle)
-                symbolManager.iconAllowOverlap = true
-                val iconColor = ColorUtils.colorToRgbaString(Color.BLUE)
-                val iconElevation = arrayOf(-1f, -8f)
-                val iconAnchorPosition = "bottom"
-                val destinationMarkerOptions = SymbolOptions()
-                    .withIconImage(MARKER)
-                    .withIconColor(iconColor)
-                    .withIconSize(2f)
-                    .withIconAnchor(iconAnchorPosition)
-                    .withIconRotate(0f)
-                    .withGeometry(
-                        Point.fromLngLat(
-                            sharedViewModel.destination!!.longitude,
-                            sharedViewModel.destination!!.latitude
-                        )
-                    )
-                val startPointMarkerOptions = SymbolOptions()
-                    .withIconImage(MARKER)
-                    .withIconColor(iconColor)
-                    .withIconAnchor(iconAnchorPosition)
-                    .withGeometry(
-                        Point.fromLngLat(
-                            sharedViewModel.startPoint!!.longitude,
-                            sharedViewModel.startPoint!!.latitude
-                        )
-                    )
-                    .withIconSize(2f)
-
-                symbolManager.create(listOf(destinationMarkerOptions, startPointMarkerOptions))
-
             }
         }
+    }
+
+    // update line
+    fun updateLine() {
+        when {
+            sharedViewModel.destination !== null && sharedViewModel.startPoint != null -> {
+                startToDestLine.latLngs = listOf(
+                    sharedViewModel.startPoint,
+                    sharedViewModel.destination
+                )
+
+                startToDestLineManager.update(startToDestLine)
+            }
+        }
+    }
+
+
+    // draws a line from the start to destination
+    private fun drawLineStartToDest(
+    ) {
+        if (sharedViewModel.destination !== null && sharedViewModel.startPoint != null) {
+
+            startToDestLineManager = LineManager(binding.mapView, mapboxMap, mapBoxStyle)
+            startToDestLineOptions = LineOptions()
+                .withLineWidth(2f)
+                .withLatLngs(
+                    listOf(
+                        sharedViewModel.startPoint,
+                        sharedViewModel.destination
+                    )
+                )
+            startToDestLine = startToDestLineManager.create(
+                startToDestLineOptions
+            )
+        }
+
+    }
+
+    private fun drawDestMarker(
+        mapStyle: Style
+    ) {
+        startSymbolManager = SymbolManager(binding.mapView, mapboxMap, mapStyle)
+        startSymbolManager.iconAllowOverlap = true
+        val iconColor = ColorUtils.colorToRgbaString(Color.BLUE)
+        val iconAnchorPosition = "bottom"
+        val startPointMarkerOptions = SymbolOptions()
+            .withIconImage(MARKER)
+            .withIconColor(iconColor)
+            .withIconAnchor(iconAnchorPosition)
+            .withGeometry(
+                Point.fromLngLat(
+                    sharedViewModel.startPoint!!.longitude,
+                    sharedViewModel.startPoint!!.latitude
+                )
+            )
+            .withIconSize(2f)
+
+        startSymbol = startSymbolManager.create(startPointMarkerOptions)
+    }
+
+    private fun drawStartMarker(mapStyle: Style) {
+        destSymbolManager = SymbolManager(binding.mapView, mapboxMap, mapStyle)
+        destSymbolManager.iconAllowOverlap = true
+        val iconColor = ColorUtils.colorToRgbaString(Color.BLUE)
+        val iconAnchorPosition = "bottom"
+        val destinationMarkerOptions = SymbolOptions()
+            .withIconImage(MARKER)
+            .withIconColor(iconColor)
+            .withIconSize(2f)
+            .withIconAnchor(iconAnchorPosition)
+            .withIconRotate(0f)
+            .withGeometry(
+                Point.fromLngLat(
+                    sharedViewModel.destination!!.longitude,
+                    sharedViewModel.destination!!.latitude
+                )
+            )
+        destSymbol = destSymbolManager.create(destinationMarkerOptions)
     }
 
     private fun addPointsMarkers(style: Style) {

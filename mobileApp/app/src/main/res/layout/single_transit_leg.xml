@@ -15,20 +15,23 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/pad_16"
+        android:layout_marginEnd="@dimen/pad_16"
+        android:layout_marginBottom="@dimen/pad_16">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materislCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()-> clickListener.onClick(leg)}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:cardElevation="4dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contentRoot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -65,8 +68,6 @@
                     android:layout_marginStart="24dp"
                     app:fetchSaccoFare="@{leg.routeId}"
                     app:layout_constraintBottom_toBottomOf="@+id/time"
-                    app:layout_constraintEnd_toEndOf="@+id/startPoint"
-                    app:layout_constraintHorizontal_bias="0.442"
                     app:layout_constraintStart_toEndOf="@+id/time"
                     app:layout_constraintTop_toTopOf="@+id/time"
                     tools:text="50 KSH" />
@@ -146,5 +147,5 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>
