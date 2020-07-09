@@ -35,6 +35,7 @@ class StartActivity : AppCompatActivity() {
             }
         }
 
+
     }
 
     // navigate to activity for adding a new sacco entry.

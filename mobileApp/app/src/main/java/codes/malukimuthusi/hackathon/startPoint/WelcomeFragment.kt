@@ -1,6 +1,7 @@
 package codes.malukimuthusi.hackathon.startPoint
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
@@ -16,6 +17,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import codes.malukimuthusi.hackathon.R
 import codes.malukimuthusi.hackathon.adapters.FavouritePlacesAdapter
+import codes.malukimuthusi.hackathon.appIntro.MyCustomAppIntro
 import codes.malukimuthusi.hackathon.dataModel.favouritePlaceEx
 import codes.malukimuthusi.hackathon.databinding.FragmentWelcomeBinding
 import codes.malukimuthusi.hackathon.routes.AllRoutesActivity
@@ -79,6 +81,7 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        sharedPreference()
 
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
         getLocation()
@@ -130,6 +133,20 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
         return binding.root
     }
 
+    // shared preference
+    private fun sharedPreference() {
+        val shared = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val toggle = shared.getBoolean(APP_INTRO_FLAG, false)
+        if (!toggle) {
+            val intent = Intent(context, MyCustomAppIntro::class.java)
+            startActivity(intent)
+            with(shared.edit()) {
+                putBoolean(APP_INTRO_FLAG, true)
+                apply()
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == DESTINATION_PICKER_CODE && resultCode == RESULT_OK) {
@@ -167,6 +184,7 @@ class WelcomeFragment : Fragment(), EasyPermissions.PermissionCallbacks,
             }
 
         val DESTINATION_PICKER_CODE = 3089
+        val APP_INTRO_FLAG = "app_into_flag"
     }
 
     @AfterPermissionGranted(RC_FINELOCATIONPERMS)

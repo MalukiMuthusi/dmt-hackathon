@@ -76,6 +76,7 @@
 
     // mapbox api key
     <string name="mapbox_access_token">pk.eyJ1IjoibWFsdWtpIiwiYSI6ImNrYmdmc2M3ZjA3cWgycnAzaTY2ejlkYWcifQ.vIYWA1Q66uJiTZatyqJ1Gg</string>
+    <string name="app_intro">My Custom App Intro</string>
 
     // array
     <string-array name="depart_options">

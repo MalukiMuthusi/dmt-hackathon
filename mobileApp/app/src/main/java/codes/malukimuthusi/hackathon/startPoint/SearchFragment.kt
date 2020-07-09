@@ -245,7 +245,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback,
             options["showIntermediateStops"] = "true"
             if (time.isNotEmpty()) {
                 options["time"] = "8:00am"
-                options["date"] = "7-7-2020"
+                options["date"] = "7-8-2020"
             }
             viewModel.searchRoutes(options)
             binding.progressBar2.visibility = View.VISIBLE
