@@ -1,35 +1,26 @@
 # Digital Matatu App  
 
-I originaly developed this app during a Digital Matatu Hackathon.  
+This is a mobile app that provides navigation assistance to commuters in Nairobi using public transits(called Matatus in Kenya).
 
-The requirements were to develop a solution that:  
-  - Records fare for different routes that PSVs operate in Nairobi. 
-  [Map of the Routes](http://www.digitalmatatus.com/map.html "Digital Matatu Data").
-  - Enable commuters to be able to know fare for routes.
-  - Commuters be able to do comparisons on the fares for the different agencies offering commuting services on those roads.  
-  
+This project aims to:
+  - Enable commuters plan their trips, by proving realtime data of fares and transits available in routes that the user wants to use.
+  - Offer fare comparison where more than one agency offers commuting services.
+  - Search for available trips and inform user by providing navigation information including how long the trip will take.
+
+The above details enables using public transport in Nairobi more accessible and reliable.
+
   - - -  
   
-The app provides the stated requirements.
+Setup of the Server
+------------------
+This project uses GTFS data of Nairobi, which can be download [here](http://www.digitalmatatus.com/).
+
+It uses [Open Trip Planner](https://www.opentripplanner.org/) for providing routing information.
+
+Run the script ```buildGraph.sh``` to build a graph of mapping of gtfs data and the map of Nairobi.  
+Run the script ```startServer.sh``` start the server.  
+
+More details are found in the corresponding scripts ```buibuildGraph.sh``` and ```startServer.sh```
   
-ScreenShots
-===========
-
-Welcome Screen
-  
-![Welcome Page]( docs_images/image1.jpg "Welcome Page")  
-
-Plan Trip Screen
-  
-![]( docs_images/image2.jpg "Search For Available means to get to destination")
-
-Search Results.
-![]( docs_images/image3.jpg "Route Search Results")
-
-Buses and Fares for Routes to the destination
-![]( docs_images/image4.jpg "Route Legs and Fares for each Leg.")
-
-Bus Stops and Saccos/Agencies offering transport services
-![]( docs_images/image5.jpg "Bus Stops and Saccos")
 
 
