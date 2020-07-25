@@ -1,4 +1,5 @@
 # Digital Matatu App  
+![Screenshots of the some screens of the app](hero-image.png)
 
 This is a mobile app that provides navigation assistance to commuters in Nairobi using public transits(called Matatus in Kenya).
 

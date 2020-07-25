@@ -9,23 +9,21 @@ import com.github.appintro.AppIntroFragment
 class MyCustomAppIntro : AppIntro() {
 
     val screen1 = AppIntroFragment.newInstance(
-        title = "Welcome",
-        imageDrawable = R.drawable.screenshot_1
+            title = "Welcome",
+            description = "Choose Destination by clicking on the Search Button",
+            imageDrawable = R.drawable.screenshot_1
     )
 
     val screen2 = AppIntroFragment.newInstance(
-        title = "Welcome",
-        imageDrawable = R.drawable.screenshot_2
+            title = "Welcome",
+            description = "Pick a Location by draggin the map to the desired Point, then click Ok.",
+            imageDrawable = R.drawable.screenshot_2
     )
 
     val screen3 = AppIntroFragment.newInstance(
-        title = "Welcome",
-        imageDrawable = R.drawable.screenshot_3
-    )
-
-    val screen4 = AppIntroFragment.newInstance(
-        title = "Welcome",
-        imageDrawable = R.drawable.screenshot_4
+            title = "Welcome",
+            description = "You can also search for a place by its name.",
+            imageDrawable = R.drawable.screenshot_3
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +33,6 @@ class MyCustomAppIntro : AppIntro() {
         addSlide(screen1)
         addSlide(screen2)
         addSlide(screen3)
-        addSlide(screen4)
     }
 
     override fun onDonePressed(currentFragment: Fragment?) {
