@@ -12,7 +12,7 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 
-const val BASE_URL = "http://localhost:8080/otp/routers/default/"
+const val BASE_URL = "http://41.89.64.18:8801/otp/routers/default/"
 val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
